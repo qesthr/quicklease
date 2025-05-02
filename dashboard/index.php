@@ -10,7 +10,7 @@
 <body>
     <div class="sidebar">
         <div class="logo"> <img src="/quicklease/images/logo.png" alt=""></div>
-        <button class="nav-btn active">Reports</button>
+        <button class="nav-btn active">Represent</button>
         <button class="nav-btn">Accounts</button>
         <button class="nav-btn">Cars</button>
         <button class="nav-btn">Bookings</button>
