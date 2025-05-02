@@ -1,12 +1,13 @@
 <?php
-// db.php should contain database connection logic
-include 'db.php';
+// Correct path to your db.php file
+include 'loginpage/includes/db.php';
 
 // Handle car deletion
 if (isset($_GET['delete_id'])) {
     $id = $_GET['delete_id'];
     mysqli_query($conn, "DELETE FROM cars WHERE id = $id");
     header("Location: cars.php");
+    exit();
 }
 
 // Fetch all cars
@@ -18,7 +19,6 @@ $cars = mysqli_query($conn, "SELECT * FROM cars");
 <head>
     <meta charset="UTF-8">
     <title>Cars Catalogue</title>
-    <link rel="stylesheet" href="styles.css"> <!-- Ensure you have this -->
     <style>
         body { margin: 0; font-family: 'Arial'; background-color: #f1f0e8; }
         .sidebar { width: 250px; background: #1e1ebf; color: white; height: 100vh; position: fixed; }
@@ -43,8 +43,8 @@ $cars = mysqli_query($conn, "SELECT * FROM cars");
     <a href="accounts.php">Accounts</a>
     <a class="active" href="cars.php">Cars</a>
     <a href="bookings.php">Bookings</a>
-    <a href="logout.php" style="position: absolute; bottom: 20px; background: #ffb400; color: black;">Logout</a>
-</div>
+    <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
+    </div>
 
 <div class="top-bar">
     <h1>Cars Catalogue</h1>

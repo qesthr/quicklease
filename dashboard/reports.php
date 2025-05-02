@@ -1,43 +1,63 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QuickLease | Admin Dashboard</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
-</head>
+<?php
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    require_once __DIR__ . '/../vendor/autoload.php'; // adjust if needed
+    require_once __DIR__ . '/../loginpage/includes/db.php';
 
-<body>
-    <div class="sidebar">
-        <div class="logo"> <img src="/quicklease/images/logo.png" alt=""></div>
-        <button class="nav-btn active">Reports</button>
-        <button class="nav-btn">Accounts</button>
-        <button class="nav-btn">Cars</button>
-        <button class="nav-btn">Bookings</button>
-        <button class="logout-btn">Logout</button>
-    </div>
+    $mpdf = new \Mpdf\Mpdf();
+    header('Content-Type: application/pdf');
 
-    <div class="main">
-        <header>
-            <h1>Reports</h1>
-            <div class="user-info">
-                <span class="notification"></span>
-                <span class="profile-pic"></span>
-            </div>
-        </header>
+    $stmt = $conn->query("SELECT b.id, a.full_name, c.model, b.start_date, b.end_date, b.status 
+                          FROM bookings b 
+                          JOIN accounts a ON b.account_id = a.id 
+                          JOIN cars c ON b.car_id = c.id 
+                          ORDER BY b.start_date DESC");
 
-        <section class="stats-cards">
-            <div class="card">Total Bookings: <span>20</span></div>
-            <div class="card">Total Revenue: <span>20</span></div>
-            <div class="card">Active Rentals: <span>20</span></div>
-            <div class="card">Cancelled Bookings: <span>10</span></div>
-        </section>
+    $bookings = $stmt->fetch_all(MYSQLI_ASSOC);
+    $count = 1;
 
-        <section class="recent-bookings">
-            <h2>Recent Bookings</h2>
+    $html = '
+    <html>
+        <head>
+            <style>
+                body {
+                    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+                    font-size: 12px;
+                    padding: 20px;
+                    color: #333;
+                }
+                h4 {
+                    text-align: center;
+                    margin-bottom: 20px;
+                }
+                table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 11px;
+                }
+                th, td {
+                    background-color: #f8f9fa;
+                    border: 1px solid #ccc;
+                    padding: 8px;
+                    text-align: left;
+                }
+                .signature-section {
+                    margin-top: 40px;
+                    display: flex;
+                    justify-content: space-between;
+                    font-size: 11px;
+                }
+                .signature {
+                    width: 50%;
+                    text-align: center;
+                }
+            </style>
+        </head>
+        <body>
+            <h4>Bookings Report</h4>
             <table>
                 <thead>
                     <tr>
+                        <th>#</th>
                         <th>Booking ID</th>
                         <th>Customer Name</th>
                         <th>Car Model</th>
@@ -46,46 +66,54 @@
                         <th>Status</th>
                     </tr>
                 </thead>
-                <tbody>
-                    <tr>
-                        <td>001</td>
-                        <td>John Doe</td>
-                        <td>Toyota Camry</td>
-                        <td>April-28-2025</td>
-                        <td>April-29-2025</td>
-                        <td>Completed</td>
-                    </tr>
-                    <tr>
-                        <td>002</td>
-                        <td>Jane Smith</td>
-                        <td>Honda Accord</td>
-                        <td>April-28-2025</td>
-                        <td>April-30-2025</td>
-                        <td>Active</td>
-                    </tr>
-                    <tr>
-                        <td>003</td>
-                        <td>Bob Johnson</td>
-                        <td>Nissan Navara</td>
-                        <td>April-29-2025</td>
-                        <td>April-29-2025</td>
-                        <td>Cancelled</td>
-                    </tr>
+                <tbody>';
+
+                foreach ($bookings as $row) {
+                    $html .= '
+                        <tr>
+                            <td>' . $count++ . '</td>
+                            <td>' . htmlspecialchars($row['id']) . '</td>
+                            <td>' . htmlspecialchars($row['full_name']) . '</td>
+                            <td>' . htmlspecialchars($row['model']) . '</td>
+                            <td>' . htmlspecialchars($row['start_date']) . '</td>
+                            <td>' . htmlspecialchars($row['end_date']) . '</td>
+                            <td>' . htmlspecialchars($row['status']) . '</td>
+                        </tr>';
+                }
+
+    $html .= '
                 </tbody>
             </table>
-        </section>
 
-        <section class="charts">
-            <canvas id="pieChart" width="300" height="300"></canvas>
-            <button class="print-btn">PRINT</button>
-        </section>
+            <div class="signature-section">
+                <div class="signature">
+                    <p>_________________________________________</p>
+                    <p><strong>General Manager</strong></p>
+                </div>
+            </div>
+        </body>
+    </html>';
 
-        <section class="utilization">
-            <div class="utilization-card">Fleet Utilization Rate: <span>50%</span></div>
-            <div class="utilization-card">Fleet Utilization Rate: <span>50%</span></div>
-        </section>
+    $mpdf->SetHTMLFooter('<div style="text-align: left;">Page {PAGENO}/{nbpg}</div>');
+    $mpdf->WriteHTML($html);
+    $mpdf->Output('', 'I');
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Generate Booking Report</title>
+    <link rel="stylesheet" href="../css/dashboard.css"> <!-- Optional styling -->
+</head>
+<body>
+    <div class="main">
+        <h1>Booking Reports</h1>
+        <form action="" method="POST">
+            <button type="submit" class="btn btn-primary">Print Report as PDF</button>
+        </form>
     </div>
-
-    
 </body>
 </html>
