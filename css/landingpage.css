@@ -1,6 +1,6 @@
 /* reset and the base */
 * {
-    margin: 20px;
+
     padding: 0;
     box-sizing: border-box;
 }
@@ -17,9 +17,9 @@ body {
     background-color: transparent;
     padding: 1rem 2rem;
     display: flex;
-    justify-content: space-evenly;
     align-items: center;
-    margin-top: -59px;
+    margin-top: 53px;
+    justify-content: space-around;
 }
 
 .navbar .navbar-brand {
@@ -400,11 +400,20 @@ body {
 .vehicles {
     padding: 4rem 2rem;
     text-align: center;
+    max-width: 1200px; /* Added for better content control */
+    margin: 0 auto; /* Centers the section */
 }
 
 .vehicles h2 {
-    font-size: 4rem;
+    font-size: 2.5rem; /* Reduced from 4rem for better responsiveness */
     margin-bottom: 1rem;
+    color: #333; /* Added for better contrast */
+}
+
+.vehicles p {
+    margin-bottom: 2rem;
+    color: #666; /* Better text color */
+    line-height: 1.6; /* Better readability */
 }
 
 .vehicle-tabs {
@@ -412,34 +421,104 @@ body {
     justify-content: center;
     gap: 1rem;
     margin: 2rem 0;
+    flex-wrap: wrap; /* Allows tabs to wrap on smaller screens */
 }
 
 .vehicle-tabs button {
     background-color: #f1f1f1;
     border: none;
-    padding: 0.5rem 1rem;
+    padding: 0.75rem 1.5rem; /* Increased padding for better click area */
     border-radius: 20px;
     cursor: pointer;
-    transition: background-color 0.3s;
+    transition: all 0.3s ease; /* Smooth transition for all properties */
+    font-weight: 600; /* Makes text slightly bolder */
+    font-size: 0.9rem; /* Better font sizing */
+    white-space: nowrap; /* Prevents text wrapping */
 }
 
 .vehicle-tabs button.active,
 .vehicle-tabs button:hover {
     background-color: #1818CA;
     color: #fff;
+    transform: translateY(-2px); /* Adds slight lift effect */
+    box-shadow: 0 4px 8px rgba(24, 24, 202, 0.2); /* Subtle shadow */
 }
 
-.vehicle-cards {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 1rem;
-    padding: 2rem 0;
-}
-
+/* Vehicle Cards Enhancements */
 .vehicle-card {
-    background-color: #f1f1f1;
-    border-radius: 15px;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.vehicle-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+}
+
+.vehicle-info {
     padding: 1rem;
+}
+
+.btn-rent {
+    background: #1818CA;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 0.5rem;
+    transition: background 0.3s;
+}
+
+.btn-rent:hover {
+    background: #0f0f9c;
+}
+
+/* Car Brands Section */
+.car-brands {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    padding: 2rem;
+    background: #f8f8f8;
+    margin: 2rem 0;
+}
+
+.car-brands img {
+    height: 40px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.car-brands img:hover {
+    opacity: 1;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .vehicles h2 {
+        font-size: 2rem;
+    }
+    
+    .vehicle-tabs {
+        gap: 0.5rem;
+    }
+    
+    .vehicle-tabs button {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+    
+    .vehicle-cards {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+@media (max-width: 480px) {
+    .vehicle-cards {
+        grid-template-columns: 1fr; /* Single column on smallest screens */
+    }
 }
 
 /*end of car section*/
@@ -541,9 +620,18 @@ body {
 }
 
 .footer .footer-brand {
-    font-size: 1.5rem;
+    font-size: 1.8rem;
     font-weight: bold;
-    margin-top: 1rem;
+    width: 360px;
+    height: 119px;
+    overflow: hidden;
+}
+
+.footer-brand img {
+    width: 106%;
+    height: 68%;
+    object-fit: cover;
+    margin-left: revert-layer;
 }
 
 
