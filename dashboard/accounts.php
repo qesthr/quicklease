@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="../css/accounts.css">
 </head>
 <body>
+<div class="sidebar">
+        <div class="logo"> <img src="/quicklease/images/logo.png" alt=""></div>
+        <button class="nav-btn active">Reports</button>
+        <button class="nav-btn">Accounts</button>
+        <button class="nav-btn">Cars</button>
+        <button class="nav-btn">Bookings</button>
+        <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
+        </div>
 
 <!-- Sidebar HTML (same as previous response) -->
 
