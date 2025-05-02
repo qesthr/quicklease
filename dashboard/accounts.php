@@ -8,13 +8,13 @@
 </head>
 <body>
 <div class="sidebar">
-        <div class="logo"> <img src="/quicklease/images/logo.png" alt=""></div>
-        <button class="nav-btn active">Reports</button>
-        <button class="nav-btn">Accounts</button>
-        <button class="nav-btn">Cars</button>
-        <button class="nav-btn">Bookings</button>
-        <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
-        </div>
+  <div class="logo"><img src="/quicklease/images/logo.png" alt=""></div>
+  <a href="reports.php"><button class="nav-btn">Reports</button></a>
+  <a href="accounts.php"><button class="nav-btn">Accounts</button></a>
+  <a href="cars.php"><button class="nav-btn">Cars</button></a>
+  <a href="bookings.php"><button class="nav-btn active">Bookings</button></a>
+  <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
+</div>
 
 <!-- Sidebar HTML (same as previous response) -->
 
