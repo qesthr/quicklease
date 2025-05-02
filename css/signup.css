@@ -1,0 +1,87 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: center center;
+    margin: 0;
+}
+
+.main_container {
+    width: 20%;
+    height: 50%;
+    background-color: rgb(240, 240, 240);
+    border-radius: 2%;
+    border: solid 3px rgb(82, 82, 82);
+    overflow-y: auto;
+
+    display: flex;
+    justify-content: center;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.main_container::-webkit-scrollbar {
+    display: none;
+}
+
+.main_card{
+    margin: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main_card h1 {
+    font-size: 20px;
+}
+
+.main_card img {
+    width: 5rem;
+    margin: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+.button-container {
+    margin: 20px;
+}
+
+button {
+    padding: 10px;
+    border-radius: 10px !important;
+    border: transparent;
+    background-color: rgb(97, 97, 97);
+    width: 10rem;
+    color: white;
+    font-weight: bold;
+    font-size: 12px !important;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.signup_label {
+    display: flex;
+    flex-direction: column;
+
+}
+
+form p a {
+    color: blue;
+    text-decoration: none;
+}

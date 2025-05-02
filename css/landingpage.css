@@ -1,0 +1,549 @@
+/* reset and the base */
+* {
+    margin: 20px;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #000000;
+    background-color: #ffffff;
+    line-height: 1.6;
+}
+
+/* navbar */
+.navbar {
+    background-color: transparent;
+    padding: 1rem 2rem;
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    margin-top: -59px;
+}
+
+.navbar .navbar-brand {
+    font-size: 1.8rem;
+    font-weight: bold;
+    width: 360px;
+    height: 119px;
+    overflow: hidden;
+}
+
+.navbar-brand img {
+    width: 106%;
+    height: 68%;
+    object-fit: cover;
+    margin-left: revert-layer;
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    background-color: #1818CA;
+    padding: 1px 20px;
+    border-radius: 50px;
+    gap: 20px;
+}
+
+.nav-container2 {
+    background-color: #f1bc3e;
+    border-radius: 50px;
+    margin: -5px;
+}
+
+.navbar-nav {
+    display: flex;
+    list-style: none;
+    gap: -18px;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar-nav li::marker {
+    content: none;
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff;
+    margin-right: 1rem;
+    transition: color 0.3s;
+    display: flex;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: large;
+}
+
+.navbar-nav .nav-link {
+    text-decoration: none;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #f1bc3e;
+}
+
+.navbar .btn-signup {
+    background-color: #F9B315;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: bold;
+    text-decoration: none;
+    margin-left: 20px;
+    border: 2px solid #ffffff;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.navbar .btn-signup:hover {
+    background-color: #f1bc3e;
+}
+
+/* big header */
+.hero {
+    position: relative;
+    text-align: center;
+    padding: 4rem 0rem;
+    min-height: 50vh;
+    overflow: hidden;
+    z-index: 1; 
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    height: 100%;
+
+    background-image: url('../images/maps.png');
+    background-size: cover;
+    background-position: center;
+
+    -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 50%, rgba(0, 0, 0, 0) 100%);
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 97%, rgba(0, 0, 0, 0) 100%);
+    z-index: -1;
+}
+
+
+.hero h1 {
+    font-size: 3rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.search-form {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 50px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    align-items: center;
+    margin: 0rem auto;
+    max-width: 60%;
+}
+
+.search-form input,
+.search-form select {
+    border: none;
+    padding: 0.8rem;
+    flex: 1;
+    border-radius: 30px;
+    background-color: #f1f1f1;
+    outline: none;
+}
+
+.search-form .btn-book {
+    background-color: #F9B315;
+    color: #ffffff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.search-form .btn-book:hover {
+    background-color: #fbcc63;
+}
+
+/* rent flow */
+/*
+.rent-flow {
+    padding: 1rem 2rem;
+    text-align: center;
+}
+
+.rent-flow h2 {
+    font-size: 3rem;
+    margin-bottom: 2rem;
+}
+
+.timeline {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    position: relative;
+    margin-top: 3rem;
+    flex-wrap: wrap;
+}
+
+.timeline::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 90%;
+    height: 2px;
+    background: dotted #000000;
+    z-index: 0;
+}
+
+.timeline-step {
+    background-color: #F9B315;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+}
+
+.timeline-text {
+    margin-top: 1rem;
+    max-width: 120px;
+    font-size: 0.9rem;
+} */
+
+/* rent flow new */
+  .rent-flow {
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: #ffff;
+    position: relative;
+    overflow: hidden;
+    min-height: 60vh;
+  }
+
+  .rent-flow h1 {
+    font-size: 3rem;
+  }
+  
+  .wavy-line {
+    width: 90%;
+    height: 100px;
+    margin: 40px auto 0;
+    display: block;
+  }
+  
+  .timeline-steps {
+    position: relative;
+    width: 90%;
+    margin: -50px auto 0;
+    height: 200px;
+  }
+  
+  .step {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 180px;
+  }
+  
+  .step-marker {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #fbcc63;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    z-index: 2;
+    margin-bottom: 10px;
+  }
+  
+  .step-text {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 8px;
+  }
+
+  .step p {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    margin: 0;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    max-width: 160px;
+  }
+  
+  /* Animation */
+  .step-marker {
+    transition: all 0.3s ease;
+  }
+  
+  .step:hover .step-marker {
+    transform: scale(1.1);
+    background: #1818CA;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .wavy-line {
+      height: 150px;
+    }
+    
+    .timeline-steps {
+        position: relative;
+        width: 90%;
+        margin: -40px auto 0; 
+        height: 200px;
+    }
+    
+    .step {
+      width: 80px;
+    }
+    
+    .step:nth-child(1) { left: 5%; top: 50%; }   /* Higher on first peak */
+    .step:nth-child(2) { left: 35%; top: 80%; }  /* Lower in first valley */
+    .step:nth-child(3) { left: 65%; top: 100%; }  /* Higher on second peak */
+    .step:nth-child(4) { left: 95%; top: 70%; }  /* Lower in second valley */
+    
+    .step-content {
+        position: relative;
+        margin-top: 20px;
+    }
+    .step-content::before {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        width: 2px;
+        height: 20px;
+        background: #fbcc63;
+        transform: translateX(-50%);
+    }
+
+    }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .wavy-line {
+      height: 150px;
+      margin-top: 60px;
+    }
+    
+    .timeline-steps {
+      height: auto;
+      margin: 0 auto;
+      padding-top: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .step {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 80%;
+    margin: 0 auto 30px;
+    padding-top: 40px;
+    }
+
+    .step-content::before {
+        height: 40px;
+        top: -40px;
+    }
+
+    
+    .step p {
+      max-width: 100%;
+    }
+    
+    /* Hide wavy line on mobile */
+    .wavy-line {
+      display: none;
+    }
+    
+    /* Add connecting line for mobile */
+    .step:not(:last-child)::after {
+      content: "";
+      display: block;
+      width: 2px;
+      height: 20px;
+      background: #fbcc63;
+      margin: 10px auto;
+    }
+  }
+
+/* end of rent flow new */
+
+/* car section */
+.vehicles {
+    padding: 4rem 2rem;
+    text-align: center;
+}
+
+.vehicles h2 {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+.vehicle-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.vehicle-tabs button {
+    background-color: #f1f1f1;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.vehicle-tabs button.active,
+.vehicle-tabs button:hover {
+    background-color: #1818CA;
+    color: #fff;
+}
+
+.vehicle-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    padding: 2rem 0;
+}
+
+.vehicle-card {
+    background-color: #f1f1f1;
+    border-radius: 15px;
+    padding: 1rem;
+}
+
+/*end of car section*/
+
+/* ===============================
+    Show All Button
+================================ */
+.show-all-btn {
+    background: none;
+    border: 2px solid #000;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.show-all-btn:hover {
+    background-color: #1818CA;
+    color: #ffffff;
+}
+
+/* ===============================
+    Car Brands
+================================ */
+.car-brands {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.car-brands img {
+    height: 50px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.car-brands img:hover {
+    opacity: 1;
+}
+
+/* ===============================
+    Promo Banner
+================================ */
+.promo-banner {
+    background: linear-gradient(135deg, #F9B315, #1818CA);
+    color: #ffffff;
+    text-align: center;
+    padding: 4rem 2rem;
+    border-radius: 20px;
+    margin: 4rem auto;
+    max-width: 800px;
+}
+
+.promo-banner h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.promo-banner .btn-book-now {
+    background-color: #ffffff;
+    color: #1818CA;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    font-weight: bold;
+    border: none;
+    margin-top: 1.5rem;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.promo-banner .btn-book-now:hover {
+    background-color: #fbcc63;
+}
+
+/* ===============================
+    Footer
+================================ */
+.footer {
+    padding: 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-around;
+    font-size: 0.9rem;
+    background-color: transparent;
+    margin-top: 4rem;
+}
+
+.footer a {
+    color: #000;
+    text-decoration: none;
+    margin: 0.5rem;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer .footer-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+
