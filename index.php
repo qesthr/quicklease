@@ -21,9 +21,9 @@
 
         <div class="nav-container">
             <ul class="navbar-nav">
-                <li><a href="landingpage/cars.php" class="nav-link">Cars</a></li>
-                <li><a href="landingpage/feature.php" class="nav-link">Features</a></li>
-                <li><a href="landingpage/help.php" class="nav-link">Help</a></li>
+                <li><a href="#cars" class="nav-link">Cars</a></li>
+                <li><a href="#brands" class="nav-link">Features</a></li>
+                <li><a href="#contact" class="nav-link">Help</a></li>
             </ul>
         <a href="/login-page/signup.php" class="btn-signup">Signup</a>
     </div>
@@ -190,13 +190,13 @@
         
         </div>
 
-        <button class="show-all-btn" data-filter="all" >Show all (40 models)</button>
+        <button class="show-all-btn" data-filter="all" >Show all (10 models)</button>
     </section> 
     
     <!--end of cars-->
 
     <!-- start of  cars -->
-    <section class="car-brands">
+    <section class="car-brands" id="brands">
         <img src="audi-logo.png" alt="Audi">
         <img src="mercedes-logo.png" alt="Mercedes-Benz">
         <img src="toyota-logo.png" alt="Toyota">
@@ -206,7 +206,7 @@
     <!--end of cars -->
 
     <!-- start of promotion banner -->
-    <section class="promo-banner">
+    <section class="promo-banner" id="contact">
         <h2>Seamless Rentals for Every Adventure</h2>
         <p>Reserve your car with just a few clicks!</p>
         <button class="btn-book-now">Book Now</button>
@@ -232,7 +232,7 @@
 
     <!-- end of promotion banner -->
 
-    <script src="quicklease/javascript/landingpage.js"></script>
+    <script type="module" src="./javascript/landingpage.js"></script>
 
 </body>
 </html>
