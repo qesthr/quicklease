@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>QuickLease - Online Car Rental System</title>
 
     <!-- css lenk -->
@@ -104,7 +104,7 @@
                 <div class="step" style="left: 35%;">
                     <div class="step-marker">2</div>
                     <div class="step-text">Select Dates</div>
-                    <p>Choose your rental period. Minimum rental: 6 hours. <br> Need a long-term deal? Ask about weekly rates!</p>
+                    <p>Choose your rental period. Minimum rental: 6 hours. <br> Need     a long-term deal? Ask about weekly rates!</p>
                 </div>
                 
                 <!-- Step 3 -->
@@ -133,22 +133,64 @@
         <p>Whether you're planning a weekend getaway or a business trip, <br> find the perfect car for your journey in just a few clicks.</p>
 
         <div class="vehicle-tabs">
-            <button class="active">Toyota Vios</button>
-            <button>BMW 3 Series</button>
-            <button>Toyota Fortuner</button>
-            <button>Ford Ranger</button>
+            <button class="vehicle-tab active" data-category="sedan">Toyota Vios</button>
+            <button class="vehicle-tab" data-category="luxury">BMW 3 Series</button>
+            <button class="vehicle-tab" data-category="suv">Toyota Fortuner</button>
+            <button class="vehicle-tab" data-category="truck">Ford Ranger</button>
         </div>
 
         <div class="vehicle-cards">
-            <div class="vehicle-card">Car 1</div>
-            <div class="vehicle-card">Car 2</div>
-            <div class="vehicle-card">Car 3</div>
-            <div class="vehicle-card">Car 4</div>
-            <div class="vehicle-card">Car 5</div>
-            <div class="vehicle-card">Car 6</div>
+            <div class="card" style="width: 18rem;">
+                <img src="images/fortuner.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3>Toyota Vios</h3>
+                    <p class="price">$45/day</p>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="images/hiace.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3>Toyota Vios</h3>
+                    <p class="price">$45/day</p>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="images/mini-van.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3>Toyota Vios</h3>
+                    <p class="price">$45/day</p>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="images/montero.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3>Toyota Vios</h3>
+                    <p class="price">$45/day</p>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="images/strada.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3>Toyota Vios</h3>
+                    <p class="price">$45/day</p>
+                </div>
+            </div>
+
+            <div class="card" style="width: 18rem;">
+                <img src="images/vios.jpg" class="card-img-top" alt="...">
+                <div class="card-body">
+                    <h3>Toyota Vios</h3>
+                    <p class="price">$45/day</p>
+                </div>
+            </div>
+        
         </div>
 
-        <button class="show-all-btn">Show all (40 models)</button>
+        <button class="show-all-btn" data-filter="all" >Show all (40 models)</button>
     </section> 
     
     <!--end of cars-->
@@ -183,10 +225,14 @@
             <a href="#">Features</a>
             <a href="#">Help</a>
         </div>
-        <div class="footer-brand">Quick<span>Lease</span></div>
+        <div class="footer-brand">
+            <img src="images/logo2.png" alt="">
+        </div>
     </footer>
 
     <!-- end of promotion banner -->
+
+    <script src="quicklease/javascript/landingpage.js"></script>
 
 </body>
 </html>
