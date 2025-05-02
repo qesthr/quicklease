@@ -2,18 +2,21 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>QuickLease Admin Dashboard</title>
-    <link rel="stylesheet" href="/quicklease/css/dashboard.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuickLease | Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
 </head>
+
 <body>
     <div class="sidebar">
-        <div class="logo">Quick<span>Lease</span></div>
+        <div class="logo"> <img src="/quicklease/images/logo.png" alt=""></div>
         <button class="nav-btn active">Reports</button>
         <button class="nav-btn">Accounts</button>
         <button class="nav-btn">Cars</button>
         <button class="nav-btn">Bookings</button>
         <button class="logout-btn">Logout</button>
     </div>
+
     <div class="main">
         <header>
             <h1>Reports</h1>
@@ -83,6 +86,6 @@
         </section>
     </div>
 
-    <script src="dashboard.js"></script>
+    
 </body>
 </html>
