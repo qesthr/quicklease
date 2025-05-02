@@ -2,7 +2,7 @@
 require_once '../loginpage/includes/db.php';
 
 // Fetch bookings
-$stmt = $pdo->query("SELECT * FROM bookings ORDER BY booking_id DESC");
+$stmt = $pdo->query("SELECT * FROM bookings ORDER BY id DESC");
 $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -87,7 +87,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <tbody>
       <?php foreach ($bookings as $booking): ?>
         <tr>
-          <td><?= htmlspecialchars($booking['booking_id']) ?></td>
+          <td><?= htmlspecialchars($booking['id']) ?></td>
           <td><?= htmlspecialchars($booking['customer_name']) ?></td>
           <td><?= htmlspecialchars($booking['car_model']) ?></td>
           <td><?= htmlspecialchars($booking['booking_date']) ?></td>
@@ -95,15 +95,15 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
           <td><?= htmlspecialchars($booking['status']) ?></td>
           <td class="actions">
             <form action="view-booking.php" method="GET" style="display:inline;">
-              <input type="hidden" name="id" value="<?= $booking['booking_id'] ?>">
+              <input type="hidden" name="id" value="<?= $booking['id'] ?>">
               <button class="view-btn">View</button>
             </form>
             <form action="edit-booking.php" method="GET" style="display:inline;">
-              <input type="hidden" name="id" value="<?= $booking['booking_id'] ?>">
+              <input type="hidden" name="id" value="<?= $booking['id'] ?>">
               <button class="edit-btn">Edit</button>
             </form>
             <form action="cancel-booking.php" method="POST" style="display:inline;">
-              <input type="hidden" name="id" value="<?= $booking['booking_id'] ?>">
+              <input type="hidden" name="id" value="<?= $booking['id'] ?>">
               <button class="cancel-btn" onclick="return confirm('Cancel this booking?')">Cancel</button>
             </form>
           </td>
