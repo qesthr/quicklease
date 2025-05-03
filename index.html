@@ -37,9 +37,19 @@
         <h1>Explore the world’s largest car sharing <br> & rental marketplace</h1>
 
         <div class="search-form">
-            <select>
-                <option>Choose Location</option>
+            <div id="map" style="width: 100%; height: 400px; margin-top: 2rem; border-radius: 12px; display: none;"></div>
+
+            <select id="locationDropdown">
+                <option disabled selected>Choose Location</option>
+                <option value="JJL">JJL CAR RENTAL SERVICES AND CARWASH - Sta. Cruz Street Corner Magsaysay Extension, Barangay Sumpong, Malaybalay</option>
+                <option value="RNiel">R-Niel's Car Rental - Purok 8, Sayre Hwy, Barangay 9, Malaybalay</option>
+                <option value="BukidnonWheels">BukidnonWheels Car Rental - Grema Village, Malaybalay</option>
+                <option value="FSCarCare">FS Car Care Display Malaybalay - Casisang Brg, Malaybalay</option>
+                <option value="JZL">JZL Bukidnon Car & Motor Rental - Barangay Violeta, Malaybalay</option>
+                <option value="DS">DS CAR RENTAL SERVICES, NATIONAL HIGH WAY, ZONE 1, Malaybalay, 8700 Bukidnon</option>
+                <option value="PRC">Preng's Car Rental, Sayre Hwy, KM4 Casisang</option>
             </select>
+            
             <input type="date" placeholder="Departure Date">
             <input type="date" placeholder="Return Date">
             <button class="btn-book">Book Now</button>
@@ -234,5 +244,112 @@
 
     <script type="module" src="./javascript/landingpage.js"></script>
 
+    <script>
+        let map;
+        let userMarker;
+        let rentalMarkers = [];
+      
+        // const carRentals = [
+        //   { name: "JJL CAR RENTAL SERVICES AND CARWASH, Magsaysay Ext, Malaybalay, Bukidnon", lat: 14.5995, lng: 120.9842 }, // Example in Manila
+        //   { name: "Bukidnon Car Rental, Malaybalay, Bukidnon", lat: 14.5086, lng: 121.0198 },
+        //   { name: "Shyne's Car Rental, 44PG+V8Q, Malaybalay, BukidnonBGC ", lat: 14.5534, lng: 121.0323 }
+        // ];
+      
+        function initMap() {
+          map = new google.maps.Map(document.getElementById("map"), {
+            zoom: 12,
+            center: { lat: 14.5995, lng: 120.9842 } // Default center
+          });
+      
+          // Try to get current location
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+              const userPos = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+              };
+      
+              map.setCenter(userPos);
+              userMarker = new google.maps.Marker({
+                position: userPos,
+                map,
+                title: "Your Location",
+                icon: "http://maps.google.com/mapfiles/ms/icons/blue-dot.png"
+              });
+      
+              // Find nearest car rental
+              let nearest = findNearestRental(userPos);
+              populateDropdown(nearest);
+              addRentalMarkers();
+            }, () => {
+              alert("Please enable location to use this feature.");
+            });
+          } else {
+            alert("Geolocation is not supported by this browser.");
+          }
+        }
+      
+        function findNearestRental(userPos) {
+          let nearest = null;
+          let minDistance = Infinity;
+      
+          carRentals.forEach(rental => {
+            const dist = Math.sqrt(
+              Math.pow(userPos.lat - rental.lat, 2) +
+              Math.pow(userPos.lng - rental.lng, 2)
+            );
+            if (dist < minDistance) {
+              nearest = rental;
+              minDistance = dist;
+            }
+          });
+      
+          return nearest;
+        }
+      
+        function populateDropdown(nearestRental) {
+          const dropdown = document.getElementById("locationDropdown");
+      
+          // Clear options
+          dropdown.innerHTML = "";
+      
+          carRentals.forEach(rental => {
+            const option = document.createElement("option");
+            option.textContent = rental.name;
+            option.value = `${rental.lat},${rental.lng}`;
+            dropdown.appendChild(option);
+          });
+      
+          if (nearestRental) {
+            dropdown.value = `${nearestRental.lat},${nearestRental.lng}`;
+          }
+      
+          dropdown.addEventListener("change", function () {
+            const [lat, lng] = this.value.split(",");
+            map.setCenter({ lat: parseFloat(lat), lng: parseFloat(lng) });
+          });
+        }
+      
+        function addRentalMarkers() {
+          carRentals.forEach(rental => {
+            const marker = new google.maps.Marker({
+              position: { lat: rental.lat, lng: rental.lng },
+              map,
+              title: rental.name
+            });
+            rentalMarkers.push(marker);
+          });
+        }
+      </script>
+      
+      <!-- Load the Maps API (replace YOUR_API_KEY) -->
+      <script async defer
+        src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&callback=initMap">
+      </script>
+      
+<script async
+src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCfoFB-NRYXEmtiJ6w1vPa290TYGcCRg3Q&callback=initMap">
+</script>
+    
 </body>
 </html>
