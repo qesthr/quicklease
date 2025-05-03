@@ -55,7 +55,7 @@ body {
 .team-member {
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 30px;
     padding: 20px;
     background: white;
