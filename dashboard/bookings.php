@@ -1,5 +1,5 @@
 <?php
-require_once '../loginpage/includes/db.php';
+require_once '../db.php';
 
 // Handle Add Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {

@@ -1,6 +1,12 @@
 <?php
 // Correct path to your db.php file
-include 'loginpage/includes/db.php';
+require_once '../db.php';
+
+// Check if the database connection is established
+if (!isset($conn) || $conn->connect_error) {
+    die("Database connection not established.");
+}
+
 
 // Handle car deletion
 if (isset($_GET['delete_id'])) {
