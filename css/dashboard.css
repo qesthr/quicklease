@@ -5,54 +5,52 @@ body {
     background: #f1efe7;
 }
 
+/* === Sidebar Base === */
 .sidebar {
-    width: 220px;
-    background: #1818CA;
-    color: white;
+    width: 250px;
+    height: 100vh;
+    background-color: #1818CA; /* dark blue */
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px 0;
-    height: 100vh;
+    padding-top: 20px;
     position: fixed;
-    top: 0;
     left: 0;
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    top: 0;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 
-
-.sidebar .logo {
-    margin-bottom: 30px;
-}
-
-.sidebar .logo img {
-    width: 120px;
-    object-fit: contain;
-}
-
-.nav-btn, .logout-btn {
-    background: #FBCC63;
-    border: none;
-    padding: 12px 18px;
-    margin: 8px 0;
-    width: 80%;
-    cursor: pointer;
+.sidebar-nav a.active {
+    background-color: #FBCC63; /* light yellow when active */
+    color: #F9B315; /* dark blue text */
     border-radius: 25px;
-    font-size: 16px;
-    font-weight: bold;
-    transition: all 0.3s ease;
 }
 
-.nav-btn:hover, .logout-btn:hover {
-    background-color: #fcd56b;
+.sidebar-nav a.active:hover {
+    background-color: #F9B315; /* darker yellow on hover */
 }
 
-.nav-btn.active {
-    background: white;
+.nav-btn:hover:not(.active) {
+    background: none; /* no background change on inactive hover */
+    color: #FFFFFF;   /* keep white text */
+    cursor: default;  /* prevent pointer if not clickable */
+}
+
+.logout-btn {
+    width: 80%;
+    margin-bottom: 20px;
+    padding: 10px 0;
+    background-color: #FBCC63;
     color: #1818CA;
+    border: none;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.logout-btn:hover {
+    background-color: #F9B315; /* darker yellow */
 }
 
 .main {

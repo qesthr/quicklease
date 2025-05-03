@@ -21,7 +21,7 @@ session_start();
 
     <div class="container">
         <div class="card" style="text-align: center;">
-            <img src="logo.png" alt="This is the Logo">
+            <img src="logo.png" alt="This is t  he Logo">
 
             <div class="card-body">
                 <?php if (isset($_SESSION['error'])): ?>
@@ -48,7 +48,7 @@ session_start();
                     <button type="submit">SUBMIT</button>
                 </form>
 
-                <p><a href="../forgotpassword.php" style="color: black;">Forgot Password?</a></p>
+                <p><a href="../loginpage/forgotpassword.php" style="color: black;">Forgot Password?</a></p>
 
                 <!-- Divider -->
                 <hr style="margin: 20px 0;">

@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$db   = 'quicklease';
+$db   = 'quicklease_db';
 $user = 'root';
 $pass = ''; 
 $charset = 'utf8mb4';
