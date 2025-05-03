@@ -1,7 +1,7 @@
 body {
     height: 100vh;
     margin: 0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -44,13 +44,38 @@ body {
 }
 
 .signup-input {
-    width: 92%;
-    padding: 12px;
+    width: 100%;
+    padding: 12px 15px;
     margin-bottom: 15px;
     font-size: 14px;
     border: 1px solid #ccc;
-    border-radius: 8px;
-    transition: border-color 0.3s ease;
+    border-radius: 10px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.signup-input:focus {
+    border-color: #3232D0;
+    box-shadow: 0 0 8px rgba(50, 50, 208, 0.3);
+    outline: none;
+}
+
+
+form.signup-form button {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    background-color: #3232D0;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+form.signup-form button:hover {
+    background-color: #1818CA;
+    transform: translateY(-2px);
 }
 
 input:focus {
@@ -102,6 +127,10 @@ a {
     transition: color 0.3s ease;
 }
 
+.signup-with-g {
+    margin: 10px;
+}
+
 a:hover {
     color: #1818CA;
 }
@@ -119,4 +148,16 @@ form {
     border: 1px solid #ccc;
     border-radius: 8px;
     transition: border-color 0.3s ease;
+}
+
+.g-recaptcha {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background: #ccc;
 }
