@@ -101,11 +101,12 @@ button:hover {
 }
 
 .alert {
-    margin: 10px 0;
+    margin: -186px 6px;
     padding: 10px;
     border-radius: 8px;
     font-size: 14px;
-    width: 100%;
+    width: 20%;
+    position: absolute;
 }
 
 .alert-danger {
@@ -125,10 +126,6 @@ a {
     color: #3232D0;
     text-decoration: none;
     transition: color 0.3s ease;
-}
-
-.signup-with-g {
-    margin: 10px;
 }
 
 a:hover {
@@ -161,3 +158,83 @@ hr {
     height: 1px;
     background: #ccc;
 }
+
+#logo {
+    width: 0;
+    height: auto;
+}
+
+/* forgot pass */
+
+/* FORGOT PASSWORD SPECIFIC STYLES */
+.forgot-password-card {
+    padding: 40px 12px;
+}
+
+.forgot-password-card h3 {
+    color: #000000;
+    font-size: 1.5rem;
+    margin-bottom: 25px;
+
+
+}
+
+.forgot-password-card .form-group {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+
+.forgot-password-card .form-label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 500;
+    color: #555;
+}
+
+.forgot-password-card .form-control {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.forgot-password-card .form-control:focus {
+    border-color: #3232D0;
+    box-shadow: 0 0 0 0.2rem rgba(50, 50, 208, 0.25);
+}
+
+.forgot-password-card .btn-block {
+
+    font-weight: 600;
+}
+
+.forgot-password-card .login-link {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #666;
+}
+
+.forgot-password-card .login-link a {
+    color: #3232D0;
+    font-weight: 500;
+    display: inline;
+    margin-top: 0;
+}
+
+.forgot-password-card .login-link a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .forgot-password-card {
+        padding: 30px 20px;
+    }
+    
+    .forgot-password-card h3 {
+        font-size: 1.3rem;
+    }
+}
+
