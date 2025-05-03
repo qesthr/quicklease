@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/db.php';
+require __DIR__ . '/../db.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -72,15 +72,14 @@ ob_end_flush(); // End buffering
     <title>Forgot Password</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color:rgb(246, 244, 244);
-        }
-    </style>
 
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="../css/loginandsignup.css">
+
+    <!-- gogel fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
 <body>
+
     <div class="container d-flex justify-content-center align-items-center">
         <div class="card p-4 shadow">
             <img src="logo.png" alt="Logo">

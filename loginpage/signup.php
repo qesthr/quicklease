@@ -16,11 +16,6 @@ session_start();
 
 </head>
 
-<style>
-    
-
-</style>
-
 <body>
 
     <div class="container">
@@ -38,7 +33,6 @@ session_start();
                     <?= $_SESSION['success']; unset($_SESSION['success']); ?>
                 </div>
 
-
             <?php endif; ?>
                 
             <form action="signup_validate.php" class="forms" method="post">
@@ -50,7 +44,7 @@ session_start();
                 <input class="signup-input" type="password" name="password" placeholder="Password" required>
                 <input class="signup-input" type="password" name="confirm_password" placeholder="Confirm Password" required>
                 <button type="submit" style="cursor: pointer;">Signup</button>
-                <a style="color: black;" href="login.html" href="login.php" >Already have an account?</a>
+                <a style="color: black;" href="/quicklease/loginpage/login.php" href="login.php" >Already have an account?</a>
             </form>
 
         </div>

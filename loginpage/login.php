@@ -1,77 +1,66 @@
 <?php
-
 session_start();
 
 ?>
 
 <!DOCTYPE html>
 <html>
-
-
 <head>
-<title>Login</title>
-<link rel="stylesheet" href="styles/style.css">
-<meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="../css/loginandsignup.css">
+    <meta charset="UTF-8">
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
 
-
-<style>
-    .alert {
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 4px;
-    width: 90%;
-    text-align: center;
-}
-
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-}
-
-        </style>
+    <!-- gogel fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    
 </head>
 
 <body>
 
+
     <div class="container">
-        <div class="card" style="text-align: center; ">
+        <div class="card" style="text-align: center;">
             <img src="logo.png" alt="This is the Logo">
 
             <div class="card-body">
                 <?php if (isset($_SESSION['error'])): ?>
-                    <div class="alert alert-danger" role="alert">
+                    <div class="alert alert-danger">
                         <?= $_SESSION['error']; unset($_SESSION['error']); ?>
-                </div>
+                    </div>
                 <?php endif ?>
                 <?php if (isset($_SESSION['success'])): ?>
-                <div class="alert alert-success">
-                <?= $_SESSION['success']; unset($_SESSION['success']); ?>
-                </div>
-            <?php endif; ?>
+                    <div class="alert alert-success">
+                        <?= $_SESSION['success']; unset($_SESSION['success']); ?>
+                    </div>
+                <?php endif; ?>
 
-            <form action="login_validate.php" method="post">
-                <input class="login-input" type="text" name="username" placeholder="Username" required>
-                <input class="login-input" type="password" name="password" placeholder="Password" required>
-                <button type="submit" style="cursor: pointer;">Login</button>
-            </form>
+                <form action="/loginvalidate.php" method="post">
+                    <input class="login-input" type="text" name="username" placeholder="Username" required>
+                    <input class="login-input" type="password" name="password" placeholder="Password" required>
 
-            <p></p>
-            <a href="forgot_password.php" style="color: black;">Forgot password?</a>                  
-            
-            <div class="divider" style="align-items: center;"> </div>
-            <a style="margin-left: 10px;" href="signup.php">Signup</a>
+                    <!-- Google reCAPTCHA -->
+                    <div class="g-recaptcha" data-sitekey="6LekoywrAAAAAP9aPlhhZ3_KnXgdrcdAXPdV6IoC"></div>
+                    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+
+                    <br>
+
+                    <button type="submit">SUBMIT</button>
+                </form>
+
+                <p><a href="../forgotpassword.php" style="color: black;">Forgot Password?</a></p>
+
+                <!-- Divider -->
+                <hr style="margin: 20px 0;">
+
+                <!-- Google Sign-In Button -->
+                <a href="google_signin.php">
+                    <img src="https://developers.google.com/identity/images/btn_google_signin_dark_normal_web.png" alt="Sign in with Google" style="width: 200px; margin: 10px;">
+                </a>
+
+                <p>Do not have an account yet? <a href="/signup.php">Sign up</a></p>
+            </div>
         </div>
     </div>
-
- 
-
 </body>
-
 </html>
