@@ -114,22 +114,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <?php include 'includes/sidebar.php'; ?>
 
     <div class="main-content">
-        <header class="topbar">
-            <h1>Dashboard</h1>
-            <div class="user-info">
-                <div class="notification">
-                    <!-- Notification Icon -->
-                </div>
-                <div class="profile-pic">
-                    <!-- Optional: Profile Image -->
-                </div>
-                <div class="user-details">
-                    <p>Welcome, <strong>Queen</strong></p>
-                    <!-- Optional: Display User Name -->
-                </div>
-            </div>
-            </div>
-        </header>
+        <?php include 'includes/topbar.php'; ?>
 
         <section class="dashboard-cards">
             <article class="card card1" aria-label="Total Bookings Card">
