@@ -1,5 +1,5 @@
 <?php
-require_once '../db.php'; // Ensure correct path
+require_once '../db.php'; // Ensure this initializes $pdo
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $model = trim($_POST["model"]);
@@ -18,6 +18,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $target_dir = "../uploads/";
             $target_file = $target_dir . $image_name;
 
+            // Check if the uploads directory exists
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0777, true); // Create the directory if it doesn't exist
+            }
+
             // Check file type (only allow images)
             $allowed_types = ["image/jpeg", "image/png", "image/gif"];
             if (!in_array($_FILES["car_image"]["type"], $allowed_types)) {
@@ -32,15 +37,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         if (empty($error)) {
-            // Insert into database
-            $stmt = $conn->prepare("INSERT INTO cars (model, plate_no, price, status, image) VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("ssdss", $model, $plate_no, $price, $status, $image_name);
-
-            if ($stmt->execute()) {
+            // Insert into database using PDO
+            $stmt = $pdo->prepare("INSERT INTO car (model, plate_no, price, status, image) VALUES (?, ?, ?, ?, ?)");
+            if ($stmt->execute([$model, $plate_no, $price, $status, $image_name])) {
                 header("Location: cars.php");
                 exit();
             } else {
-                $error = "Error adding car: " . $stmt->error;
+                $error = "Error adding car.";
             }
         }
     }
