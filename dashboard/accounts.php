@@ -6,7 +6,6 @@
     <meta charset="UTF-8">
     <title>Admin | Accounts</title>
     <link rel="stylesheet" href="../css/dashboard.css">
-
 </head>
 <body>  
 
@@ -16,31 +15,37 @@
         <?php include 'includes/topbar.php'; ?>
 
         <div class="account-content">
-            <h2 class="section-title">Customer</h2>
             <div class="table-container">
                 <table>
                     <thead>
+                        <!-- Add a row for the "Customer" heading -->
+                        <tr>
+                            <th colspan="5" style="text-align: center; font-size: 1.5em; padding: 10px;">Customer</th>
+                        </tr>
+                        <!-- Table headers -->
                         <tr>
                             <th>User ID</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Status</th>
+                            <th>Phone</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                     <?php
-                    $sql = "SELECT * FROM users ORDER BY id ASC";
-                    $result = $conn->query($sql);
+                    try {
+                        // Fetch all customers using PDO
+                        $stmt = $pdo->query("SELECT * FROM customer ORDER BY customer_id ASC");
+                        $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    if ($result->num_rows > 0):
-                        while ($row = $result->fetch_assoc()):
+                        if (count($customers) > 0):
+                            foreach ($customers as $row):
                     ?>
                         <tr>
-                            <td><?= htmlspecialchars($row['id']) ?></td>
-                            <td><?= htmlspecialchars($row['name']) ?></td>
-                            <td><?= htmlspecialchars($row['email']) ?></td>
-                            <td><?= htmlspecialchars($row['status']) ?></td>
+                            <td><?= htmlspecialchars($row['customer_id'] ?? 'N/A') ?></td>
+                            <td><?= htmlspecialchars($row['customer_name'] ?? 'N/A') ?></td>
+                            <td><?= htmlspecialchars($row['customer_email'] ?? 'N/A') ?></td>
+                            <td><?= htmlspecialchars($row['customer_phone'] ?? 'N/A') ?></td>
                             <td>
                                 <button class="btn edit">Edit</button>
                                 <button class="btn view">View Verification</button>
@@ -48,13 +53,18 @@
                             </td>
                         </tr>
                     <?php
-                        endwhile;
-                    else:
+                            endforeach;
+                        else:
                     ?>
                         <tr>
-                            <td colspan="5">No user accounts found.</td>
+                            <td colspan="5">No customer accounts found.</td>
                         </tr>
-                    <?php endif; ?>
+                    <?php
+                        endif;
+                    } catch (PDOException $e) {
+                        echo "<tr><td colspan='5'>Error fetching customer accounts: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
+                    }
+                    ?>
                     </tbody>
                 </table>
             </div>

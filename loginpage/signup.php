@@ -36,7 +36,6 @@ session_start();
             <?php endif; ?>
                 
             <form action="signup_validate.php" class="forms" method="post">
-                <input class="signup-input" type="number" name="student_id" placeholder="Student ID No." required>
                 <input class="signup-input" type="text" name="firstname" placeholder="First Name" required>
                 <input class="signup-input" type="text" name="lastname" placeholder="Last Name" required>
                 <input class="signup-input" type="text" name="username" placeholder="Username" required>
