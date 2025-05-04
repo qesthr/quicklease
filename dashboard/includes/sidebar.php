@@ -1,8 +1,22 @@
 <div class="sidebar">
-    <div class="logo"><img src="/quicklease/images/logo3.png" alt="QuickLease"></div>
-    <a href="reports.php"><button class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : '' ?>">Reports</button></a>
-    <a href="accounts.php"><button class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'accounts.php' ? 'active' : '' ?>">Accounts</button></a>
-    <a href="cars.php"><button class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'cars.php' ? 'active' : '' ?>">Cars</button></a>
-    <a href="bookings.php"><button class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'bookings.php' ? 'active' : '' ?>">Bookings</button></a>
-    <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
+    <ul class="sidebar-details">
+        <div class="logo">
+            <img src="/quicklease/images/logo3.png" alt="QuickLease">
+        </div>
+        <li>
+            <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'reports.php' ? 'active' : '' ?>" href="reports.php">Reports</a>
+        </li>
+        <li>
+            <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'accounts.php' ? 'active' : '' ?>" href="accounts.php">Accounts</a>
+        </li>
+        <li>
+            <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'cars.php' ? 'active' : '' ?>" href="cars.php">Cars</a>
+        </li>
+        <li>
+            <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'bookings.php' ? 'active' : '' ?>" href="bookings.php">Bookings</a>
+        </li>
+        <li>
+            <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
+        </li>
+    </ul>
 </div>
