@@ -55,7 +55,7 @@
         // Login successful — store user info in session
         $_SESSION['user_id']  = $user['id'];
         $_SESSION['username'] = $user['username'];
-        header('Location: ../index.php');
+        header('Location: ../loginpage/reports.php');
         exit;
     }
 

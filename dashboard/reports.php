@@ -1,4 +1,11 @@
 <?php
+
+// Check if user is logged in
+if (!isset($_SESSION['username'])) {
+    header('Location: login.php');
+    exit();
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../vendor/autoload.php'; // adjust if needed
     require __DIR__ . '/../db.php';
@@ -106,7 +113,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Admin | Dashboard</title>
-    <link rel="stylesheet" href="../css/dashboard.css"> 
+    <link rel="stylesheet" href="../css/dashboard.css">
 
 </head>
 <body>
@@ -145,5 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     </div>
 
+
+    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 </body>
 </html>
