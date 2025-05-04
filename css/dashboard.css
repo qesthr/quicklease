@@ -128,7 +128,7 @@ header h1 {
 .profile-pic {
     width: 40px;
     height: 40px;
-    background: url('/quicklease/images/user.png') no-repeat center/cover;
+    background: no-repeat center/cover;
     border-radius: 50%;
 }
 
@@ -357,5 +357,127 @@ header h1 {
 
     .topbar h1 {
         font-size: 28px;
+    }
+}
+
+/* ===== Cars Page Specific Styles ===== */
+.cars-page .main-content {
+    padding: 30px;
+    background: #F0F0E8;
+}
+
+.cars-page .main-content table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 20px;
+}
+
+.cars-page .main-content thead tr {
+    background-color: #1818CA; /* Matching your brand blue */
+    color: white;
+}
+
+.cars-page .main-content th {
+    padding: 15px 20px;
+    text-align: left;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    letter-spacing: 0.5px;
+}
+
+.cars-page .main-content td {
+    padding: 12px 20px;
+    border-bottom: 1px solid #f0f0f0;
+    vertical-align: middle;
+}
+
+.cars-page .main-content tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.cars-page .main-content tbody tr:hover {
+    background-color: #f8f9ff;
+}
+
+/* Status Badges */
+.cars-page .main-content td:nth-child(5) {
+    font-weight: 600;
+    text-transform: capitalize;
+}
+
+.cars-page .main-content td[data-status="available"] {
+    color: #28a745;
+}
+
+.cars-page .main-content td[data-status="booked"] {
+    color: #dc3545;
+}
+
+.cars-page .main-content td[data-status="maintenance"] {
+    color: #ffc107;
+}
+
+/* Action Buttons */
+.cars-page .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    border-radius: 25px; /* Matching your button style */
+    font-size: 0.85em;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    margin-right: 8px;
+}
+
+.cars-page .btn-edit {
+    background-color: #FBCC63; /* Matching your brand yellow */
+    color: #2a2a2a;
+    border: 1px solid #F9B315;
+}
+
+.cars-page .btn-edit:hover {
+    background-color: #F9B315;
+}
+
+.cars-page .btn-delete {
+    background-color: #fff;
+    color: #dc3545;
+    border: 1px solid #dc3545;
+}
+
+.cars-page .btn-delete:hover {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* No Cars Message */
+.cars-page .main-content td[colspan] {
+    text-align: center;
+    padding: 30px;
+    color: #666;
+    font-style: italic;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .cars-page .main-content {
+        padding: 15px;
+    }
+    
+    .cars-page .main-content th,
+    .cars-page .main-content td {
+        padding: 10px 12px;
+    }
+    
+    .cars-page .btn {
+        display: block;
+        margin-bottom: 5px;
+        width: 100%;
+        text-align: center;
     }
 }
