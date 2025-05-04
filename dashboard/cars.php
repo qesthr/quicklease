@@ -11,13 +11,13 @@ if (!isset($conn) || $conn->connect_error) {
 // Handle car deletion
 if (isset($_GET['delete_id'])) {
     $id = $_GET['delete_id'];
-    mysqli_query($conn, "DELETE FROM cars WHERE id = $id");
+    mysqli_query($conn, "DELETE FROM car WHERE id = $id");
     header("Location: cars.php");
     exit();
 }
 
 // Fetch all cars
-$cars = mysqli_query($conn, "SELECT * FROM cars");
+$cars = mysqli_query($conn, "SELECT * FROM car");
 ?>
 
 <!DOCTYPE html>
