@@ -1,7 +1,7 @@
 <?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../vendor/autoload.php'; // adjust if needed
-    require_once __DIR__ . '/../loginpage/includes/db.php';
+    require __DIR__ . '/../db.php';
 
     $mpdf = new \Mpdf\Mpdf();
     header('Content-Type: application/pdf');
@@ -105,24 +105,45 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Generate Booking Report</title>
-    <link rel="stylesheet" href="../css/dashboard.css"> <!-- Optional styling -->
+    <title>Admin | Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css"> 
+
 </head>
 <body>
-<div class="sidebar">
-  <div class="logo"><img src="/quicklease/images/logo.png" alt=""></div>
-  <a href="reports.php"><button class="nav-btn">Reports</button></a>
-  <a href="accounts.php"><button class="nav-btn">Accounts</button></a>
-  <a href="cars.php"><button class="nav-btn">Cars</button></a>
-  <a href="bookings.php"><button class="nav-btn active">Bookings</button></a>
-  <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
-</div>
+    
+    <?php include 'includes/sidebar.php'; ?>
 
-    <div class="main">
-        <h1>Booking Reports</h1>
-        <form action="" method="POST">
-            <button type="submit" class="btn btn-primary">Print Report as PDF</button>
-        </form>
+    <div class="main-content">
+        <?php include 'includes/topbar.php'; ?>
+
+        <section class="dashboard-cards">
+            <article class="card card1" aria-label="Total Bookings Card">
+                <h3>Total Bookings</h3>
+                <p>120</p>
+            </article>
+            
+            <article class="card card2" aria-label="Total Cars Card">
+                <h3>Total Cars</h3>
+                <p>15</p>
+            </article>
+            
+            <article class="card card3" aria-label="Total Accounts Card">
+                <h3>Total Accounts</h3>
+                <p>35</p>
+            </article>
+
+            <article class="card card4" aria-label="Reports Summary Card">
+                <h3>Reports Summary</h3>
+                <p>35</p>
+            </article>
+
+            <article class="card card5" aria-label="Recent Bookings Card">
+                <h3>Recent Bookings</h3>
+                <p>35</p>
+            </article>
+        </section>
+
     </div>
+
 </body>
 </html>

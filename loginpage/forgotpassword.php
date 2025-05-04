@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/db.php';
+require __DIR__ . '/../db.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['email_sent'] = true;
             $_SESSION['success'] = "A verification code has been sent to your email.";
 
-            header('Location: enter_code.php');
+            header('Location: ../loginpage/entercode.php');
             exit();
         } catch (Exception $e) {
             $_SESSION['error'] = "Message could not be sent. Mailer Error: " . $mail->ErrorInfo;
@@ -72,43 +72,67 @@ ob_end_flush(); // End buffering
     <title>Forgot Password</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color:rgb(246, 244, 244);
-        }
-    </style>
 
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="../css/loginandsignup.css">
+
+    <!-- gogel fonts-->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 </head>
+
+<style>
+    .card img {
+        width: 100% !important;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+        height: 20%;
+        object-fit: contain;
+    }
+
+    form {
+        margin-top: 0 !important;
+    }
+</style>
+
+
 <body>
-    <div class="container d-flex justify-content-center align-items-center">
-        <div class="card p-4 shadow">
-            <img src="logo.png" alt="Logo">
+
+    <div class="container">
+        <div class="card forgot-password-card" >
+            <img src="../images/logo.png" alt="QuickLease Logo">
             
-            <h3 class="text-center mb-4">Forgot Password</h3>
+            <div class="card-body" style="margin: 10px;">
+                <h3 style="margin-top: -99px;">Forgot Password</h3>
+                
+                <!-- Your form and other content -->
+                <?php
+                    if (isset($_SESSION['success'])) {
+                        echo '<div class="alert alert-success text-center">' . $_SESSION['success'] . '</div>';
+                        unset($_SESSION['success']);
+                    }
+                    if (isset($_SESSION['error'])) {
+                        echo '<div class="alert alert-danger text-center">' . $_SESSION['error'] . '</div>';
+                        unset($_SESSION['error']);
+                    }
+                ?>
 
-            <?php
-            if (isset($_SESSION['success'])) {
-                echo '<div class="alert alert-success text-center">' . $_SESSION['success'] . '</div>';
-                unset($_SESSION['success']);
-            }
-            if (isset($_SESSION['error'])) {
-                echo '<div class="alert alert-danger text-center">' . $_SESSION['error'] . '</div>';
-                unset($_SESSION['error']);
-            }
-            ?>
-
-            <form action="forgot_password.php" method="POST">
-                <div class="form-floating mb-3">
-                    <input required type="email" name="email" class="form-control" placeholder="Email Address">
+                <form action="forgotpassword.php" method="POST" style="margin: 7px;">
+                    <div class="form-floating mb-3" style="margin-top: 20px;">
+                        <input required type="email" name="email" class="form-control" placeholder="Email Address">
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-block">Send Code</button>
+                </form>
+     
+                <div class="login-link" style="margin-top: 15px;">
+                    <p>Remember your password?</p> 
+                    <a href="login.php" style="margin-left: -5px;">Login</a>
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Send Code</button>
-            </form>
-
-            <div class="text-center mt-3">
-                <p>Remember your password? <a href="login.php">Login</a></p>
             </div>
+           
+
+            
         </div>
     </div>
+
 </body>
 </html>

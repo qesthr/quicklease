@@ -1,66 +1,106 @@
 body {
     margin: 0;
-    font-family: 'Segoe UI', sans-serif;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     background: #f1efe7;
 }
 
+/* === Sidebar Base === */
 .sidebar {
-    width: 220px;
-    background: #1818CA;
-    color: white;
+    width: 250px;
+    height: 100vh;
+    background-color: #1818CA; /* dark blue */
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px 0;
-    height: 100vh;
+    padding-top: 20px;
     position: fixed;
-    top: 0;
     left: 0;
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
-    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
+    top: 0;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
 }
 
-
-.sidebar .logo {
-    margin-bottom: 30px;
+.logo {
+    text-align: center; /* Center the logo */
+    margin-top: 61px;
+    margin-bottom: 20px;
+    
 }
 
-.sidebar .logo img {
-    width: 120px;
-    object-fit: contain;
+.sidebar-details {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 33px;
+    margin-right: 42px;
+    justify-content: center;
 }
 
-.nav-btn, .logout-btn {
-    background: #FBCC63;
-    border: none;
-    padding: 12px 18px;
-    margin: 8px 0;
-    width: 80%;
-    cursor: pointer;
+.sidebar-nav a.active {
+    background-color: #FBCC63; /* light yellow when active */
+    color: #F9B315; /* dark yellow text */
     border-radius: 25px;
-    font-size: 16px;
-    font-weight: bold;
-    transition: all 0.3s ease;
 }
 
-.nav-btn:hover, .logout-btn:hover {
-    background-color: #fcd56b;
+.sidebar-nav a.active:hover {
+    background-color: #F9B315; /* darker yellow on hover */
+}
+
+.sidebar ul {
+    list-style-type: none; /* Removes bullets */
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+}
+
+.nav-btn {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: white;
+    font-weight: bold;
+    width: 100%;
+    text-align: left;
+    border: none;
+    background: transparent;
+    margin: 5px;
+}
+
+.nav-btn:hover {
+    background-color: #F9B315;
+    border-radius: 10px;
 }
 
 .nav-btn.active {
-    background: white;
-    color: #1818CA;
+    background-color: #F9B315;
+    border-radius: 10px;
 }
 
+.logout-btn {
+    width: 149%;
+    padding: 10px;
+    background-color: #FBCC63;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    margin-top: 342px;
+}
+
+.logout-btn:hover {
+    background-color: #F9B315;
+}
+
+/* === Main Content Area === */
 .main {
     flex-grow: 1;
     padding: 30px;
     background: #F0F0E8;
+    margin-left: 250px; /* space for sidebar */
 }
 
+/* === Topbar/Header === */
 header {
     display: flex;
     justify-content: space-between;
@@ -92,6 +132,7 @@ header h1 {
     border-radius: 50%;
 }
 
+/* === Dashboard Cards === */
 .stats-cards {
     display: flex;
     gap: 20px;
@@ -117,6 +158,7 @@ header h1 {
     font-weight: bold;
 }
 
+/* === Recent Bookings Table === */
 .recent-bookings h2 {
     font-size: 24px;
     color: #333;
@@ -144,13 +186,7 @@ header h1 {
     text-align: center;
 }
 
-.charts {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 30px;
-}
-
+/* === Print Button === */
 .print-btn {
     background: #FBCC63;
     border: none;
@@ -166,6 +202,15 @@ header h1 {
     background: #fcd56b;
 }
 
+/* === Charts Section === */
+.charts {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 30px;
+}
+
+/* === Utilization Cards === */
 .utilization {
     display: flex;
     gap: 20px;
@@ -181,4 +226,136 @@ header h1 {
     text-align: center;
     font-size: 18px;
     font-weight: 500;
+}
+
+
+/* === Main Content Area === */
+.main-content {
+    margin-left: 250px; /* space for sidebar */
+    padding: 30px;
+    background: #F0F0E8;
+}
+
+/* === Topbar/Header === */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #1818CA;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    width: 77%;
+}
+
+.topbar h1 {
+    font-size: 34px;
+    margin: 0;
+    color: #F0F0E8;
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.notification {
+    width: 15px;
+    height: 15px;
+    background: red;
+    border-radius: 50%;
+}
+
+.profile-pic {
+    width: 40px;
+    height: 40px;
+    background: url('/quicklease/images/user.png') no-repeat center/cover;
+    border-radius: 50%;
+}
+
+/* === Dashboard Cards Section === */
+.dashboard-cards {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);  /* Reduced to 5 columns */
+    grid-template-rows: repeat(6, 1fr);
+    gap: 8px;
+    height: 80vh;
+    margin-top: 20px;
+    width: 220vh;
+}
+
+.card1, .card2, .card3 {
+    grid-column: 1;
+    grid-row: span 2; /* Each takes 2 rows */
+    min-height: 180px; /* Minimum height */
+}
+
+.card1 { grid-row: 1 / span 2; }  /* Takes 2 rows */
+.card2 { grid-row: 3 / span 2; }  /* Takes 2 rows */
+.card3 { grid-row: 5 / span 2; }  /* Takes 2 rows */
+
+.card4 {
+    grid-column: 2 / span 3;
+    grid-row: 1 / span 3;         /* Takes 3 rows */
+}
+
+.card5 {
+    grid-column: 2 / span 3;
+    grid-row: 4 / span 3;         /* Takes 3 rows */
+}
+
+/* Keep the rest of your card styles the same */
+.card {
+    background: #FFFFFF;
+    padding: 20px;
+    border-radius: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: 500;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease-in-out;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card h3 {
+    font-size: 22px;
+    color: #1818CA;
+}
+
+.card p {
+    font-size: 28px;
+    color: #F9B315;
+    font-weight: bold;
+    margin-top: 10px;
+}
+
+/* === Dashboard Charts Section === */
+.dashboard-charts {
+    margin-top: 40px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.dashboard-charts h2 {
+    font-size: 24px;
+    color: #1818CA;
+    margin-bottom: 15px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .dashboard-cards {
+        grid-template-columns: 1fr; /* Stack cards on mobile */
+    }
+
+    .topbar h1 {
+        font-size: 28px;
+    }
 }
