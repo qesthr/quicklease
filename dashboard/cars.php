@@ -60,10 +60,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         $plate_no = trim($_POST["plate_no"]);
         $price = trim($_POST["price"]);
         $status = $_POST["status"];
-
+        $seats = $_POST["seats"];
+        $transmission = trim($_POST["transmission"]);
+        $mileage = $_POST["mileage"];
+        $features = trim($_POST["features"]);
+    
         // Update the car in the database
-        $stmt = $pdo->prepare("UPDATE car SET model = ?, plate_no = ?, price = ?, status = ? WHERE id = ?");
-        if ($stmt->execute([$model, $plate_no, $price, $status, $car_id])) {
+        $stmt = $pdo->prepare("UPDATE car SET model = ?, plate_no = ?, price = ?, status = ?, seats = ?, transmission = ?, mileage = ?, features = ? WHERE id = ?");
+        if ($stmt->execute([$model, $plate_no, $price, $status, $seats, $transmission, $mileage, $features, $car_id])) {
             header("Location: cars.php");
             exit();
         } else {
@@ -158,8 +162,20 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= htmlspecialchars($car['price']) ?>/Day</td>
                 <td><?= htmlspecialchars($car['status']) ?></td>
                 <td>
-                    <button class="btn btn-edit" onclick="openEditModal(<?= htmlspecialchars($car['id']) ?>, '<?= htmlspecialchars($car['model']) ?>', '<?= htmlspecialchars($car['plate_no']) ?>', <?= htmlspecialchars($car['price']) ?>, '<?= htmlspecialchars($car['status']) ?>')">Edit</button>
-                    <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
+                <button class="btn btn-edit" 
+    onclick="openEditModal(
+        <?= htmlspecialchars($car['id']) ?>, 
+        '<?= htmlspecialchars($car['model']) ?>', 
+        '<?= htmlspecialchars($car['plate_no']) ?>', 
+        <?= htmlspecialchars($car['price']) ?>, 
+        '<?= htmlspecialchars($car['status']) ?>', 
+        <?= htmlspecialchars($car['seats']) ?>, 
+        '<?= htmlspecialchars($car['transmission']) ?>', 
+        <?= htmlspecialchars($car['mileage']) ?>, 
+        '<?= htmlspecialchars($car['features']) ?>'
+    )">
+    Edit
+</button>                    <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
                 </td>
             </tr>
         <?php endforeach; ?>
@@ -224,6 +240,19 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <option value="Maintenance">Maintenance</option>
             </select>
 
+            <!-- New Fields -->
+            <label>Number of Seats:</label>
+            <input type="number" name="seats" id="editCarSeats" required>
+
+            <label>Transmission:</label>
+            <input type="text" name="transmission" id="editCarTransmission" required>
+
+            <label>Mileage (miles):</label>
+            <input type="number" name="mileage" id="editCarMileage" required>
+
+            <label>Features:</label>
+            <textarea name="features" id="editCarFeatures" rows="4" required></textarea>
+
             <button type="submit" class="btn btn-add">Update Car</button>
         </form>
     </div>
@@ -257,15 +286,18 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
     const closeEditModalBtn = document.getElementById("closeEditModal");
 
     // Open Edit Modal
-    function openEditModal(id, model, plateNo, price, status) {
-        document.getElementById("editCarId").value = id;
-        document.getElementById("editCarModel").value = model;
-        document.getElementById("editCarPlateNo").value = plateNo;
-        document.getElementById("editCarPrice").value = price;
-        document.getElementById("editCarStatus").value = status;
-        editModal.style.display = "block";
-    }
-
+    function openEditModal(id, model, plateNo, price, status, seats, transmission, mileage, features) {
+    document.getElementById("editCarId").value = id;
+    document.getElementById("editCarModel").value = model;
+    document.getElementById("editCarPlateNo").value = plateNo;
+    document.getElementById("editCarPrice").value = price;
+    document.getElementById("editCarStatus").value = status;
+    document.getElementById("editCarSeats").value = seats;
+    document.getElementById("editCarTransmission").value = transmission;
+    document.getElementById("editCarMileage").value = mileage;
+    document.getElementById("editCarFeatures").value = features;
+    editModal.style.display = "block";
+}
     // Close Edit Modal
     closeEditModalBtn.onclick = function() {
         editModal.style.display = "none";
