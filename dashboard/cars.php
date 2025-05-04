@@ -1,17 +1,22 @@
 <?php
 // Correct path to your db.php file
-include 'loginpage/includes/db.php';
+require_once '../db.php'; // Ensure this initializes $pdo
 
 // Handle car deletion
 if (isset($_GET['delete_id'])) {
-    $id = $_GET['delete_id'];
-    mysqli_query($conn, "DELETE FROM cars WHERE id = $id");
-    header("Location: cars.php");
-    exit();
+    $id = intval($_GET['delete_id']); // Sanitize input
+    $stmt = $pdo->prepare("DELETE FROM car WHERE id = ?");
+    if ($stmt->execute([$id])) {
+        header("Location: cars.php");
+        exit();
+    } else {
+        echo "Error deleting car.";
+    }
 }
 
 // Fetch all cars
-$cars = mysqli_query($conn, "SELECT * FROM cars");
+$stmt = $pdo->query("SELECT * FROM car");
+$cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -44,7 +49,7 @@ $cars = mysqli_query($conn, "SELECT * FROM cars");
     <a class="active" href="cars.php">Cars</a>
     <a href="bookings.php">Bookings</a>
     <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
-    </div>
+</div>
 
 <div class="top-bar">
     <h1>Cars Catalogue</h1>
@@ -68,19 +73,19 @@ $cars = mysqli_query($conn, "SELECT * FROM cars");
             </tr>
         </thead>
         <tbody>
-            <?php while ($car = mysqli_fetch_assoc($cars)) : ?>
-                <tr>
-                    <td><?= htmlspecialchars($car['id']) ?></td>
-                    <td><?= htmlspecialchars($car['model']) ?></td>
-                    <td><?= htmlspecialchars($car['plate_no']) ?></td>
-                    <td><?= htmlspecialchars($car['price']) ?>/Day</td>
-                    <td><?= htmlspecialchars($car['status']) ?></td>
-                    <td>
-                        <a href="edit_car.php?id=<?= $car['id'] ?>" class="btn btn-edit">Edit</a>
-                        <a href="cars.php?delete_id=<?= $car['id'] ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
-                    </td>
-                </tr>
-            <?php endwhile; ?>
+        <?php foreach ($cars as $car): ?>
+            <tr>
+                <td><?= htmlspecialchars($car['id']) ?></td>
+                <td><?= htmlspecialchars($car['model']) ?></td>
+                <td><?= htmlspecialchars($car['plate_no']) ?></td>
+                <td><?= htmlspecialchars($car['price']) ?>/Day</td>
+                <td><?= htmlspecialchars($car['status']) ?></td>
+                <td>
+                    <a href="edit_car.php?id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-edit">Edit</a>
+                    <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
+                </td>
+            </tr>
+        <?php endforeach; ?>
         </tbody>
     </table>
 </div>

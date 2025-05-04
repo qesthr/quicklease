@@ -1,9 +1,9 @@
 <?php
-require_once '../loginpage/includes/db.php';
+require_once '../db.php';
 
 // Handle Add Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
-    $stmt = $pdo->prepare("INSERT INTO bookings (customer_name, car_model, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO booking_details (customer_name, car_model, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
     $stmt->execute([
         $_POST['customer_name'],
         $_POST['car_model'],
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // Handle Edit Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit') {
-    $stmt = $pdo->prepare("UPDATE bookings SET customer_name=?, car_model=?, booking_date=?, return_date=?, status=? WHERE id=?");
+    $stmt = $pdo->prepare("UPDATE booking_details SET customer_name=?, car_model=?, booking_date=?, return_date=?, status=? WHERE id=?");
     $stmt->execute([
         $_POST['customer_name'],
         $_POST['car_model'],
@@ -32,14 +32,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // Handle Cancel Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'cancel') {
-    $stmt = $pdo->prepare("UPDATE bookings SET status='Cancelled' WHERE id=?");
+    $stmt = $pdo->prepare("UPDATE booking_details SET status='Cancelled' WHERE id=?");
     $stmt->execute([$_POST['id']]);
     header("Location: bookings.php");
     exit;
 }
 
 // Fetch bookings
-$stmt = $pdo->query("SELECT * FROM bookings ORDER BY id DESC");
+$stmt = $pdo->query("SELECT * FROM booking_details ORDER BY id DESC");
 $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
