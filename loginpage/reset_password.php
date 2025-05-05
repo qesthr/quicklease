@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/db.php';
+require_once '../db.php';
 
 // Make sure the reset request is valid
 if (!isset($_SESSION['reset_email']) || !isset($_SESSION['reset_code_verified'])) {

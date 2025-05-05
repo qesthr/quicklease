@@ -2,7 +2,7 @@
 
 session_start();
 
-require 'includes/db.php';
+require_once '../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $enterdCode = $_POST['code'];

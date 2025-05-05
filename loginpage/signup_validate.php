@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/db.php'; 
+require_once '../quicklease_db.php'; 
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $firstname = $_POST['firstname'];
