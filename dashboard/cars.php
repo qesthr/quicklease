@@ -63,6 +63,9 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>Cars Catalogue</title>
+
+    <link rel="stylesheet" href="../css/dashboard.css">
+
     <style>
         body { margin: 0; font-family: 'Arial'; background-color: #f1f0e8; }
         .sidebar { width: 250px; background: #1e1ebf; color: white; height: 100vh; position: fixed; }
@@ -120,106 +123,96 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 </head>
 <body>
 
-<div class="sidebar">
-    <h2 style="text-align:center; padding: 20px;">Quick<span style="color: orange;">Lease</span></h2>
-    <a href="reports.php">Reports</a>
-    <a href="accounts.php">Accounts</a>
-    <a class="active" href="cars.php">Cars</a>
-    <a href="bookings.php">Bookings</a>
-    <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
-</div>
+    <?php include 'includes/sidebar.php'; ?>
 
-<div class="top-bar">
-    <h1>Cars Catalogue</h1>
-    <button class="btn btn-add" id="openModal">+ Add Car</button>
-</div>
+    <?php include 'includes/topbar.php'; ?>
 
-<div class="content">
-    <h2>Car List</h2>
-    <table>
-        <thead>
-            <tr>
-                <th>Car ID</th>
-                <th>Car Model</th>
-                <th>Plate No.</th>
-                <th>Price</th>
-                <th>Status</th>
-                <th>Action</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php foreach ($cars as $car): ?>
-            <tr>
-                <td><?= htmlspecialchars($car['id']) ?></td>
-                <td><?= htmlspecialchars($car['model']) ?></td>
-                <td><?= htmlspecialchars($car['plate_no']) ?></td>
-                <td><?= htmlspecialchars($car['price']) ?>/Day</td>
-                <td><?= htmlspecialchars($car['status']) ?></td>
-                <td>
-                    <a href="edit_car.php?id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-edit">Edit</a>
-                    <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
-
-<!-- Modal for Add Car -->
-<div id="addCarModal" class="modal">
-    <div class="modal-content">
-        <span class="close" id="closeModal">&times;</span>
-        <h2>Add a New Car</h2>
-        <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
-        <form method="post" enctype="multipart/form-data">
-            <input type="hidden" name="action" value="add_car">
-            <label>Car Model:</label>
-            <input type="text" name="model" required>
-            
-            <label>Plate No:</label>
-            <input type="text" name="plate_no" required>
-            
-            <label>Price Per Day:</label>
-            <input type="number" name="price" step="0.01" required>
-            
-            <label>Status:</label>
-            <select name="status">
-                <option value="Available">Available</option>
-                <option value="Rented">Rented</option>
-                <option value="Maintenance">Maintenance</option>
-            </select>
-            
-            <label>Upload Car Image:</label>
-            <input type="file" name="car_image" accept="image/*" required>
-
-            <button type="submit" class="btn btn-add">Add Car</button>
-        </form>
+    <div class="content">
+        <h2>Car List</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Car ID</th>
+                    <th>Car Model</th>
+                    <th>Plate No.</th>
+                    <th>Price</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($cars as $car): ?>
+                <tr>
+                    <td><?= htmlspecialchars($car['id']) ?></td>
+                    <td><?= htmlspecialchars($car['model']) ?></td>
+                    <td><?= htmlspecialchars($car['plate_no']) ?></td>
+                    <td><?= htmlspecialchars($car['price']) ?>/Day</td>
+                    <td><?= htmlspecialchars($car['status']) ?></td>
+                    <td>
+                        <a href="edit_car.php?id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-edit">Edit</a>
+                        <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
     </div>
-</div>
 
-<script>
-    // Get modal elements
-    const modal = document.getElementById("addCarModal");
-    const openModalBtn = document.getElementById("openModal");
-    const closeModalBtn = document.getElementById("closeModal");
+    <!-- Modal for Add Car -->
+    <div id="addCarModal" class="modal">
+        <div class="modal-content">
+            <span class="close" id="closeModal">&times;</span>
+            <h2>Add a New Car</h2>
+            <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
+            <form method="post" enctype="multipart/form-data">
+                <input type="hidden" name="action" value="add_car">
+                <label>Car Model:</label>
+                <input type="text" name="model" required>
+                
+                <label>Plate No:</label>
+                <input type="text" name="plate_no" required>
+                
+                <label>Price Per Day:</label>
+                <input type="number" name="price" step="0.01" required>
+                
+                <label>Status:</label>
+                <select name="status">
+                    <option value="Available">Available</option>
+                    <option value="Rented">Rented</option>
+                    <option value="Maintenance">Maintenance</option>
+                </select>
+                
+                <label>Upload Car Image:</label>
+                <input type="file" name="car_image" accept="image/*" required>
 
-    // Open modal
-    openModalBtn.onclick = function() {
-        modal.style.display = "block";
-    };
+                <button type="submit" class="btn btn-add">Add Car</button>
+            </form>
+        </div>
+    </div>
 
-    // Close modal
-    closeModalBtn.onclick = function() {
-        modal.style.display = "none";
-    };
+    <script>
+        // Get modal elements
+        const modal = document.getElementById("addCarModal");
+        const openModalBtn = document.getElementById("openModal");
+        const closeModalBtn = document.getElementById("closeModal");
 
-    // Close modal when clicking outside of it
-    window.onclick = function(event) {
-        if (event.target === modal) {
+        // Open modal
+        openModalBtn.onclick = function() {
+            modal.style.display = "block";
+        };
+
+        // Close modal
+        closeModalBtn.onclick = function() {
             modal.style.display = "none";
-        }
-    };
-</script>
+        };
+
+        // Close modal when clicking outside of it
+        window.onclick = function(event) {
+            if (event.target === modal) {
+                modal.style.display = "none";
+            }
+        };
+    </script>
 
 </body>
 </html>
