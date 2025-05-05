@@ -2,7 +2,7 @@
 require_once '../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $stmt = $pdo->prepare("INSERT INTO booking_details (customer_name, location, car_model, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO bookings (customer_name, location, car_model, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?, ?)");
     $stmt->execute([
         $_POST['customer_name'] ?? 'Anonymous',
         $_POST['location'],

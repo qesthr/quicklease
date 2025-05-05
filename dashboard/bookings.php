@@ -72,7 +72,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 
 // Fetch bookings
-$stmt = $pdo->query("SELECT b.id, b.customer_name, c.model AS car_model, b.booking_date, b.return_date, b.status FROM bookings bINNER JOIN car c ON b.car_id = c.idORDER BY b.booking_date DESC");
+$stmt = $pdo->query("SELECT 
+        b.id, 
+        cu.customer_name, 
+        c.model AS car_model, 
+        b.booking_date, 
+        b.return_date, 
+        b.status 
+    FROM bookings b
+    INNER JOIN customer cu ON b.id = cu.id
+    INNER JOIN car c ON b.car_id = c.id
+    ORDER BY b.booking_date DESC");
 $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
@@ -98,6 +108,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Booking ID</th>
             <th>Customer Name</th>
             <th>Car Model</th>
+            <th>Location</th>
             <th>Booking Date</th>
             <th>Return Date</th>
             <th>Status</th>
@@ -110,6 +121,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td><?= htmlspecialchars($booking['id']) ?></td>
               <td><?= htmlspecialchars($booking['customer_name']) ?></td>
               <td><?= htmlspecialchars($booking['car_model']) ?></td>
+              <td><?= htmlspecialchars($booking['location']) ?></td>
               <td><?= htmlspecialchars($booking['booking_date']) ?></td>
               <td><?= htmlspecialchars($booking['return_date']) ?></td>
               <td><?= htmlspecialchars($booking['status']) ?></td>
