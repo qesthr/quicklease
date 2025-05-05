@@ -114,8 +114,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Print Products</title>
 
-    <link rel="icon" type="img/png" href="http://localhost/Larida_2/Image-album/FlexStarter.png">
-    <link rel="stylesheet" href="http://localhost/Larida_2/bootstrap-5.3.3-dist/css/bootstrap.min.css">
+    <link rel="icon" type="img/png" href="http://localhost/ipt/images/joeni.jpg">
+    <link rel="stylesheet" href="http://localhost/ipt/bootstrap-5.3.3-dist/css/bootstrap.min.css">
 
 </head>
 <body>
