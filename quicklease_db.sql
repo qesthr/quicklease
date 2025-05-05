@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 04, 2025 at 01:25 PM
+-- Generation Time: May 05, 2025 at 06:24 AM
 -- Server version: 10.4.32-MariaDB
--- PHP Version: 8.0.30
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -50,10 +50,15 @@ INSERT INTO `admin` (`ID`, `f_name`, `l_name`, `email`, `username`, `PASSWORD`) 
 --
 
 CREATE TABLE `booking_details` (
-  `bd_ID` varchar(255) NOT NULL,
-  `car_ID` varchar(255) DEFAULT NULL,
-  `rd_ID` varchar(255) DEFAULT NULL,
-  `STATUS` enum('Approved','Declined') DEFAULT 'Approved'
+  `id` int(11) NOT NULL,
+  `customer_name` varchar(255) NOT NULL,
+  `location` varchar(255) NOT NULL,
+  `car_id` int(11) NOT NULL,
+  `car_model` varchar(255) NOT NULL,
+  `booking_date` date NOT NULL,
+  `return_date` date NOT NULL,
+  `preferences` text NOT NULL,
+  `status` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
@@ -63,10 +68,25 @@ CREATE TABLE `booking_details` (
 --
 
 CREATE TABLE `car` (
-  `plate_number` varchar(255) NOT NULL,
-  `car_model` varchar(255) DEFAULT NULL,
-  `car_price` int(11) DEFAULT NULL
+  `id` int(11) NOT NULL,
+  `model` varchar(255) NOT NULL,
+  `plate_no` varchar(50) NOT NULL,
+  `price` decimal(10,2) NOT NULL,
+  `status` varchar(50) NOT NULL,
+  `image` varchar(255) NOT NULL,
+  `seats` int(11) NOT NULL,
+  `transmission` varchar(50) NOT NULL,
+  `mileage` int(11) NOT NULL,
+  `features` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `car`
+--
+
+INSERT INTO `car` (`id`, `model`, `plate_no`, `price`, `status`, `image`, `seats`, `transmission`, `mileage`, `features`) VALUES
+(6, 'wigo', '342-weq', 1000.00, 'Rented', '6817a7168d2d3_wigo.jpg', 5, 'automatic', 10000, 'queen'),
+(7, 'toyota', '123-qwe', 1000.00, 'Available', '6817bbd27aafb_fortuner.jpg', 0, '', 0, '');
 
 -- --------------------------------------------------------
 
@@ -75,11 +95,20 @@ CREATE TABLE `car` (
 --
 
 CREATE TABLE `customer` (
-  `customer_ID` varchar(20) NOT NULL,
+  `customer_id` varchar(20) NOT NULL,
   `customer_name` varchar(100) DEFAULT NULL,
   `customer_email` varchar(100) DEFAULT NULL,
-  `customer_phone` int(11) DEFAULT NULL
+  `customer_phone` varchar(20) DEFAULT NULL,
+  `status` enum('Pending Approval','Approved','Rejected','') NOT NULL,
+  `submitted_id` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `customer`
+--
+
+INSERT INTO `customer` (`customer_id`, `customer_name`, `customer_email`, `customer_phone`, `status`, `submitted_id`) VALUES
+('1', 'joenil', 'esaxample@gmail.com', '09363034124', 'Approved', '6817851853455_honndaaccord.jpg');
 
 -- --------------------------------------------------------
 
@@ -138,19 +167,21 @@ INSERT INTO `users` (`id`, `email`, `password`, `reset_code`, `created_at`) VALU
 -- Indexes for table `booking_details`
 --
 ALTER TABLE `booking_details`
-  ADD PRIMARY KEY (`bd_ID`);
+  ADD PRIMARY KEY (`customer_name`),
+  ADD UNIQUE KEY `id` (`id`);
 
 --
 -- Indexes for table `car`
 --
 ALTER TABLE `car`
-  ADD PRIMARY KEY (`plate_number`);
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `plate_no` (`plate_no`);
 
 --
 -- Indexes for table `customer`
 --
 ALTER TABLE `customer`
-  ADD PRIMARY KEY (`customer_ID`);
+  ADD PRIMARY KEY (`customer_id`);
 
 --
 -- Indexes for table `driver`
@@ -175,6 +206,18 @@ ALTER TABLE `users`
 --
 -- AUTO_INCREMENT for dumped tables
 --
+
+--
+-- AUTO_INCREMENT for table `booking_details`
+--
+ALTER TABLE `booking_details`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `car`
+--
+ALTER TABLE `car`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `users`
