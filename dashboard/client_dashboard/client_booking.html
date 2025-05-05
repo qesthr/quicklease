@@ -217,13 +217,47 @@
   </div>
 
   <script>
-    function confirmBooking(carName) {
-      alert(`Booking confirmed for ${carName}`);
+    function confirmBooking(carModel) {
+      const location = document.querySelector('input[placeholder="Location"]').value;
+      const dateInputs = document.querySelectorAll('.date-range input');
+      const bookingDate = dateInputs[0].value;
+      const returnDate = dateInputs[1].value;
+  
+      // You could replace this with actual user session name
+      const customerName = "Client User"; 
+  
+      if (!location || !bookingDate || !returnDate) {
+        alert("Please complete all booking fields.");
+        return;
+      }
+  
+      const data = new FormData();
+      data.append('customer_name', customerName);
+      data.append('location', location);
+      data.append('car_model', carModel);
+      data.append('booking_date', bookingDate);
+      data.append('return_date', returnDate);
+  
+      fetch('submit_booking.php', {
+        method: 'POST',
+        body: data
+      })
+      .then(res => res.text())
+      .then(response => {
+        if (response.trim() === 'success') {
+          alert("Booking submitted successfully!");
+          location.reload();
+        } else {
+          alert("Booking failed.");
+        }
+      })
+      .catch(err => alert("Error: " + err));
     }
-
+  
     function logout() {
-      window.location.href = 'logout.php'; // Or wherever your logout script redirects to
+      window.location.href = 'logout.php';
     }
   </script>
+  
 </body>
 </html>
