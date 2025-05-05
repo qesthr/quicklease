@@ -3,54 +3,54 @@ require_once '../db.php';
 
 // Handle Add Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
-  // Validate and sanitize input
-  $customer_name = isset($_POST['customer_name']) ? trim($_POST['customer_name']) : null;
-  $car_id = isset($_POST['car_id']) ? intval($_POST['car_id']) : null;
-  $booking_date = isset($_POST['booking_date']) ? trim($_POST['booking_date']) : null;
-  $return_date = isset($_POST['return_date']) ? trim($_POST['return_date']) : null;
-  $status = isset($_POST['status']) ? trim($_POST['status']) : null;
+    // Validate and sanitize input
+    $customer_name = isset($_POST['customer_name']) ? trim($_POST['customer_name']) : null;
+    $car_id = isset($_POST['car_id']) ? intval($_POST['car_id']) : null;
+    $booking_date = isset($_POST['booking_date']) ? trim($_POST['booking_date']) : null;
+    $return_date = isset($_POST['return_date']) ? trim($_POST['return_date']) : null;
+    $status = isset($_POST['status']) ? trim($_POST['status']) : null;
 
-  // Check for missing fields
-  if (empty($customer_name) || empty($car_id) || empty($booking_date) || empty($return_date) || empty($status)) {
-      $_SESSION['error'] = "All fields are required.";
-      header("Location: bookings.php");
-      exit;
-  }
+    // Check for missing fields
+    if (empty($customer_name) || empty($car_id) || empty($booking_date) || empty($return_date) || empty($status)) {
+        $_SESSION['error'] = "All fields are required.";
+        header("Location: bookings.php");
+        exit;
+    }
 
-  // Validate dates
-  if (!strtotime($booking_date) || !strtotime($return_date)) {
-      $_SESSION['error'] = "Invalid booking or return date.";
-      header("Location: bookings.php");
-      exit;
-  }
+    // Validate dates
+    if (!strtotime($booking_date) || !strtotime($return_date)) {
+        $_SESSION['error'] = "Invalid booking or return date.";
+        header("Location: bookings.php");
+        exit;
+    }
 
-  // Ensure return date is after booking date
-  if (strtotime($return_date) <= strtotime($booking_date)) {
-      $_SESSION['error'] = "Return date must be after the booking date.";
-      header("Location: bookings.php");
-      exit;
-  }
+    // Ensure return date is after booking date
+    if (strtotime($return_date) <= strtotime($booking_date)) {
+        $_SESSION['error'] = "Return date must be after the booking date.";
+        header("Location: bookings.php");
+        exit;
+    }
 
-  try {
-      // Insert booking into the database
-      $stmt = $pdo->prepare("INSERT INTO bookings (customer_name, car_id, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
-      $stmt->execute([$customer_name, $car_id, $booking_date, $return_date, $status]);
+    try {
+        // Insert booking into the database
+        $stmt = $pdo->prepare("INSERT INTO bookings (customer_name, car_id, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$customer_name, $car_id, $booking_date, $return_date, $status]);
 
-      // Redirect with success message
-      $_SESSION['success'] = "Booking added successfully.";
-      header("Location: bookings.php");
-      exit;
-  } catch (PDOException $e) {
-      // Handle database errors
-      $_SESSION['error'] = "Error adding booking: " . $e->getMessage();
-      header("Location: bookings.php");
-      exit;
-  }
+        // Redirect with success message
+        $_SESSION['success'] = "Booking added successfully.";
+        header("Location: bookings.php");
+        exit;
+    } catch (PDOException $e) {
+        // Handle database errors
+        $_SESSION['error'] = "Error adding booking: " . $e->getMessage();
+        header("Location: bookings.php");
+        exit;
+    }
 }
 
 // Handle Edit Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit') {
-    $stmt = $pdo->prepare("UPDATE booking SET customer_name=?, car_id=?, booking_date=?, return_date=?, status=? WHERE id=?");
+    $stmt = $pdo->prepare("UPDATE bookings SET customer_name=?, car_id=?, booking_date=?, return_date=?, status=? WHERE id=?");
     $stmt->execute([
         $_POST['customer_name'],
         $_POST['car_id'],
@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 
 // Fetch bookings
-$stmt = $pdo->query("SELECT bookings.*, car.model AS car_model FROM bookings JOIN car ON bookings.car_id = car.id ORDER BY bookings.id DESC");
+$stmt = $pdo->query("SELECT b.id, b.customer_name, c.model AS car_model, b.booking_date, b.return_date, b.status FROM bookings bINNER JOIN car c ON b.car_id = c.idORDER BY b.booking_date DESC");
 $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
