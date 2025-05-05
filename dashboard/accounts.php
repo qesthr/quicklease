@@ -50,18 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <title>Admin | Accounts</title>
     <link rel="stylesheet" href="../css/dashboard.css">
-    <style>
-        .btn { padding: 8px 12px; border: none; border-radius: 5px; cursor: pointer; }
-        .btn.edit { background-color: #ffc107; color: black; }
-        .btn.view { background-color: #17a2b8; color: white; }
-        .btn.delete { background-color: #dc3545; color: white; }
-        .btn:hover { opacity: 0.9; }
-        .modal { display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0, 0, 0, 0.4); }
-        .modal-content { background-color: white; margin: 10% auto; padding: 20px; border-radius: 5px; width: 50%; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); }
-        .close { color: #aaa; float: right; font-size: 28px; font-weight: bold; cursor: pointer; }
-        .close:hover, .close:focus { color: black; text-decoration: none; cursor: pointer; }
-        img { max-width: 100%; height: auto; border-radius: 5px; }
-    </style>
+    <link rel="stylesheet" href="../css/accounts.css">
+    
 </head>
 <body>  
 
