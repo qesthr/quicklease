@@ -54,67 +54,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
 </head>
 <body>  
-
-    <?php include 'includes/sidebar.php'; ?>
-
-    <div class="main-content">
+    <div class="account-content">
+        <?php include 'includes/sidebar.php'; ?>
         <?php include 'includes/topbar.php'; ?>
 
-        <div class="account-content">
-            <div class="table-container">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>User ID</th>
-                            <th>Name</th>
-                            <th>Email</th>
-                            <th>Phone</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                    <?php
-                    try {
-                        // Fetch all customers using PDO
-                        $stmt = $pdo->query("SELECT * FROM customer ORDER BY customer_id ASC");
-                        $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User ID</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                <?php
+                try {
+                    // Fetch all customers using PDO
+                    $stmt = $pdo->query("SELECT * FROM customer ORDER BY customer_id ASC");
+                    $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                        if (count($customers) > 0):
-                            foreach ($customers as $row):
-                    ?>
-                        <tr>
-                            <td><?= htmlspecialchars($row['customer_id'] ?? 'N/A') ?></td>
-                            <td><?= htmlspecialchars($row['customer_name'] ?? 'N/A') ?></td>
-                            <td><?= htmlspecialchars($row['customer_email'] ?? 'N/A') ?></td>
-                            <td><?= htmlspecialchars($row['customer_phone'] ?? 'N/A') ?></td>
-                            <td><?= htmlspecialchars($row['status'] ?? 'Pending Approval') ?></td>
-                            <td>
-                                <button class="btn edit" onclick="openEditModal(<?= htmlspecialchars(json_encode($row)) ?>)">Edit</button>
-                                <button class="btn view" onclick="openViewModal(<?= htmlspecialchars(json_encode($row)) ?>)">View Verification</button>
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="customer_id" value="<?= $row['customer_id'] ?>">
-                                    <button type="submit" name="delete" class="btn delete" onclick="return confirm('Are you sure you want to delete this account?')">Delete</button>
-                                </form>
-                            </td>
-                        </tr>
-                    <?php
-                            endforeach;
-                        else:
-                    ?>
-                        <tr>
-                            <td colspan="6">No customer accounts found.</td>
-                        </tr>
-                    <?php
-                        endif;
-                    } catch (PDOException $e) {
-                        echo "<tr><td colspan='6'>Error fetching customer accounts: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
-                    }
-                    ?>
-                    </tbody>
-                </table>
-            </div>
+                    if (count($customers) > 0):
+                        foreach ($customers as $row):
+                ?>
+                    <tr>
+                        <td><?= htmlspecialchars($row['customer_id'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($row['customer_name'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($row['customer_email'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($row['customer_phone'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($row['status'] ?? 'Pending Approval') ?></td>
+                        <td>
+                            <button class="btn edit" onclick="openEditModal(<?= htmlspecialchars(json_encode($row)) ?>)">Edit</button>
+                            <button class="btn view" onclick="openViewModal(<?= htmlspecialchars(json_encode($row)) ?>)">View Verification</button>
+                            <form method="POST" style="display:inline;">
+                                <input type="hidden" name="customer_id" value="<?= $row['customer_id'] ?>">
+                                <button type="submit" name="delete" class="btn delete" onclick="return confirm('Are you sure you want to delete this account?')">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                <?php
+                        endforeach;
+                    else:
+                ?>
+                    <tr>
+                        <td colspan="6">No customer accounts found.</td>
+                    </tr>
+                <?php
+                    endif;
+                } catch (PDOException $e) {
+                    echo "<tr><td colspan='6'>Error fetching customer accounts: " . htmlspecialchars($e->getMessage()) . "</td></tr>";
+                }
+                ?>
+                </tbody>
+            </table>
         </div>
+
     </div>
 
     <!-- Modal for Edit -->
@@ -227,5 +224,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (event.target === imageModal) imageModal.style.display = "none";
     };
 </script>
+
+    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
+
+
 </body>
 </html>
