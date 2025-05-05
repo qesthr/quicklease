@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 05, 2025 at 06:24 AM
+-- Generation Time: May 05, 2025 at 05:14 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -46,20 +46,43 @@ INSERT INTO `admin` (`ID`, `f_name`, `l_name`, `email`, `username`, `PASSWORD`) 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `booking_details`
+-- Table structure for table `bookings`
 --
 
-CREATE TABLE `booking_details` (
+CREATE TABLE `bookings` (
   `id` int(11) NOT NULL,
-  `customer_name` varchar(255) NOT NULL,
-  `location` varchar(255) NOT NULL,
+  `users_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
   `car_id` int(11) NOT NULL,
-  `car_model` varchar(255) NOT NULL,
+  `location` varchar(255) NOT NULL,
   `booking_date` date NOT NULL,
   `return_date` date NOT NULL,
-  `preferences` text NOT NULL,
-  `status` varchar(255) NOT NULL
+  `preferences` text DEFAULT NULL,
+  `status` enum('Active','Completed','Cancelled') DEFAULT 'Active',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Triggers `bookings`
+--
+DELIMITER $$
+CREATE TRIGGER `bookings_before_insert` BEFORE INSERT ON `bookings` FOR EACH ROW BEGIN
+    IF NEW.return_date < NEW.booking_date THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Return date must be after or equal to booking date';
+    END IF;
+END
+$$
+DELIMITER ;
+DELIMITER $$
+CREATE TRIGGER `bookings_before_update` BEFORE UPDATE ON `bookings` FOR EACH ROW BEGIN
+    IF NEW.return_date < NEW.booking_date THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Return date must be after or equal to booking date';
+    END IF;
+END
+$$
+DELIMITER ;
 
 -- --------------------------------------------------------
 
@@ -95,7 +118,7 @@ INSERT INTO `car` (`id`, `model`, `plate_no`, `price`, `status`, `image`, `seats
 --
 
 CREATE TABLE `customer` (
-  `customer_id` varchar(20) NOT NULL,
+  `id` varchar(20) NOT NULL,
   `customer_name` varchar(100) DEFAULT NULL,
   `customer_email` varchar(100) DEFAULT NULL,
   `customer_phone` varchar(20) DEFAULT NULL,
@@ -107,7 +130,7 @@ CREATE TABLE `customer` (
 -- Dumping data for table `customer`
 --
 
-INSERT INTO `customer` (`customer_id`, `customer_name`, `customer_email`, `customer_phone`, `status`, `submitted_id`) VALUES
+INSERT INTO `customer` (`id`, `customer_name`, `customer_email`, `customer_phone`, `status`, `submitted_id`) VALUES
 ('1', 'joenil', 'esaxample@gmail.com', '09363034124', 'Approved', '6817851853455_honndaaccord.jpg');
 
 -- --------------------------------------------------------
@@ -153,22 +176,17 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `users`
---
-
-INSERT INTO `users` (`id`, `email`, `password`, `reset_code`, `created_at`) VALUES
-(1, 'queennina.dlr@gmail.com', '$2y$10$KTyNg0nfxeYDExdUEa8QMuwTRnjrcspAiJnxfBfXA/kuIVWJkbiXW', '885510', '2025-05-03 18:31:11');
-
---
 -- Indexes for dumped tables
 --
 
 --
--- Indexes for table `booking_details`
+-- Indexes for table `bookings`
 --
-ALTER TABLE `booking_details`
-  ADD PRIMARY KEY (`customer_name`),
-  ADD UNIQUE KEY `id` (`id`);
+ALTER TABLE `bookings`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `customer_id` (`customer_id`),
+  ADD KEY `users_id` (`users_id`),
+  ADD KEY `car_id` (`car_id`);
 
 --
 -- Indexes for table `car`
@@ -181,7 +199,7 @@ ALTER TABLE `car`
 -- Indexes for table `customer`
 --
 ALTER TABLE `customer`
-  ADD PRIMARY KEY (`customer_id`);
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `driver`
@@ -208,10 +226,10 @@ ALTER TABLE `users`
 --
 
 --
--- AUTO_INCREMENT for table `booking_details`
+-- AUTO_INCREMENT for table `bookings`
 --
-ALTER TABLE `booking_details`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+ALTER TABLE `bookings`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `car`
@@ -230,10 +248,17 @@ ALTER TABLE `users`
 --
 
 --
+-- Constraints for table `bookings`
+--
+ALTER TABLE `bookings`
+  ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`car_id`) REFERENCES `car` (`id`) ON DELETE CASCADE;
+
+--
 -- Constraints for table `driver`
 --
 ALTER TABLE `driver`
-  ADD CONSTRAINT `driver_ibfk_1` FOREIGN KEY (`customer_ID`) REFERENCES `customer` (`customer_ID`);
+  ADD CONSTRAINT `driver_ibfk_1` FOREIGN KEY (`customer_ID`) REFERENCES `customer` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
