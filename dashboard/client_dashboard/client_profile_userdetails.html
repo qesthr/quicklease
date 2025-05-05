@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Page Layout</title>
+  <style>
+    /* Reset */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background-color: #f0f2f5;
+      color: #333;
+    }
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+    
+    /* Container for Sidebar and Main Content */
+    .container {
+      display: flex;
+      min-height: 100vh;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      width: 150px;
+      background-color: #2a2a72;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 20px 10px;
+    }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .nav-item {
+      text-align: center;
+      padding: 10px;
+      border: 2px solid transparent;
+      transition: border 0.3s;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    .nav-item.active {
+      border: 2px solid #fff;
+    }
+    .logout {
+      text-align: center;
+    }
+    .logout a {
+      display: block;
+      padding: 10px;
+      background-color: #c0392b;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #fff;
+    }
+    
+    /* Main Content */
+    .content {
+      flex: 1;
+      padding: 40px;
+    }
+    
+    /* Header */
+    .header {
+      margin-bottom: 40px;
+      border-bottom: 1px solid #ddd;
+      padding-bottom: 20px;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 20px;
+    }
+    .header-top h1 {
+      font-size: 32px;
+    }
+    .icons {
+      display: flex;
+      gap: 20px;
+      align-items: center;
+    }
+    .icons .bell {
+      font-size: 24px;
+      cursor: pointer;
+    }
+    .icons .profile-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+    
+    /* Sub-header with user information */
+    .header-user-info {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    /* Clickable User Profile Image in sub-header */
+    .user-thumb-clickable {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      overflow: hidden;
+      cursor: pointer;
+    }
+    .user-thumb-clickable img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .user-details {
+      display: flex;
+      flex-direction: column;
+      font-size: 16px;
+      line-height: 1.2;
+    }
+    
+    /* Secondary Navigation */
+    .secondary-nav {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+    .secondary-nav a {
+      text-decoration: none;
+      padding: 10px 15px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #333;
+      transition: background-color 0.3s, border-color 0.3s;
+    }
+    .secondary-nav a.active {
+      background-color: #2a2a72;
+      color: #fff;
+      border-color: #2a2a72;
+    }
+    
+    /* Profile Details / Form Content */
+    .profile-details {
+      max-width: 800px;
+      margin: auto;
+    }
+    .row {
+      display: flex;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+    .row.full-width {
+      flex-direction: column;
+    }
+    .col {
+      flex: 0 0 48%;
+      margin-right: 4%;
+    }
+    .col:nth-child(2) {
+      margin-right: 0;
+    }
+    label {
+      font-size: 14px;
+      color: #555;
+      margin-bottom: 5px;
+      display: block;
+    }
+    input[type="text"],
+    input[type="email"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      background-color: #fafafa;
+    }
+    /* Email Field with Verified Badge */
+    .email-container {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .email-container input {
+      flex: 1;
+      padding-right: 100px; /* space for the verified badge */
+    }
+    .email-container .verified {
+      position: absolute;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+      border-left: none;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: #155724;
+      border-top-right-radius: 4px;
+      border-bottom-right-radius: 4px;
+    }
+    .full {
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-nav">
+        <div class="nav-item active">[profile] - 'current'</div>
+        <div class="nav-item">[cars]</div>
+        <div class="nav-item">[bookings]</div>
+      </div>
+      <div class="logout">
+        <a href="#">[logout]</a>
+      </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="content">
+      <!-- Header -->
+      <header class="header">
+        <!-- Top Row of Header -->
+        <div class="header-top">
+          <h1>PROFILE</h1>
+          <div class="icons">
+            <span class="bell">🔔</span>
+            <!-- This profile icon is clickable to change the profile picture -->
+            <img src="profile-pic.png" alt="Profile" class="profile-icon" id="headerProfileIcon">
+          </div>
+        </div>
+        <!-- Sub-header with User Info -->
+        <div class="header-user-info">
+          <!-- Clickable Profile Image (same as header icon) -->
+          <div class="user-thumb-clickable" id="userThumb">
+            <img src="profile-pic.png" alt="User Profile Image" id="userProfileImage">
+          </div>
+          <!-- User's Name and Profession -->
+          <div class="user-details">
+            <div id="userName">John Doe</div>
+            <div id="userProfession">University Professor</div>
+          </div>
+        </div>
+        <!-- Secondary Navigation -->
+        <nav class="secondary-nav">
+          <a href="client_profile_userdetails.html" class="active">User Details</a>
+          <a href="client_profile_notification.html">Notifications</a>
+          <a href="client_profile_invoice.html">Invoices</a>
+        </nav>
+      </header>
+      
+      <!-- Profile Details Content -->
+      <section class="profile-details">
+        <!-- Row 1: First Name and Last Name -->
+        <div class="row">
+          <div class="col">
+            <label for="first-name">First Name</label>
+            <input id="first-name" type="text" value="John" readonly>
+          </div>
+          <div class="col">
+            <label for="last-name">Last Name</label>
+            <input id="last-name" type="text" value="Doe" readonly>
+          </div>
+        </div>
+        <!-- Row 2: Email with Verified Badge -->
+        <div class="row full-width">
+          <label for="email">Email</label>
+          <div class="email-container">
+            <input id="email" type="email" value="johndoe123@gmail.com" readonly>
+            <span class="verified">verified</span>
+          </div>
+        </div>
+        <!-- Row 3: Address -->
+        <div class="row full-width">
+          <label for="address">Address</label>
+          <input id="address" class="full" type="text" value="Sumpong, Malaybalay City Bukidnon" readonly>
+        </div>
+        <!-- Row 4: Phone Number and Date of Birth -->
+        <div class="row">
+          <div class="col">
+            <label for="phone-number">Phone Number</label>
+            <input id="phone-number" type="text" value="09232416574" readonly>
+          </div>
+          <div class="col">
+            <label for="dob">Date of Birth</label>
+            <input id="dob" type="text" value="(date of birth)" readonly>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <!-- Hidden file input for updating profile picture -->
+  <input type="file" accept="image/*" id="profileUpload" style="display:none">
+  
+  <script>
+    // When the user clicks on either the header icon or the sub-header image, simulate a click on the hidden file input.
+    const headerProfileIcon = document.getElementById("headerProfileIcon");
+    const userProfileImage = document.getElementById("userProfileImage");
+    const profileUpload = document.getElementById("profileUpload");
+    
+    headerProfileIcon.addEventListener("click", () => {
+      profileUpload.click();
+    });
+    
+    document.getElementById("userThumb").addEventListener("click", () => {
+      profileUpload.click();
+    });
+    
+    // When a file is selected, update both displayed images.
+    profileUpload.addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          headerProfileIcon.src = e.target.result;
+          userProfileImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>
