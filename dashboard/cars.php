@@ -128,6 +128,11 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="content">
             <h2>Car List</h2>
+
+            <div class="add-car-button-container">
+                <button id="openModal" class="btn btn-add">Add Car</button>
+            </div>
+            
             <div class="table-container">
                 <table class="car-table">
                     <thead class="table-header">
@@ -145,6 +150,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <th>Action</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         <?php foreach ($cars as $car): ?>
                             <tr>
@@ -182,9 +188,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
         </div>
 
-        <div class="add-car-button-container">
-            <button id="openModal" class="btn btn-add">Add Car</button>
-        </div>
+        
 
         <div id="addCarModal" class="modal">
             <div class="modal-content">

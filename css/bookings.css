@@ -25,3 +25,164 @@
     border-bottom: 1px solid #ddd;
     text-align: center;
 }
+
+/* === Booking Content === */
+.booking-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Add spacing between elements */
+    padding: 20px; /* Add padding around the content */
+    background: #ffffff; /* White background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    margin: 20px; /* Add margin around the content */
+}
+
+/* === Table Container === */
+.table-container {
+    overflow-x: auto; /* Enable horizontal scrolling for smaller screens */
+    border-radius: 10px; /* Rounded corners for the table container */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for the table */
+    background: #f9f9f9; /* Light background for the table */
+    padding: 10px; /* Add padding inside the container */
+}
+
+/* === Table Styling === */
+.table-container table {
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* Remove gaps between table cells */
+    background: #ffffff; /* White background for the table */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensure rounded corners are visible */
+}
+
+.table-container th {
+    background: #1818CA; /* Dark blue background for the header */
+    color: #ffffff; /* White text for contrast */
+    text-align: center; /* Center align text */
+    padding: 12px; /* Add padding for spacing */
+    font-weight: bold; /* Bold text */
+}
+
+.table-container td {
+    padding: 12px; /* Add padding for spacing */
+    border-bottom: 1px solid #ddd; /* Add a subtle border between rows */
+    color: #333; /* Dark text color */
+    text-align: center; /* Center align text */
+}
+
+.table-container tr:hover {
+    background: #f1f1f1; /* Highlight row on hover */
+}
+
+/* === Action Buttons === */
+.table-container .actions button {
+    padding: 8px 12px; /* Add padding for buttons */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Smooth background transition */
+    margin: 0 5px; /* Add spacing between buttons */
+}
+
+.table-container .view-btn {
+    background: #4CAF50; /* Green background for view button */
+    color: #ffffff; /* White text */
+}
+
+.table-container .view-btn:hover {
+    background: #45a049; /* Darker green on hover */
+}
+
+.table-container .edit-btn {
+    background: #FBCC63; /* Yellow background for edit button */
+    color: #000000; /* Black text */
+}
+
+.table-container .edit-btn:hover {
+    background: #f5b913; /* Darker yellow on hover */
+}
+
+.table-container .cancel-btn {
+    background: #EE5353; /* Red background for cancel button */
+    color: #ffffff; /* White text */
+}
+
+.table-container .cancel-btn:hover {
+    background: #d32f2f; /* Darker red on hover */
+}
+
+/* === Modal Styling === */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+}
+
+.modal-content {
+    background-color: #ffffff; /* White background */
+    margin: 10% auto; /* Center the modal */
+    padding: 20px; /* Add padding */
+    border-radius: 10px; /* Rounded corners */
+    width: 50%; /* Set width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+.modal-content h2 {
+    margin-top: 0; /* Remove top margin */
+    color: #1818CA; /* Dark blue text */
+}
+
+.modal-content label {
+    display: block; /* Make labels block elements */
+    margin-top: 10px; /* Add spacing above labels */
+    font-weight: bold; /* Bold text */
+    color: #333; /* Dark text color */
+}
+
+.modal-content input,
+.modal-content select {
+    width: 100%; /* Full width */
+    padding: 10px; /* Add padding */
+    margin-top: 5px; /* Add spacing above inputs */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+}
+
+.modal-content button {
+    margin-top: 10px; /* Add spacing above buttons */
+    padding: 10px 15px; /* Add padding */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Smooth background transition */
+}
+
+.modal-content button:hover {
+    background: #f1f1f1; /* Light gray background on hover */
+}
+
+/* === Close Button === */
+.modal-content .close {
+    position: absolute; /* Position relative to the modal */
+    top: 10px; /* Position from the top */
+    right: 15px; /* Position from the right */
+    font-size: 20px; /* Adjust font size */
+    font-weight: bold; /* Bold text */
+    color: #333; /* Dark text color */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.modal-content .close:hover {
+    color: #1818CA; /* Dark blue on hover */
+}
+

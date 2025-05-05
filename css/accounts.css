@@ -1,7 +1,7 @@
 /* Topbar Styling */
 .account-content .topbar {
     width: 96%; /* Full width */
-    margin: 10px auto; /* Center the topbar */
+    margin-top: 0vh;
 }
 
 .account-content .topbar h1 {

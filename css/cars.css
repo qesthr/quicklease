@@ -66,20 +66,19 @@
 
 /* Action buttons */
 .car-list-page .btn-add {
-    background: #FBCC63; /* Dark blue background */
-    color: rgb(0, 0, 0); 
-    border: none; /* Remove border */
-    border-radius: 8px; /* Rounded corners */
-    font-weight: bold; /* Bold text */
-    cursor: pointer; /* Pointer cursor on hover */
-    transition: background 0.3s; /* Smooth background transition */
-    margin-bottom: 20px; /* Add spacing below the button */
-    width: 86px;
-    padding: 12px;
-    margin-left: 93%;
-    margin-top: -19%;
-    display: flex;
-    justify-content: center;
+    background: #FBCC63;
+    color: rgb(0, 0, 0);
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.3s;
+    width: 149px;
+    padding: 10px;
+    position: fixed;
+    bottom: 69vh;
+    right: 39px;
+    z-index: 1000;
 }
 
 .car-list-page .btn-edit {
