@@ -91,6 +91,10 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php include 'includes/sidebar.php'; ?>
     <?php include 'includes/topbar.php'; ?>
 
+    <div class="add-booking-button-container">
+        <button class="btn btn-add" onclick="openModal('addModal')">Add Booking</button>
+    </div>
+
     <div class="table-container">
       <table>
         <thead>
@@ -206,30 +210,30 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
   </div>
 
   <script>
-  function openModal(id) {
-    document.getElementById(id).style.display = 'block';
-  }
-  function closeModal(id) {
-    document.getElementById(id).style.display = 'none';
-  }
-  function openEditModal(data) {
-    document.getElementById('edit-id').value = data.id;
-    document.getElementById('edit-customer').value = data.customer_name;
-    document.getElementById('edit-car-id').value = data.car_id;
-    document.getElementById('edit-date').value = data.booking_date;
-    document.getElementById('edit-return').value = data.return_date;
-    document.getElementById('edit-status').value = data.status;
-    openModal('editModal');
-  }
-  function openViewModal(data) {
-    document.getElementById('view-id').innerText = data.id;
-    document.getElementById('view-customer').innerText = data.customer_name;
-    document.getElementById('view-car').innerText = data.car_model;
-    document.getElementById('view-date').innerText = data.booking_date;
-    document.getElementById('view-return').innerText = data.return_date;
-    document.getElementById('view-status').innerText = data.status;
-    openModal('viewModal');
-  }
+    function openModal(id) {
+      document.getElementById(id).style.display = 'block';
+    }
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+    function openEditModal(data) {
+      document.getElementById('edit-id').value = data.id;
+      document.getElementById('edit-customer').value = data.customer_name;
+      document.getElementById('edit-car-id').value = data.car_id;
+      document.getElementById('edit-date').value = data.booking_date;
+      document.getElementById('edit-return').value = data.return_date;
+      document.getElementById('edit-status').value = data.status;
+      openModal('editModal');
+    }
+    function openViewModal(data) {
+      document.getElementById('view-id').innerText = data.id;
+      document.getElementById('view-customer').innerText = data.customer_name;
+      document.getElementById('view-car').innerText = data.car_model;
+      document.getElementById('view-date').innerText = data.booking_date;
+      document.getElementById('view-return').innerText = data.return_date;
+      document.getElementById('view-status').innerText = data.status;
+      openModal('viewModal');
+    }
   </script>
 
 <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
