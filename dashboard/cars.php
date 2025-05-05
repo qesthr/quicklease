@@ -324,5 +324,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         };
     </script>
+
+<script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 </body>
 </html>
