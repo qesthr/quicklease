@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Profile Notifications</title>
+  <link rel="stylesheet" href="client_profile_invoice.css"> <!-- Link to external CSS -->
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-nav">
+        <div class="nav-item active">Profilediv>
+        <div class="nav-item">Cars</div>
+        <div class="nav-item">Bookings</div>
+      </div>
+      <div class="logout">
+        <a href="#">Logout</a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content">
+      <!-- Header -->
+      <header class="header">
+        <!-- Top Row: Title and Icons -->
+        <div class="header-top">
+          <h1>PROFILE</h1>
+          <div class="icons">
+            <span class="bell">🔔</span>
+            <!-- Clickable profile image on header (profile picture/profile access) -->
+            <img src="profile-pic.png" alt="Profile" class="profile-icon" id="headerProfileIcon">
+          </div>
+        </div>
+        <!-- Sub-header: User Info -->
+        <div class="header-user-info">
+          <!-- Left column: The user profile image is repeated here for consistency -->
+          <div class="header-left">
+            <div class="user-thumb-clickable" id="userThumb">
+              <img src="profile-pic.png" alt="User Profile Image" id="userProfileImage">
+            </div>
+          </div>
+          <!-- Right column: User details (name and profession) -->
+          <div class="header-right">
+            <div class="sub-line" id="userName">John Doe</div>
+            <div class="sub-line" id="userProfession">University Professor</div>
+          </div>
+        </div>
+        <!-- Secondary Navigation -->
+        <nav class="secondary-nav">
+            <a href="client_profile_userdetails.html">User Details</a>
+            <a href="client_profile_notification.html" class="active">Notifications</a>
+            <a href="client_profile_invoice.html">Invoices</a>
+        </nav>
+      </header>
+
+      <!-- Booking Cards Content -->
+      <section class="booking-cards">
+        <!-- Booking Card 1 -->
+        <div class="booking-card">
+          <div class="booking-left">
+            <div class="logo-box">Logo</div>
+            <h3>Hi John Doe!</h3>
+          </div>
+          <div class="booking-right">
+            <p>Good news! Your booking for Toyota Camry from April 2025 to April-27-2025 has been approved by our admin.</p>
+            <button>View Booking</button>
+          </div>
+        </div>
+        <!-- Booking Card 2 -->
+        <div class="booking-card">
+          <div class="booking-left">
+            <div class="logo-box">Logo</div>
+            <h3>Hi John Doe!</h3>
+          </div>
+          <div class="booking-right">
+            <p>Good news! Your booking for Toyota Camry from April 2025 to April-27-2025 has been approved by our admin.</p>
+            <button>View Booking</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Hidden file input for profile picture update -->
+  <input type="file" accept="image/*" id="profileUpload">
+
+  <script>
+    // When the header profile icon or the sub-header profile image is clicked,
+    // trigger the hidden file input to allow the user to change their profile picture.
+    const headerProfileIcon = document.getElementById("headerProfileIcon");
+    const userProfileImage = document.getElementById("userProfileImage");
+    const userThumb = document.getElementById("userThumb");
+    const profileUpload = document.getElementById("profileUpload");
+
+    headerProfileIcon.addEventListener("click", () => {
+      profileUpload.click();
+    });
+    userThumb.addEventListener("click", () => {
+      profileUpload.click();
+    });
+
+    profileUpload.addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          headerProfileIcon.src = e.target.result;
+          userProfileImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>

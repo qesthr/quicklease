@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <link rel="stylesheet" href="client_profile_invoice.css" /> <!-- Link to external CSS -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha384-k6RqeWeci5ZR/Lv4MR0sA0FfDOM8d7xj1z5l5e5e5e5e5e5e5e5e5e5e5e5e5" crossorigin="anonymous" />
+  <title>Profile Page Layout</title>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-nav">
+        <div class="nav-item active">Profile</div>
+        <div class="nav-item">Cars</div>
+        <div class="nav-item">Bookings</div>
+      </div>
+      <div class="logout">
+        <a href="#">Logout</a>
+      </div>
+    </aside>
+    
+    <!-- Main Content -->
+    <main class="content">
+      <!-- Header -->
+      <header class="header">
+        <!-- Top Row of Header -->
+        <div class="header-top">
+          <h1>PROFILE</h1>
+          <div class="icons">
+            <span class="bell">🔔</span>
+            <!-- This profile icon is clickable to change the profile picture -->
+            <img src="profile-pic.png" alt="Profile" class="profile-icon" id="headerProfileIcon">
+          </div>
+        </div>
+        <!-- Sub-header with User Info -->
+        <div class="header-user-info">
+          <!-- Clickable Profile Image (same as header icon) -->
+          <div class="user-thumb-clickable" id="userThumb">
+            <img src="profile-pic.png" alt="User Profile Image" id="userProfileImage">
+          </div>
+          <!-- User's Name and Profession -->
+          <div class="user-details">
+            <div id="userName">John Doe</div>
+            <div id="userProfession">University Professor</div>
+          </div>
+        </div>
+        <!-- Secondary Navigation -->
+        <nav class="secondary-nav">
+          <a href="client_profile_userdetails.html" class="active">User Details</a>
+          <a href="client_profile_notification.html">Notifications</a>
+          <a href="client_profile_invoice.html">Invoices</a>
+        </nav>
+      </header>
+      
+      <!-- Profile Details Content -->
+      <section class="profile-details">
+        <!-- Row 1: First Name and Last Name -->
+        <div class="row">
+          <div class="col">
+            <label for="first-name">First Name</label>
+            <input id="first-name" type="text" value="John" readonly>
+          </div>
+          <div class="col">
+            <label for="last-name">Last Name</label>
+            <input id="last-name" type="text" value="Doe" readonly>
+          </div>
+        </div>
+        <!-- Row 2: Email with Verified Badge -->
+        <div class="row full-width">
+          <label for="email">Email</label>
+          <div class="email-container">
+            <input id="email" type="email" value="johndoe123@gmail.com" readonly>
+            <span class="verified">verified</span>
+          </div>
+        </div>
+        <!-- Row 3: Address -->
+        <div class="row full-width">
+          <label for="address">Address</label>
+          <input id="address" class="full" type="text" value="Sumpong, Malaybalay City Bukidnon" readonly>
+        </div>
+        <!-- Row 4: Phone Number and Date of Birth -->
+        <div class="row">
+          <div class="col">
+            <label for="phone-number">Phone Number</label>
+            <input id="phone-number" type="text" value="09232416574" readonly>
+          </div>
+          <div class="col">
+            <label for="dob">Date of Birth</label>
+            <input id="dob" type="text" value="(date of birth)" readonly>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  
+  <!-- Hidden file input for updating profile picture -->
+  <input type="file" accept="image/*" id="profileUpload" style="display:none">
+  
+  <script>
+    // When the user clicks on either the header icon or the sub-header image, simulate a click on the hidden file input.
+    const headerProfileIcon = document.getElementById("headerProfileIcon");
+    const userProfileImage = document.getElementById("userProfileImage");
+    const profileUpload = document.getElementById("profileUpload");
+    
+    headerProfileIcon.addEventListener("click", () => {
+      profileUpload.click();
+    });
+    
+    document.getElementById("userThumb").addEventListener("click", () => {
+      profileUpload.click();
+    });
+    
+    // When a file is selected, update both displayed images.
+    profileUpload.addEventListener("change", function(event) {
+      const file = event.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          headerProfileIcon.src = e.target.result;
+          userProfileImage.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>
