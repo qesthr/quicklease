@@ -4,12 +4,12 @@ include '../db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update'])) {
         // Handle Update
-        $customer_id = $_POST['customer_id'];
+        $customer_id = $_POST['id'];
         $customer_name = trim($_POST['customer_name']);
         $customer_email = trim($_POST['customer_email']);
         $customer_phone = trim($_POST['customer_phone']);
 
-        $stmt = $pdo->prepare("UPDATE customer SET customer_name = ?, customer_email = ?, customer_phone = ? WHERE customer_id = ?");
+        $stmt = $pdo->prepare("UPDATE customer SET customer_name = ?, customer_email = ?, customer_phone = ? WHERE id = ?");
         $stmt->execute([$customer_name, $customer_email, $customer_phone, $customer_id]);
         header("Location: accounts.php");
         exit();
@@ -17,8 +17,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['approve'])) {
         // Handle Approve
-        $customer_id = $_POST['customer_id'];
-        $stmt = $pdo->prepare("UPDATE customer SET status = 'Approved' WHERE customer_id = ?");
+        $customer_id = $_POST['id'];
+        $stmt = $pdo->prepare("UPDATE customer SET status = 'Approved' WHERE id = ?");
         $stmt->execute([$customer_id]);
         header("Location: accounts.php");
         exit();
@@ -26,28 +26,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['reject'])) {
         // Handle Reject
-        $customer_id = $_POST['customer_id'];
-        $stmt = $pdo->prepare("UPDATE customer SET status = 'Rejected' WHERE customer_id = ?");
+        $customer_id = $_POST['id'];
+        $stmt = $pdo->prepare("UPDATE customer SET status = 'Rejected' WHERE id = ?");
         $stmt->execute([$customer_id]);
         header("Location: accounts.php");
         exit();
     }
 
     if (isset($_POST['delete'])) {
-        $customer_id = $_POST['customer_id'];
+        $customer_id = $_POST['id'];
     
         try {
             // Begin transaction
             $pdo->beginTransaction();
     
             // Get the user_id from the customer table
-            $stmt = $pdo->prepare("SELECT user_id FROM customer WHERE customer_id = ?");
+            $stmt = $pdo->prepare("SELECT user_id FROM customer WHERE id = ?");
             $stmt->execute([$customer_id]);
             $user_id = $stmt->fetchColumn();
     
             if ($user_id) {
                 // Delete from customer table
-                $stmt = $pdo->prepare("DELETE FROM customer WHERE customer_id = ?");
+                $stmt = $pdo->prepare("DELETE FROM customer WHERE id = ?");
                 $stmt->execute([$customer_id]);
     
                 // Delete from users table
@@ -100,14 +100,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php
                 try {
                     // Fetch all customers using PDO
-                    $stmt = $pdo->query("SELECT * FROM customer ORDER BY customer_id ASC");
+                    $stmt = $pdo->query("SELECT * FROM customer ORDER BY id ASC");
                     $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     if (count($customers) > 0):
                         foreach ($customers as $row):
                 ?>
                     <tr>
-                        <td><?= htmlspecialchars($row['customer_id'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($row['id'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($row['customer_name'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($row['customer_email'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($row['customer_phone'] ?? 'N/A') ?></td>
@@ -116,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <button class="btn edit" onclick="openEditModal(<?= htmlspecialchars(json_encode($row)) ?>)">Edit</button>
                             <button class="btn view" onclick="openViewModal(<?= htmlspecialchars(json_encode($row)) ?>)">View Verification</button>
                             <form method="POST" style="display:inline;">
-                                <input type="hidden" name="customer_id" value="<?= $row['customer_id'] ?>">
+                                <input type="hidden" name="id" value="<?= $row['id'] ?>">
                                 <button type="submit" name="delete" class="btn delete" onclick="return confirm('Are you sure you want to delete this account?')">Delete</button>
                             </form>
                         </td>
@@ -146,7 +146,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <span class="close" id="closeEditModal">&times;</span>
         <h2>Edit Customer</h2>
         <form method="POST">
-            <input type="hidden" name="customer_id" id="editCustomerId">
+            <input type="hidden" name="id" id="editCustomerId">
             <label for="editCustomerName">Name:</label>
             <input type="text" id="editCustomerName" name="customer_name" required>
             <label for="editCustomerEmail">Email:</label>
@@ -173,7 +173,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Clickable Submitted ID -->
         <img id="verificationImage" src="" alt="Submitted ID" style="display: none; margin-top: 10px; cursor: pointer;" onclick="openImageModal()">
         <form method="POST">
-            <input type="hidden" name="customer_id" id="verificationCustomerId">
+            <input type="hidden" name="id" id="verificationCustomerId">
             <button type="submit" name="approve" class="btn view">Approve</button>
             <button type="submit" name="reject" class="btn delete">Reject</button>
         </form>
