@@ -2,303 +2,90 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Invoices - Profile Page</title>
-  <style>
-    /* RESET */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-    body {
-      font-family: "Segoe UI", Tahoma, sans-serif;
-      background-color: #f0f2f5;
-      color: #333;
-    }
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-    /* MAIN LAYOUT */
-    .container {
-      display: flex;
-      min-height: 100vh;
-    }
-    /* SIDEBAR */
-    .sidebar {
-      width: 150px;
-      background-color: #2a2a72;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      padding: 20px 10px;
-    }
-    .sidebar-nav {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
-    .nav-item {
-      text-align: center;
-      padding: 10px;
-      border: 2px solid transparent;
-      cursor: pointer;
-      font-size: 14px;
-    }
-    .nav-item.active {
-      border: 2px solid #fff;
-    }
-    .logout a {
-      display: block;
-      padding: 10px 15px;
-      background-color: #c0392b;
-      border-radius: 4px;
-      font-size: 14px;
-      text-align: center;
-    }
-    /* CONTENT AREA */
-    .content {
-      flex: 1;
-      padding: 40px;
-    }
-    /* HEADER */
-    .header {
-      margin-bottom: 40px;
-      border-bottom: 1px solid #ddd;
-      padding-bottom: 20px;
-    }
-    .header-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .header-top h1 {
-      font-size: 32px;
-    }
-    .icons {
-      display: flex;
-      gap: 20px;
-      align-items: center;
-    }
-    .icons .bell {
-      font-size: 24px;
-      cursor: pointer;
-    }
-    .icons .profile-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      object-fit: cover;
-      cursor: pointer;
-    }
-    /* Sub-header: User Info */
-    .header-user-info {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
-    }
-    .header-left,
-    .header-right {
-      width: 48%;
-    }
-    /* Left column: Clickable profile image (same as header icon) */
-    .user-thumb-clickable {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      overflow: hidden;
-      cursor: pointer;
-    }
-    .user-thumb-clickable img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    /* Right column: User details */
-    .header-right .sub-line {
-      font-size: 16px;
-      line-height: 1.4;
-      margin-bottom: 5px;
-    }
-    /* Secondary Navigation */
-    .secondary-nav {
-      display: flex;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    .secondary-nav a {
-      padding: 10px 15px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 14px;
-      color: #333;
-      transition: background-color 0.3s, border-color 0.3s;
-    }
-    .secondary-nav a.active {
-      background-color: #2a2a72;
-      color: #fff;
-      border-color: #2a2a72;
-    }
-    /* INVOICE BOX (Content) */
-    .invoice-box {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      padding: 20px;
-      margin: 20px auto;  /* Centers the box */
-      width: 100%;        /* Frees the width limitations */
-    }
-    /* Merge the car image: one row with image and details */
-    .invoice-row {
-      display: flex;
-      align-items: flex-start;
-      gap: 20px;
-      margin-bottom: 20px;
-    }
-    .car-pic {
-      width: 80px;
-      height: 80px;
-      background-color: #ddd;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-    }
-    .invoice-details {
-      display: flex;
-      flex-direction: column;
-      gap: 5px;
-      font-size: 16px;
-    }
-    .invoice-button {
-      text-align: right;
-    }
-    .invoice-button button {
-      padding: 10px 20px;
-      background-color: #2a2a72;
-      color: #fff;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 16px;
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bookings - Profile Page</title>
+  <link rel="stylesheet" href="client_profile_invoice.css" />
 </head>
 <body>
   <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-nav">
-        <div class="nav-item active">[profile] - 'current'</div>
-        <div class="nav-item">[cars]</div>
-        <div class="nav-item">[bookings]</div>
+        <div class="nav-item">profile</div>
+        <div class="nav-item">cars</div>
+        <div class="nav-item active">bookings</div>
       </div>
       <div class="logout">
-        <a href="#">[logout]</a>
+        <a href="#">Logout</a>
       </div>
     </aside>
-    
+
     <!-- Main Content Area -->
     <main class="content">
       <!-- Header -->
       <header class="header">
-        <!-- Top Row: Title and Icons -->
         <div class="header-top">
           <h1>PROFILE</h1>
           <div class="icons">
             <span class="bell">🔔</span>
-            <!-- Clickable profile image (same source) -->
             <img src="profile-pic.png" alt="Profile" class="profile-icon" id="headerProfileIcon">
           </div>
         </div>
-        <!-- Sub-header: User Info -->
         <div class="header-user-info">
-          <!-- Left Column: Clickable profile image -->
           <div class="header-left">
             <div class="user-thumb-clickable" id="userThumb">
               <img src="profile-pic.png" alt="User Profile Image" id="userProfileImage">
             </div>
           </div>
-          <!-- Right Column: User Details -->
           <div class="header-right">
             <div class="sub-line" id="userName">John Doe</div>
             <div class="sub-line" id="userProfession">University Professor</div>
           </div>
         </div>
-        <!-- Secondary Navigation -->
         <nav class="secondary-nav">
           <a href="client_profile_userdetails.html">User Details</a>
           <a href="client_profile_notification.html">Notifications</a>
-          <a href="client_profile_invoice.html" class="active">Invoices</a>
+          <a href="client_profile_booking.html" class="active">Bookings</a>
         </nav>
       </header>
-      
-      <!-- Content: Invoice Boxes -->
-      <section class="invoices">
-        <!-- Invoice Box 1 -->
+
+      <!-- Content: Booking Boxes After booked, soon to php-->
+      <section class="bookings">
+        <!-- Booking Box 1 -->
         <div class="invoice-box">
           <div class="invoice-row">
             <div class="car-pic">Car Image</div>
             <div class="invoice-details">
               <div class="detail-line">Car Name: Toyota Camry</div>
               <div class="detail-line">Booking Date: April/20/2025 to April/29/2025</div>
-              <div class="detail-line">Total Amount: 5000</div>
+              <div class="detail-line">Status: Confirmed</div>
             </div>
           </div>
           <div class="invoice-button">
-            <button>PRINT INVOICE</button>
+            <button>VIEW DETAILS</button>
           </div>
         </div>
-        <!-- Invoice Box 2 -->
+        <!-- Booking Box 2 After booked, soon to php-->
         <div class="invoice-box">
           <div class="invoice-row">
             <div class="car-pic">Car Image</div>
             <div class="invoice-details">
-              <div class="detail-line">Car Name: Toyota Camry</div>
-              <div class="detail-line">Booking Date: April/20/2025 to April/29/2025</div>
-              <div class="detail-line">Total Amount: 5000</div>
+              <div class="detail-line">Car Name: Honda Accord</div>
+              <div class="detail-line">Booking Date: May/10/2025 to May/15/2025</div>
+              <div class="detail-line">Status: Pending</div>
             </div>
           </div>
           <div class="invoice-button">
-            <button>PRINT INVOICE</button>
+            <button>VIEW DETAILS</button>
           </div>
         </div>
       </section>
     </main>
   </div>
-  
+
   <!-- Hidden file input for profile picture update -->
   <input type="file" accept="image/*" id="profileUpload">
-  
-  <script>
-    // When the header profile icon or the sub-header profile image is clicked,
-    // trigger the hidden file input to update the profile picture.
-    const headerProfileIcon = document.getElementById("headerProfileIcon");
-    const userProfileImage = document.getElementById("userProfileImage");
-    const userThumb = document.getElementById("userThumb");
-    const profileUpload = document.getElementById("profileUpload");
 
-    headerProfileIcon.addEventListener("click", () => {
-      profileUpload.click();
-    });
-    userThumb.addEventListener("click", () => {
-      profileUpload.click();
-    });
-
-    profileUpload.addEventListener("change", function(event) {
-      const file = event.target.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          headerProfileIcon.src = e.target.result;
-          userProfileImage.src = e.target.result;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
