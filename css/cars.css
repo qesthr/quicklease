@@ -76,8 +76,8 @@
     width: 149px;
     padding: 10px;
     position: fixed;
-    bottom: 69vh;
-    right: 39px;
+    bottom: 70vh;
+    right: 81px;
     z-index: 1000;
 }
 
@@ -129,7 +129,7 @@
     padding: 30px;
     border: 1px solid #888;
     width: 34%;
-    height: 92vh;
+    height: 99vh;
     border-radius: 10px;
     position: relative;
 }
