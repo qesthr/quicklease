@@ -20,42 +20,58 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         if (empty($model) || empty($plate_no) || empty($price) || empty($status) || empty($seats) || empty($transmission) || empty($mileage) || empty($features)) {
             $error = "All fields are required!";
         } else {
-            // Handle file upload
-            if (!empty($_FILES["image"]["name"])) {
-                $image = uniqid() . "_" . basename($_FILES["image"]["name"]);
-                $target_dir = "../uploads/";
-                $target_file = $target_dir . $image;
+            // Check for duplicate plate_no
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM car WHERE plate_no = ?");
+            $stmt->execute([$plate_no]);
+            $count = $stmt->fetchColumn();
 
-                // Check if the uploads directory exists
-                if (!is_dir($target_dir)) {
-                    mkdir($target_dir, 0777, true); // Create the directory if it doesn't exist
-                }
+            if ($count > 0) {
+                $error = "A car with this plate number already exists!";
+            } else {
+                // Handle file upload
+                if (!empty($_FILES["image"]["name"])) {
+                    $image = uniqid() . "_" . basename($_FILES["image"]["name"]);
+                    $target_dir = "../uploads/";
+                    $target_file = $target_dir . $image;
 
-                // Check file type (only allow images)
-                $allowed_types = ["image/jpeg", "image/png", "image/gif"];
-                if (!in_array($_FILES["image"]["type"], $allowed_types)) {
-                    $error = "Invalid file type! Please upload JPEG, PNG, or GIF.";
-                } elseif ($_FILES["image"   ]["size"] > 5000000) { // Limit: 5MB
-                    $error = "File size too large! Max 5MB.";
-                } else {
-                    if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                        $error = "Error uploading file!";
+                    // Check if the uploads directory exists
+                    if (!is_dir($target_dir)) {
+                        mkdir($target_dir, 0777, true); // Create the directory if it doesn't exist
+                    }
+
+                    // Check file type (only allow images)
+                    $allowed_types = ["image/jpeg", "image/png", "image/gif"];
+                    if (!in_array($_FILES["image"]["type"], $allowed_types)) {
+                        $error = "Invalid file type! Please upload JPEG, PNG, or GIF.";
+                    } elseif ($_FILES["image"]["size"] > 5000000) { // Limit: 5MB
+                        $error = "File size too large! Max 5MB.";
+                    } else {
+                        if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                            $error = "Error uploading file!";
+                        }
                     }
                 }
-            }
 
-            if (empty($error)) {
-                // Insert into database using PDO
-                $stmt = $pdo->prepare("INSERT INTO car (model, plate_no, price, status, image, seats, transmission, mileage, features) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                if ($stmt->execute([$model, $plate_no, $price, $status, $image, $seats, $transmission, $mileage, $features])) {
-                    header("Location: cars.php");
-                    exit();
-                } else {
-                    $error = "Error adding car.";
+                if (empty($error)) {
+                    // Insert into database using PDO
+                    $stmt = $pdo->prepare("INSERT INTO car (model, plate_no, price, status, image, seats, transmission, mileage, features) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    if ($stmt->execute([$model, $plate_no, $price, $status, $image, $seats, $transmission, $mileage, $features])) {
+                        header("Location: cars.php");
+                        exit();
+                    } else {
+                        $error = "Error adding car.";
+                    }
                 }
             }
         }
     }
+}
+$stmt = $pdo->prepare("SELECT COUNT(*) FROM car WHERE plate_no = ?");
+$stmt->execute([$plate_no]);
+$count = $stmt->fetchColumn();
+if ($count > 0) {
+    $error = "A car with this plate number already exists!";
+}
 
     // Handle Edit Car Form Submission
     if ($_POST["action"] === "edit_car") {
@@ -78,7 +94,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
             $error = "Error updating car.";
         }
     }
-}
+
 
 // Handle Delete Car
 if (isset($_GET["delete_id"])) {
