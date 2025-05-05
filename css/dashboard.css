@@ -114,7 +114,7 @@ body {
 .user-info {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 19px;
 }
 
 .notification {
