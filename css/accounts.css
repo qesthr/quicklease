@@ -1,17 +1,20 @@
-body {
-    margin: 0;
-    font-family: 'Poppins', sans-serif;
-    display: flex;
-    background: #f1efe7;
+/* Topbar Styling */
+.account-content .topbar {
+    width: 96%; /* Full width */
+    margin-top: 0vh;
 }
 
-/* Main Content Area */
-.main-content {
-    
-    padding: 20px; /* Add padding for spacing */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
-    margin: 20px; /* Add margin around the content */
+.account-content .topbar h1 {
+    font-size: 28px; /* Adjust font size */
+    color: #ffffff; /* White text */
+    margin-left: 10px; /* Add spacing to the left */
+}
+
+.account-content .user-info {
+    margin-right: 33px; /* Adjust spacing for user info */
+    display: flex; /* Flex layout for alignment */
+    align-items: center; /* Center items vertically */
+    gap: 15px; /* Add spacing between elements */
 }
 
 /* Account Content */
@@ -19,20 +22,24 @@ body {
     display: flex;
     flex-direction: column;
     gap: 20px; /* Add spacing between elements */
+    padding: 20px; /* Add padding around the content */
+    border-radius: 10px; /* Rounded corners */
+    margin-top: 20px; /* Add margin around the content */
+    margin-left: 30vh;
 }
 
 /* Table Container */
 .table-container {
     overflow-x: auto; /* Enable horizontal scrolling for smaller screens */
     border-radius: 10px; /* Rounded corners for the table container */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for the table */
+    
 }
 
 /* Table Styling */
 .table-container table {
     width: 100%; /* Full width */
     border-collapse: collapse; /* Remove gaps between table cells */
-    background: #f9f9f9; /* Light background for the table */
+    background: #ffffff; /* White background for the table */
     border-radius: 10px; /* Rounded corners */
     overflow: hidden; /* Ensure rounded corners are visible */
 }
@@ -40,9 +47,10 @@ body {
 .table-container th {
     background: #1818CA; /* Dark blue background for the header */
     color: #ffffff; /* White text for contrast */
-    text-align: left; /* Align text to the left */
+    text-align: center; /* Align text to the left */
     padding: 12px; /* Add padding for spacing */
     font-weight: bold; /* Bold text */
+    width: 26vh;
 }
 
 .table-container td {
@@ -90,4 +98,35 @@ body {
 
 .table-container .btn.delete:hover {
     background: #d32f2f; /* Darker red on hover */
+}
+
+/* Modal Styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+}
+
+.modal-content {
+    background-color: #ffffff; /* White background */
+    margin: 10% auto; /* Center the modal */
+    padding: 20px; /* Add padding */
+    border-radius: 10px; /* Rounded corners */
+    width: 50%; /* Set width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+.modal-content h2 {
+    margin-top: 0; /* Remove top margin */
+    color: #1818CA; /* Dark blue text */
+}
+
+.modal-content button {
+    margin-top: 10px; /* Add spacing above buttons */
 }
