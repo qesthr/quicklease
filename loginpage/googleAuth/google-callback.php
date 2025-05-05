@@ -12,6 +12,7 @@ $client->setRedirectUri($_ENV['GOOGLE_REDIRECT']);
 
 try {
     if (isset($_GET['code'])) { 
+        // Exchange authorization code for access token
         $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
 
         if (isset($token['error'])) {
@@ -20,23 +21,53 @@ try {
 
         $client->setAccessToken($token['access_token']);
 
+        // Fetch user information from Google
         $oauth2 = new Google_Service_Oauth2($client);
         $userinfo = $oauth2->userinfo->get();
 
-        $_SESSION['user_type'] = 'google'; 
-        $_SESSION['user_email'] = $userinfo->email;
-        $_SESSION['user_name'] = $userinfo->name;
-        $_SESSION['user_picture'] = $userinfo->picture;
+        $email = $userinfo->email;
+        $name = $userinfo->name;
+        $picture = $userinfo->picture;
 
-        $_SESSION['success'] = 'Login with Google!';
-        header('Location: http://localhost/ipt/dashboard/index.html');
+        // Check if the user exists in the database
+        require_once '../db.php';
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
+        $stmt->execute([$email]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            // User exists, log them in
+            $_SESSION['user_id'] = $user['id'];
+            $_SESSION['username'] = $user['username'];
+            $_SESSION['user_type'] = $user['user_type'];
+        } else {
+            // User does not exist, create a new account
+            $stmt = $pdo->prepare("INSERT INTO users (firstname, lastname, email, user_type) VALUES (?, ?, ?, ?)");
+            $stmt->execute([$name, '', $email, 'client']); // Default role is 'client'
+
+            // Log the user in
+            $_SESSION['user_id'] = $pdo->lastInsertId();
+            $_SESSION['username'] = $name;
+            $_SESSION['user_type'] = 'client';
+        }
+
+        // Redirect based on role
+        if ($_SESSION['user_type'] === 'admin') {
+            header('Location: http://localhost/quicklease/dashboard/reports.php'); // Admin dashboard
+        } else {
+            header('Location: http://localhost/quicklease/dashboard/client_dashboard/client_booking.php'); // Client dashboard
+        }
         exit();
     } else {
         throw new Exception('No authorization code received.');
     }
 
 } catch (Exception $e) {
+    // Log the error (optional)
+    error_log('Google login error: ' . $e->getMessage());
+
+    // Redirect to login page with error message
     $_SESSION['error'] = 'Google login failed: ' . $e->getMessage();
-    header('Location: http://localhost/ipt/login.php');
+    header('Location: http://localhost/quicklease/loginpage/login.php');
     exit();
 }

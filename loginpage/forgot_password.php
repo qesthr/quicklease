@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/db.php';
+require_once '../db.php';
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
@@ -35,7 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
             $mail->Port = 587;
 
-            $mail->setFrom('joenilpanal@gmail.com', 'Joenil Acero');
+            $mail->setFrom('joenilpanal@gmail.com', 'Quicklease');
             $mail->addAddress($email, 'User');
 
             $mail->isHTML(true);

@@ -1,6 +1,6 @@
 <?php
 session_start();
-require 'includes/db.php';
+require_once '../db.php';
 
 // Load .env variables
 require_once __DIR__ . '/vendor/autoload.php';
@@ -41,13 +41,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Login successful — store user info in session
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['username'] = $user['username'];
-        $_SESSION['role'] = $user['role']; // Store the user's role in the session
+        $_SESSION['user_type'] = $user['user_type']; // Store the user's role in the session
 
         // Redirect based on role
-        if ($user['role'] === 'admin') {
-            header('Location: dashboard/reports.php'); // Admin dashboard
-        } else if ($user['role'] === 'client') {
-            header('Location: dashboard/client_dashboard/client_booking.php'); // Client dashboard
+        if ($user['user_type'] === 'admin') {
+            header('Location: /quicklease/dashboard/reports.php'); // Admin dashboard
+        } else if ($user['user_type'] === 'client') {
+            header('Location: /quicklease/dashboard/client_dashboard/client_booking.html'); // Client dashboard
         }
         exit();
     } else {
