@@ -1,11 +1,5 @@
 <?php
 
-// Check if user is logged in
-if (!isset($_SESSION['username'])) {
-    header('Location: login.php');
-    exit();
-}
-
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     require_once __DIR__ . '/../vendor/autoload.php'; // adjust if needed
     require __DIR__ . '/../db.php';
