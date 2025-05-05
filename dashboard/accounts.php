@@ -34,10 +34,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if (isset($_POST['delete'])) {
-        // Handle Delete
         $customer_id = $_POST['customer_id'];
-        $stmt = $pdo->prepare("DELETE FROM customer WHERE customer_id = ?");
-        $stmt->execute([$customer_id]);
+    
+        try {
+            // Begin transaction
+            $pdo->beginTransaction();
+    
+            // Get the user_id from the customer table
+            $stmt = $pdo->prepare("SELECT user_id FROM customer WHERE customer_id = ?");
+            $stmt->execute([$customer_id]);
+            $user_id = $stmt->fetchColumn();
+    
+            if ($user_id) {
+                // Delete from customer table
+                $stmt = $pdo->prepare("DELETE FROM customer WHERE customer_id = ?");
+                $stmt->execute([$customer_id]);
+    
+                // Delete from users table
+                $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
+                $stmt->execute([$user_id]);
+            }
+    
+            // Commit transaction
+            $pdo->commit();
+    
+            $_SESSION['success'] = "Account deleted successfully.";
+        } catch (Exception $e) {
+            $pdo->rollBack();
+            $_SESSION['error'] = "Error deleting account: " . $e->getMessage();
+        }
+    
         header("Location: accounts.php");
         exit();
     }

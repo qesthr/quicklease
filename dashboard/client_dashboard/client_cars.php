@@ -1,4 +1,5 @@
-<?php include '../../db.php'; ?>
+<?php 
+require_once '../../db.php'; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,9 +13,9 @@
         <div class="logo">
             <h2>Quick<span>Lease</span></h2>
         </div>
-        <a href="client_profile.php" class="nav-btn">PROFILE</a>
+        <a href="client_profile.userdetails.html" class="nav-btn">PROFILE</a>
         <a href="client_cars.php" class="nav-btn active">CARS</a>
-        <a href="client_bookings.php" class="nav-btn">BOOKINGS</a>
+        <a href="client_booking.html" class="nav-btn">BOOKINGS</a>
         <div class="logout-btn">
             <button>LOGOUT</button>
         </div>

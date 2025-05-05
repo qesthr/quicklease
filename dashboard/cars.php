@@ -66,6 +66,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         }
     }
 }
+$plate_no = isset($_POST["plate_no"]) ? trim($_POST["plate_no"]) : null;
+if (empty($plate_no)) {
+    $error = "Plate number is required.";
+}
 $stmt = $pdo->prepare("SELECT COUNT(*) FROM car WHERE plate_no = ?");
 $stmt->execute([$plate_no]);
 $count = $stmt->fetchColumn();
@@ -73,27 +77,42 @@ if ($count > 0) {
     $error = "A car with this plate number already exists!";
 }
 
-    // Handle Edit Car Form Submission
-    if ($_POST["action"] === "edit_car") {
-        $car_id = $_POST["car_id"];
-        $model = trim($_POST["model"]);
-        $plate_no = trim($_POST["plate_no"]);
-        $price = trim($_POST["price"]);
-        $status = $_POST["status"];
-        $seats = $_POST["seats"];
-        $transmission = trim($_POST["transmission"]);
-        $mileage = $_POST["mileage"];
-        $features = trim($_POST["features"]);
+   // Handle Edit Car Form Submission
+if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "edit_car") {
+    $car_id = $_POST["car_id"];
+    $model = trim($_POST["model"]);
+    $plate_no = trim($_POST["plate_no"]);
+    $price = trim($_POST["price"]);
+    $status = $_POST["status"];
+    $seats = $_POST["seats"];
+    $transmission = trim($_POST["transmission"]);
+    $mileage = $_POST["mileage"];
+    $features = trim($_POST["features"]);
 
-        // Update the car in the database
-        $stmt = $pdo->prepare("UPDATE car SET model = ?, plate_no = ?, price = ?, status = ?, seats = ?, transmission = ?, mileage = ?, features = ? WHERE id = ?");
-        if ($stmt->execute([$model, $plate_no, $price, $status, $seats, $transmission, $mileage, $features, $car_id])) {
+    // Validate input
+    if (empty($car_id) || empty($model) || empty($plate_no) || empty($price) || empty($status) || empty($seats) || empty($transmission) || empty($mileage) || empty($features)) {
+        $error = "All fields are required!";
+    } elseif (!is_numeric($price) || $price <= 0) {
+        $error = "Price must be a positive number.";
+    } elseif (!is_numeric($seats) || $seats <= 0) {
+        $error = "Seats must be a positive number.";
+    } elseif (!is_numeric($mileage) || $mileage < 0) {
+        $error = "Mileage must be a non-negative number.";
+    } else {
+        try {
+            // Update the car in the database
+            $stmt = $pdo->prepare("UPDATE car SET model = ?, plate_no = ?, price = ?, status = ?, seats = ?, transmission = ?, mileage = ?, features = ? WHERE id = ?");
+            $stmt->execute([$model, $plate_no, $price, $status, $seats, $transmission, $mileage, $features, $car_id]);
+
+            // Redirect on success
+            $_SESSION['success'] = "Car updated successfully.";
             header("Location: cars.php");
             exit();
-        } else {
-            $error = "Error updating car.";
+        } catch (PDOException $e) {
+            $error = "Error updating car: " . $e->getMessage();
         }
     }
+}
 
 
 // Handle Delete Car
