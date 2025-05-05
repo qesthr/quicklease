@@ -1,3 +1,21 @@
+.car-list-page .topbar {
+    background-color: #1818CA; /* Override background color */
+    color: #ffffff; /* Override text color */
+    border-radius: 15px; /* Add rounded corners */
+    padding: 20px; /* Adjust padding */
+    width: 97.5%; /* Full width */
+}
+
+.car-list-page .topbar h1 {
+    font-size: 28px; /* Adjust font size */
+    color: #ffffff; /* Override heading color */
+    margin-left: 10px;
+}
+
+.car-list-page .user-info {
+    margin-right: 33px;
+}
+
 /* ===== Cars Page Specific Styles ===== */
 /* === Car List Page === */
 .car-list-page {
@@ -66,24 +84,27 @@
 
 .car-list-page .btn-edit {
     margin-top: -1px;
-    padding: 8px;
+    padding: 13px;
     background: #FBCC63;
     color: white;
     border: none;
-    border-radius: 8px;
+    border-radius: 3px;
     font-weight: bold;
     cursor: pointer;
     transition: background 0.3s;
 }
 
 .car-list-page .btn-edit:hover {
-    background: #fcd56b;
+    background: #f5b913;
 }
 
 .car-list-page .btn-delete {
-    background: #ff4d4d;
+    background: rgb(238, 83, 83);
     color: white;
     margin-left: 5px;
+    border-radius: 3px;
+    padding: 8px;
+    text-decoration: none;
 }
 
 .car-list-page .btn-delete:hover {
