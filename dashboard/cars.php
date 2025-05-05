@@ -11,16 +11,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         $plate_no = trim($_POST["plate_no"]);
         $price = trim($_POST["price"]);
         $status = $_POST["status"];
+        $seats = $_POST["seats"];
+        $transmission = trim($_POST["transmission"]);
+        $mileage = $_POST["mileage"];
+        $features = trim($_POST["features"]);
 
         // Validate input
-        if (empty($model) || empty($plate_no) || empty($price) || empty($status)) {
+        if (empty($model) || empty($plate_no) || empty($price) || empty($status) || empty($seats) || empty($transmission) || empty($mileage) || empty($features)) {
             $error = "All fields are required!";
         } else {
             // Handle file upload
-            if (!empty($_FILES["car_image"]["name"])) {
-                $image_name = uniqid() . "_" . basename($_FILES["car_image"]["name"]);
+            if (!empty($_FILES["image"]["name"])) {
+                $image = uniqid() . "_" . basename($_FILES["image"]["name"]);
                 $target_dir = "../uploads/";
-                $target_file = $target_dir . $image_name;
+                $target_file = $target_dir . $image;
 
                 // Check if the uploads directory exists
                 if (!is_dir($target_dir)) {
@@ -29,12 +33,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
 
                 // Check file type (only allow images)
                 $allowed_types = ["image/jpeg", "image/png", "image/gif"];
-                if (!in_array($_FILES["car_image"]["type"], $allowed_types)) {
+                if (!in_array($_FILES["image"]["type"], $allowed_types)) {
                     $error = "Invalid file type! Please upload JPEG, PNG, or GIF.";
-                } elseif ($_FILES["car_image"]["size"] > 5000000) { // Limit: 5MB
+                } elseif ($_FILES["image"   ]["size"] > 5000000) { // Limit: 5MB
                     $error = "File size too large! Max 5MB.";
                 } else {
-                    if (!move_uploaded_file($_FILES["car_image"]["tmp_name"], $target_file)) {
+                    if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
                         $error = "Error uploading file!";
                     }
                 }
@@ -42,8 +46,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
 
             if (empty($error)) {
                 // Insert into database using PDO
-                $stmt = $pdo->prepare("INSERT INTO car (model, plate_no, price, status, image) VALUES (?, ?, ?, ?, ?)");
-                if ($stmt->execute([$model, $plate_no, $price, $status, $image_name])) {
+                $stmt = $pdo->prepare("INSERT INTO car (model, plate_no, price, status, image, seats, transmission, mileage, features) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                if ($stmt->execute([$model, $plate_no, $price, $status, $image, $seats, $transmission, $mileage, $features])) {
                     header("Location: cars.php");
                     exit();
                 } else {
@@ -64,7 +68,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
         $transmission = trim($_POST["transmission"]);
         $mileage = $_POST["mileage"];
         $features = trim($_POST["features"]);
-    
+
         // Update the car in the database
         $stmt = $pdo->prepare("UPDATE car SET model = ?, plate_no = ?, price = ?, status = ?, seats = ?, transmission = ?, mileage = ?, features = ? WHERE id = ?");
         if ($stmt->execute([$model, $plate_no, $price, $status, $seats, $transmission, $mileage, $features, $car_id])) {
@@ -98,64 +102,74 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <title>Cars Catalogue</title>
-
     <link rel="stylesheet" href="../css/dashboard.css">
-
+    <link rel="stylesheet" href="../css/cars.css">
 </head>
 <body>
-
     <div class="car-list-page">
         <?php include 'includes/sidebar.php'; ?>
-
         <?php include 'includes/topbar.php'; ?>
+
         <div class="content">
             <h2>Car List</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Car ID</th>
-                        <th>Image</th>
-                        <th>Car Model</th>
-                        <th>Plate No.</th>
-                        <th>Price</th>
-                        <th>Status</th>
-                        <th>Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach ($cars as $car): ?>
-                    <tr>
-                        <td><?= htmlspecialchars($car['id']) ?></td>
-                        <td>
-                            <img src="../uploads/<?= htmlspecialchars($car['image']) ?>" alt="Car Image">
-                        </td>
-                        <td><?= htmlspecialchars($car['model']) ?></td>
-                        <td><?= htmlspecialchars($car['plate_no']) ?></td>
-                        <td><?= htmlspecialchars($car['price']) ?>/Day</td>
-                        <td><?= htmlspecialchars($car['status']) ?></td>
-                        <td>
-                        <button class="btn btn-edit" 
-            onclick="openEditModal(
-                <?= htmlspecialchars($car['id']) ?>, 
-                '<?= htmlspecialchars($car['model']) ?>', 
-                '<?= htmlspecialchars($car['plate_no']) ?>', 
-                <?= htmlspecialchars($car['price']) ?>, 
-                '<?= htmlspecialchars($car['status']) ?>', 
-                <?= htmlspecialchars($car['seats']) ?>, 
-                '<?= htmlspecialchars($car['transmission']) ?>', 
-                <?= htmlspecialchars($car['mileage']) ?>, 
-                '<?= htmlspecialchars($car['features']) ?>'
-            )">
-            Edit
-        </button>                    <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
+            <div class="table-container">
+                <table class="car-table">
+                    <thead class="table-header">
+                        <tr>
+                            <th>Car ID</th>
+                            <th>Image</th>
+                            <th>Car Model</th>
+                            <th>Plate No.</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Seats</th>
+                            <th>Transmission</th>
+                            <th>Mileage</th>
+                            <th>Features</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($cars as $car): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($car['id']) ?></td>
+                                <td><img src="../uploads/<?= htmlspecialchars($car['image']) ?>" alt="Car Image"></td>
+                                <td><?= htmlspecialchars($car['model']) ?></td>
+                                <td><?= htmlspecialchars($car['plate_no']) ?></td>
+                                <td><?= htmlspecialchars($car['price']) ?>/Day</td>
+                                <td><?= htmlspecialchars($car['status']) ?></td>
+                                <td><?= htmlspecialchars($car['seats']) ?></td>
+                                <td><?= htmlspecialchars($car['transmission']) ?></td>
+                                <td><?= htmlspecialchars($car['mileage']) ?></td>
+                                <td><?= htmlspecialchars($car['features']) ?></td>
+                                <td>
+                                    <button class="btn btn-edit" 
+                                        onclick="openEditModal(
+                                            <?= htmlspecialchars($car['id']) ?>, 
+                                            '<?= htmlspecialchars($car['model']) ?>', 
+                                            '<?= htmlspecialchars($car['plate_no']) ?>', 
+                                            <?= htmlspecialchars($car['price']) ?>, 
+                                            '<?= htmlspecialchars($car['status']) ?>', 
+                                            <?= htmlspecialchars($car['seats']) ?>, 
+                                            '<?= htmlspecialchars($car['transmission']) ?>', 
+                                            <?= htmlspecialchars($car['mileage']) ?>, 
+                                            '<?= htmlspecialchars($car['features']) ?>'
+                                        )">
+                                        Edit
+                                    </button>
+                                    <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <!-- Modal for Add Car -->
+        <div class="add-car-button-container">
+            <button id="openModal" class="btn btn-add">Add Car</button>
+        </div>
+
         <div id="addCarModal" class="modal">
             <div class="modal-content">
                 <span class="close" id="closeModal">&times;</span>
@@ -179,15 +193,26 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <option value="Maintenance">Maintenance</option>
                     </select>
                     
+                    <label>Number of Seats:</label>
+                    <input type="number" name="seats" required>
+                    
+                    <label>Transmission:</label>
+                    <input type="text" name="transmission" required>
+                    
+                    <label>Mileage (miles):</label>
+                    <input type="number" name="mileage" required>
+                    
+                    <label>Features:</label>
+                    <textarea name="features" rows="4" required></textarea>
+                    
                     <label>Upload Car Image:</label>
-                    <input type="file" name="car_image" accept="image/*" required>
+                    <input type="file" name="image" accept="image/*" required>
 
-                    <button type="submit" class="btn btn-add">Add Car</button>
+                    <button type="submit" class="form button">Add Car</button>
                 </form>
             </div>
         </div>
 
-        <!-- Modal for Edit Car -->
         <div id="editCarModal" class="modal">
             <div class="modal-content">
                 <span class="close" id="closeEditModal">&times;</span>
@@ -211,26 +236,24 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <option value="Rented">Rented</option>
                         <option value="Maintenance">Maintenance</option>
                     </select>
-
-                    <!-- New Fields -->
+                    
                     <label>Number of Seats:</label>
                     <input type="number" name="seats" id="editCarSeats" required>
-
+                    
                     <label>Transmission:</label>
                     <input type="text" name="transmission" id="editCarTransmission" required>
-
+                    
                     <label>Mileage (miles):</label>
                     <input type="number" name="mileage" id="editCarMileage" required>
-
+                    
                     <label>Features:</label>
                     <textarea name="features" id="editCarFeatures" rows="4" required></textarea>
 
-                    <button type="submit" class="btn btn-add">Update Car</button>
+                    <button type="submit" class="form button">Update Car</button>
                 </form>
             </div>
         </div>
     </div>
-    
 
     <script>
         // Get modal elements for Add Car
@@ -260,18 +283,19 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
         const closeEditModalBtn = document.getElementById("closeEditModal");
 
         // Open Edit Modal
-        function openEditModal(id, model, plateNo, price, status, seats, transmission, mileage, features) {
-        document.getElementById("editCarId").value = id;
-        document.getElementById("editCarModel").value = model;
-        document.getElementById("editCarPlateNo").value = plateNo;
-        document.getElementById("editCarPrice").value = price;
-        document.getElementById("editCarStatus").value = status;
-        document.getElementById("editCarSeats").value = seats;
-        document.getElementById("editCarTransmission").value = transmission;
-        document.getElementById("editCarMileage").value = mileage;
-        document.getElementById("editCarFeatures").value = features;
-        editModal.style.display = "block";
-    }
+        function openEditModal(id, model, plate_no, price, status, seats, transmission, mileage, features) {
+            document.getElementById("editCarId").value = id;
+            document.getElementById("editCarModel").value = model;
+            document.getElementById("editCarPlateNo").value = plate_no;
+            document.getElementById("editCarPrice").value = price;
+            document.getElementById("editCarStatus").value = status;
+            document.getElementById("editCarSeats").value = seats;
+            document.getElementById("editCarTransmission").value = transmission;
+            document.getElementById("editCarMileage").value = mileage;
+            document.getElementById("editCarFeatures").value = features;
+            editModal.style.display = "block";
+        }
+
         // Close Edit Modal
         closeEditModalBtn.onclick = function() {
             editModal.style.display = "none";
@@ -284,6 +308,5 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
             }
         };
     </script>
-
 </body>
 </html>

@@ -1,0 +1,27 @@
+/* === Recent Bookings Table === */
+.recent-bookings h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.recent-bookings table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.recent-bookings th {
+    background: #1818CA;
+    color: white;
+    padding: 12px;
+}
+
+.recent-bookings td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}

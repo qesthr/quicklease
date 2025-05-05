@@ -107,7 +107,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <title>Admin | Dashboard</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/dashboard.css"> 
+    <link rel="stylesheet" href="../css/reports.css">
 
 </head>
 <body>
