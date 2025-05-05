@@ -239,8 +239,7 @@
                                 <p>₱<?php echo htmlspecialchars($row['price']); ?>/day</p>
                                 <p><?php echo htmlspecialchars($row['seats']); ?> Seats</p>
                                 <p>Transmission: <?php echo htmlspecialchars($row['transmission']); ?></p>
-                                <p>Mileage: <?php echo htmlspecialchars($row['mileage']); ?> MPG</p>
-                            </div>
+                                <p>Mileage: <?php echo htmlspecialchars($row['mileage']); ?> MPG</p>                            </div>
                             <button class="confirm-btn" data-car-id="<?php echo $row['id']; ?>" data-car-model="<?php echo htmlspecialchars($row['model']); ?>">Confirm</button>
                         </div>
                     <?php } ?>
