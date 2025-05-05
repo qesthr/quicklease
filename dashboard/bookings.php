@@ -3,10 +3,10 @@ require_once '../db.php';
 
 // Handle Add Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
-    $stmt = $pdo->prepare("INSERT INTO booking_details (customer_name, car_model, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
+    $stmt = $pdo->prepare("INSERT INTO booking_details (customer_name, car_id, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
     $stmt->execute([
         $_POST['customer_name'],
-        $_POST['car_model'],
+        $_POST['car_id'],
         $_POST['booking_date'],
         $_POST['return_date'],
         $_POST['status']
@@ -17,10 +17,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // Handle Edit Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit') {
-    $stmt = $pdo->prepare("UPDATE booking_details SET customer_name=?, car_model=?, booking_date=?, return_date=?, status=? WHERE id=?");
+    $stmt = $pdo->prepare("UPDATE booking_details SET customer_name=?, car_id=?, booking_date=?, return_date=?, status=? WHERE id=?");
     $stmt->execute([
         $_POST['customer_name'],
-        $_POST['car_model'],
+        $_POST['car_id'],
         $_POST['booking_date'],
         $_POST['return_date'],
         $_POST['status'],
@@ -39,17 +39,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 }
 
 // Fetch bookings
-$stmt = $pdo->query("SELECT * FROM booking_details ORDER BY id DESC");
+$stmt = $pdo->query("SELECT booking_details.*, car.model AS car_model FROM booking_details JOIN car ON booking_details.car_id = car.id ORDER BY booking_details.id DESC");
 $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Bookings | QuickLease Admin</title>
-  <link rel="stylesheet" href="../css/dashboard.css">
-  <style>
+    <meta charset="UTF-8">
+    <title>Bookings | QuickLease Admin</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/bookings.css">
+
+
+
+    <style>
     body { margin: 0; font-family: Arial, sans-serif; display: flex; }
     .sidebar { width: 220px; background-color: #1d1de2; color: white; padding: 20px 0; height: 100vh; position: fixed; top: 0; left: 0; display: flex; flex-direction: column; align-items: center; }
     .sidebar .logo img { width: 80px; margin-bottom: 40px; }
@@ -147,7 +151,15 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <form method="POST">
       <input type="hidden" name="action" value="add">
       <label>Customer Name: <input type="text" name="customer_name" required></label>
-      <label>Car Model: <input type="text" name="car_model" required></label>
+      <label>Car:</label>
+      <select name="car_id" required>
+        <?php
+        $cars = $pdo->query("SELECT id, model FROM car")->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($cars as $car) {
+            echo "<option value='{$car['id']}'>{$car['model']}</option>";
+        }
+        ?>
+      </select>
       <label>Booking Date: <input type="date" name="booking_date" required></label>
       <label>Return Date: <input type="date" name="return_date" required></label>
       <label>Status:
@@ -170,7 +182,15 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <input type="hidden" name="action" value="edit">
       <input type="hidden" name="id" id="edit-id">
       <label>Customer Name: <input type="text" name="customer_name" id="edit-customer" required></label>
-      <label>Car Model: <input type="text" name="car_model" id="edit-car" required></label>
+      <label>Car:</label>
+      <select name="car_id" id="edit-car-id" required>
+        <?php
+        $cars = $pdo->query("SELECT id, model FROM car")->fetchAll(PDO::FETCH_ASSOC);
+        foreach ($cars as $car) {
+            echo "<option value='{$car['id']}'>{$car['model']}</option>";
+        }
+        ?>
+      </select>
       <label>Booking Date: <input type="date" name="booking_date" id="edit-date" required></label>
       <label>Return Date: <input type="date" name="return_date" id="edit-return" required></label>
       <label>Status:
@@ -209,7 +229,7 @@ function closeModal(id) {
 function openEditModal(data) {
   document.getElementById('edit-id').value = data.id;
   document.getElementById('edit-customer').value = data.customer_name;
-  document.getElementById('edit-car').value = data.car_model;
+  document.getElementById('edit-car-id').value = data.car_id;
   document.getElementById('edit-date').value = data.booking_date;
   document.getElementById('edit-return').value = data.return_date;
   document.getElementById('edit-status').value = data.status;
