@@ -127,12 +127,13 @@
 }
 
 .modal-content {
-    background-color: #ffffff; /* White background */
-    margin: 10% auto; /* Center the modal */
-    padding: 20px; /* Add padding */
-    border-radius: 10px; /* Rounded corners */
-    width: 50%; /* Set width */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+    background-color: #ffffff;
+    margin: 4.6% 29%;
+    padding: 40px;
+    border-radius: 10px;
+    width: 37%;
+    height: 69%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .modal-content h2 {
@@ -141,20 +142,30 @@
 }
 
 .modal-content label {
-    display: block; /* Make labels block elements */
-    margin-top: 10px; /* Add spacing above labels */
-    font-weight: bold; /* Bold text */
-    color: #333; /* Dark text color */
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 100%;
+    font-weight: 500;
 }
 
 .modal-content input,
-.modal-content select {
-    width: 100%; /* Full width */
+.modal-content select,
+.modal-content textarea {
+    width: 100%; /* Take the remaining space */
     padding: 10px; /* Add padding */
-    margin-top: 5px; /* Add spacing above inputs */
     border: 1px solid #ddd; /* Subtle border */
     border-radius: 5px; /* Rounded corners */
     font-size: 14px; /* Adjust font size */
+}
+
+.modal-content form div {
+    display: flex;
+    margin-bottom: 15px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: center;
+    flex-wrap: wrap;
 }
 
 .modal-content button {
@@ -165,21 +176,24 @@
     font-size: 14px; /* Adjust font size */
     cursor: pointer; /* Pointer cursor on hover */
     transition: background 0.3s; /* Smooth background transition */
+    width: 100%; /* Full width */
+    background: #FBCC63;
 }
 
 .modal-content button:hover {
-    background: #f1f1f1; /* Light gray background on hover */
+    background: #f5b913;
 }
 
 /* === Close Button === */
 .modal-content .close {
-    position: absolute; /* Position relative to the modal */
-    top: 10px; /* Position from the top */
-    right: 15px; /* Position from the right */
-    font-size: 20px; /* Adjust font size */
-    font-weight: bold; /* Bold text */
-    color: #333; /* Dark text color */
-    cursor: pointer; /* Pointer cursor on hover */
+    position: absolute;
+    font-size: 30px;
+    font-weight: bold;
+    color: #0c0c0c;
+    cursor: pointer;
+    margin-top: -1%;
+    margin-left: 36%;
+    position: fixed;
 }
 
 .modal-content .close:hover {
@@ -202,12 +216,14 @@
     color: #000; /* Black text */
     border: none; /* Remove border */
     border-radius: 8px; /* Rounded corners */
-    font-weight: bold; /* Bold text */
-    cursor: pointer; /* Pointer cursor on hover */
-    padding: 10px 20px; /* Add padding */
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 12px 27px;
     transition: background 0.3s; /* Smooth background transition */
 }
 
 .btn-add:hover {
     background: #f5b913; /* Darker yellow on hover */
 }
+

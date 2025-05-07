@@ -37,7 +37,8 @@
 
 /* Table Styling */
 .table-container table {
-    width: 100%; /* Full width */
+    width: auto; /* Allow the table to expand based on content */
+    min-width: 100%; /* Ensure the table doesn't shrink below its container */
     border-collapse: collapse; /* Remove gaps between table cells */
     background: #ffffff; /* White background for the table */
     border-radius: 10px; /* Rounded corners */
@@ -50,13 +51,16 @@
     text-align: center; /* Align text to the left */
     padding: 12px; /* Add padding for spacing */
     font-weight: bold; /* Bold text */
-    width: 26vh;
+    width: 25vh;
 }
 
 .table-container td {
     padding: 12px; /* Add padding for spacing */
     border-bottom: 1px solid #ddd; /* Add a subtle border between rows */
     color: #333; /* Dark text color */
+    text-align: center; /* Center-align text */
+    vertical-align: middle; /* Vertically align content */
+    white-space: nowrap; /* Prevent text wrapping */
 }
 
 .table-container tr:hover {
@@ -71,6 +75,8 @@
     font-size: 14px; /* Adjust font size */
     cursor: pointer; /* Pointer cursor on hover */
     transition: background 0.3s; /* Smooth background transition */
+    display: inline-block; /* Ensure buttons are inline */
+    margin: 0 5px; /* Add spacing between buttons */
 }
 
 .table-container .btn.edit {
@@ -115,18 +121,64 @@
 
 .modal-content {
     background-color: #ffffff; /* White background */
-    margin: 10% auto; /* Center the modal */
+    margin: 5% auto; /* Center the modal */
     padding: 20px; /* Add padding */
     border-radius: 10px; /* Rounded corners */
-    width: 50%; /* Set width */
+    width: 40%; /* Set width */
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
 }
 
 .modal-content h2 {
     margin-top: 0; /* Remove top margin */
     color: #1818CA; /* Dark blue text */
+    font-size: 24px; /* Adjust font size */
+}
+
+.modal-content label {
+    display: block; /* Make labels block elements */
+    margin-top: 10px; /* Add spacing above labels */
+    font-weight: bold; /* Bold text */
+    color: #333; /* Dark text color */
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+    width: 96%; /* Full width */
+    padding: 10px; /* Add padding */
+    margin-top: 5px; /* Add spacing above inputs */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
 }
 
 .modal-content button {
-    margin-top: 10px; /* Add spacing above buttons */
+    margin-top: 20px; /* Add spacing above buttons */
+    padding: 10px 15px; /* Add padding */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Smooth background transition */
+    background: #FBCC63; /* Yellow background */
+    color: #000; /* Black text */
+    width: 83.2vh;
+}
+
+.modal-content button:hover {
+    background: #f5b913; /* Darker yellow on hover */
+}
+
+.modal-content .close {
+    position: absolute; /* Position relative to the modal */
+    top: 10px; /* Position from the top */
+    right: 15px; /* Position from the right */
+    font-size: 20px; /* Adjust font size */
+    font-weight: bold; /* Bold text */
+    color: #333; /* Dark text color */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.modal-content .close:hover {
+    color: #1818CA; /* Dark blue on hover */
 }
