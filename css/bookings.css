@@ -30,21 +30,21 @@
 .booking-content {
     display: flex;
     flex-direction: column;
-    gap: 20px; /* Add spacing between elements */
-    padding: 20px; /* Add padding around the content */
-    background: #ffffff; /* White background */
-    border-radius: 10px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-    margin: 20px; /* Add margin around the content */
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+    margin-left: 30vh;
+    width: 173vh;
 }
 
 /* === Table Container === */
 .table-container {
-    overflow-x: auto; /* Enable horizontal scrolling for smaller screens */
-    border-radius: 10px; /* Rounded corners for the table container */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for the table */
-    background: #f9f9f9; /* Light background for the table */
-    padding: 10px; /* Add padding inside the container */
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background: #f9f9f9;
+    padding: 24px;
+
 }
 
 /* === Table Styling === */
@@ -186,3 +186,28 @@
     color: #1818CA; /* Dark blue on hover */
 }
 
+.booking-content .topbar {
+    width: 96%; /* Full width */
+    margin-top: 0vh;
+}
+
+/* === Add Booking Button === */
+.add-booking-button-container {
+    text-align: right; /* Align the button to the right */
+    margin-bottom: 20px; /* Add spacing below the button */
+}
+
+.btn-add {
+    background: #FBCC63; /* Yellow background */
+    color: #000; /* Black text */
+    border: none; /* Remove border */
+    border-radius: 8px; /* Rounded corners */
+    font-weight: bold; /* Bold text */
+    cursor: pointer; /* Pointer cursor on hover */
+    padding: 10px 20px; /* Add padding */
+    transition: background 0.3s; /* Smooth background transition */
+}
+
+.btn-add:hover {
+    background: #f5b913; /* Darker yellow on hover */
+}
