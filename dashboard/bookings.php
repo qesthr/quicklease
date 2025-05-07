@@ -141,139 +141,194 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php include 'includes/sidebar.php'; ?>
     <?php include 'includes/topbar.php'; ?>
 
+    <div class="booking-header">
+        <div class="add-booking-button-container">
+            <button class="btn btn-add" onclick="openModal('addModal')">Add Booking</button>
+        </div>
+        <div class="search-container">
+            <form method="GET" action="bookings.php">
+                <input type="text" name="search" placeholder="Search bookings..." value="<?= htmlspecialchars($search) ?>">
+                <button type="submit"><i class="fas fa-search"></i></button>
+                <?php if (!empty($search)): ?>
+                    <a href="bookings.php" class="clear-search"><i class="fas fa-times"></i> Clear</a>
+                <?php endif; ?>
+            </form>
+        </div>
+    </div>
+
     <div class="table-container">
-      <div class="add-booking-button-container">
-          <button class="btn btn-add" onclick="openModal('addModal')">Add Booking</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Booking ID</th>
-            <th>Customer Name</th>
-            <th>Car Model</th>
-            <th>Location</th>
-            <th>Booking Date</th>
-            <th>Return Date</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          <?php foreach ($bookings as $booking): ?>
-            <tr>
-              <td><?= htmlspecialchars($booking['id']) ?></td>
-              <td><?= htmlspecialchars($booking['customer_name']) ?></td>
-              <td><?= htmlspecialchars($booking['car_model']) ?></td>
-              <td><?= htmlspecialchars($booking['location']) ?></td>
-              <td><?= htmlspecialchars($booking['booking_date']) ?></td>
-              <td><?= htmlspecialchars($booking['return_date']) ?></td>
-              <td><?= htmlspecialchars($booking['status']) ?></td>
-              <td class="actions">
-                <button class="view-btn" onclick="openViewModal(<?= htmlspecialchars(json_encode($booking)) ?>)">View</button>
-                <button class="edit-btn" onclick="openEditModal(<?= htmlspecialchars(json_encode($booking)) ?>)">Edit</button>
-                <form method="POST" style="display:inline;">
-                  <input type="hidden" name="id" value="<?= $booking['id'] ?>">
-                  <input type="hidden" name="action" value="cancel">
-                  <button type="submit" class="cancel-btn" onclick="return confirm('Cancel this booking?')">Cancel</button>
-                </form>
-              </td>
-            </tr>
-          <?php endforeach; ?>
-        </tbody>
-      </table>
+        <table>
+            <thead>
+                <tr>
+                    <th>Booking ID</th>
+                    <th>Customer Name</th>
+                    <th>Car Model</th>
+                    <th>Location</th>
+                    <th>Booking Date</th>
+                    <th>Return Date</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (empty($bookings)): ?>
+                    <tr>
+                        <td colspan="8" class="no-results">No bookings found<?= !empty($search) ? ' matching your search' : '' ?>.</td>
+                    </tr>
+                <?php else: ?>
+                    <?php foreach ($bookings as $booking): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($booking['id']) ?></td>
+                            <td><?= htmlspecialchars($booking['customer_name']) ?></td>
+                            <td><?= htmlspecialchars($booking['car_model']) ?></td>
+                            <td><?= htmlspecialchars($booking['location']) ?></td>
+                            <td><?= htmlspecialchars($booking['booking_date']) ?></td>
+                            <td><?= htmlspecialchars($booking['return_date']) ?></td>
+                            <td><?= htmlspecialchars($booking['status']) ?></td>
+                            <td class="actions">
+                                <button class="view-btn" onclick="openViewModal(<?= htmlspecialchars(json_encode($booking)) ?>)">View</button>
+                                <button class="edit-btn" onclick="openEditModal(<?= htmlspecialchars(json_encode($booking)) ?>)">Edit</button>
+                                <form method="POST" style="display:inline;">
+                                    <input type="hidden" name="id" value="<?= $booking['id'] ?>">
+                                    <input type="hidden" name="action" value="cancel">
+                                    <button type="submit" class="cancel-btn" onclick="return confirm('Cancel this booking?')">Cancel</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </tbody>
+        </table>
     </div>
   </div>
 
   <!-- ADD Modal -->
   <div class="modal" id="addModal">
     <div class="modal-content">
-      <span class="close" onclick="closeModal('addModal')">×</span>
-      <h2>Add Booking</h2>
-      <form method="POST">
-        <input type="hidden" name="action" value="add">
-        <div>
-            <label for="customer_id">Customer Name:</label>
-            <input type="text" name="customer_id" id="customer_id" required>
-        </div>
-        <div>
-            <label for="car_id">Car:</label>
-            <select name="car_id" id="car_id" required>
-                <?php
-                $cars = $pdo->query("SELECT id, model FROM car")->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($cars as $car) {
-                    echo "<option value='{$car['id']}'>{$car['model']}</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <div>
-            <label for="booking_date">Booking Date:</label>
-            <input type="date" name="booking_date" id="booking_date" required>
-        </div>
-        <div>
-            <label for="return_date">Return Date:</label>
-            <input type="date" name="return_date" id="return_date" required>
-        </div>
-        <div>
-            <label for="status">Status:</label>
-            <select name="status" id="status">
-                <option value="Active">Active</option>
-                <option value="Completed">Completed</option>
-            </select>
-        </div>
-        <button type="submit">Save</button>
-      </form>
+        <span class="close" onclick="closeModal('addModal')">×</span>
+        <h2>Add Booking</h2>
+        <form method="POST" id="addForm">
+            <input type="hidden" name="action" value="add">
+            
+            <div class="form-group">
+                <label for="add-customer">Customer Name:</label>
+                <select name="customer_id" id="add-customer" required>
+                    <option value="">Select Customer</option>
+                    <?php
+                    $customers = $pdo->query("SELECT id, customer_name FROM customer")->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($customers as $customer) {
+                        echo "<option value='{$customer['id']}'>{$customer['customer_name']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="add-car">Car:</label>
+                <select name="car_id" id="add-car" required>
+                    <option value="">Select Car</option>
+                    <?php
+                    $cars = $pdo->query("SELECT id, model FROM car")->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($cars as $car) {
+                        echo "<option value='{$car['id']}'>{$car['model']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="add-location">Location:</label>
+                <input type="text" name="location" id="add-location" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="add-booking-date">Booking Date:</label>
+                <input type="date" name="booking_date" id="add-booking-date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="add-return-date">Return Date:</label>
+                <input type="date" name="return_date" id="add-return-date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="add-status">Status:</label>
+                <select name="status" id="add-status" required>
+                    <option value="Pending">Pending</option>
+                    <option value="Active">Active</option>
+                    <option value="Completed">Completed</option>
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Save Booking</button>
+            </div>
+        </form>
     </div>
   </div>
 
   <!-- EDIT Modal -->
   <div class="modal" id="editModal">
     <div class="modal-content">
-      <span class="close" onclick="closeModal('editModal')">×</span>
-      <h2>Edit Booking</h2>
-      <form method="POST" id="editForm">
-        <input type="hidden" name="action" value="edit">
-        <input type="hidden" name="id" id="edit-id">
-        <div>
-            <label for="edit-customer">Customer:</label>
-            <select name="customer_id" id="edit-customer" required>
-                <?php
-                $customers = $pdo->query("SELECT id, customer_name FROM customer")->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($customers as $customer) {
-                    echo "<option value='{$customer['id']}'>{$customer['customer_name']}</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <div>
-            <label for="edit-car-id">Car:</label>
-            <select name="car_id" id="edit-car-id" required>
-                <?php
-                $cars = $pdo->query("SELECT id, model FROM car")->fetchAll(PDO::FETCH_ASSOC);
-                foreach ($cars as $car) {
-                    echo "<option value='{$car['id']}'>{$car['model']}</option>";
-                }
-                ?>
-            </select>
-        </div>
-        <div>
-            <label for="edit-date">Booking Date:</label>
-            <input type="date" name="booking_date" id="edit-date" required>
-        </div>
-        <div>
-            <label for="edit-return">Return Date:</label>
-            <input type="date" name="return_date" id="edit-return" required>
-        </div>
-        <div>
-            <label for="edit-status">Status:</label>
-            <select name="status" id="edit-status">
-                <option value="Active">Active</option>
-                <option value="Completed">Completed</option>
-                <option value="Cancelled">Cancelled</option>
-            </select>
-        </div>
-        <button type="submit">Update</button>
-      </form>
+        <span class="close" onclick="closeModal('editModal')">×</span>
+        <h2>Edit Booking</h2>
+        <form method="POST" id="editForm">
+            <input type="hidden" name="action" value="edit">
+            <input type="hidden" name="id" id="edit-id">
+            
+            <div class="form-group">
+                <label for="edit-customer">Customer Name:</label>
+                <select name="customer_id" id="edit-customer" required>
+                    <?php
+                    $customers = $pdo->query("SELECT id, customer_name FROM customer")->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($customers as $customer) {
+                        echo "<option value='{$customer['id']}'>{$customer['customer_name']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-car-id">Car:</label>
+                <select name="car_id" id="edit-car-id" required>
+                    <?php
+                    $cars = $pdo->query("SELECT id, model FROM car")->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($cars as $car) {
+                        echo "<option value='{$car['id']}'>{$car['model']}</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-location">Location:</label>
+                <input type="text" name="location" id="edit-location" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-date">Booking Date:</label>
+                <input type="date" name="booking_date" id="edit-date" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-return">Return Date:</label>
+                <input type="date" name="return_date" id="edit-return" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="edit-status">Status:</label>
+                <select name="status" id="edit-status" required>
+                    <option value="Pending">Pending</option>
+                    <option value="Active">Active</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                </select>
+            </div>
+            
+            <div class="form-actions">
+                <button type="submit" class="btn-save">Update Booking</button>
+            </div>
+        </form>
     </div>
   </div>
 
