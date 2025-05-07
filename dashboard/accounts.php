@@ -9,9 +9,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $customer_email = trim($_POST['customer_email']);
         $customer_phone = trim($_POST['customer_phone']);
 
+        if (!preg_match('/^09\d{9}$/', $customer_phone)) {
+            $_SESSION['error'] = "Invalid phone number. It must start with 09 and be 11 digits.";
+            header("Location: accounts.php");
+            exit();
+        }
+
+            // Debugging: Print the values
+        echo "ID: $customer_id<br>";
+        echo "Name: $customer_name<br>";
+        echo "Email: $customer_email<br>";
+        echo "Phone: $customer_phone<br>";
+
         $stmt = $pdo->prepare("UPDATE customer SET customer_name = ?, customer_email = ?, customer_phone = ? WHERE id = ?");
         $stmt->execute([$customer_name, $customer_email, $customer_phone, $customer_id]);
         header("Location: accounts.php");
+
+          // Debugging: Check if the query was successful
+    if ($stmt->rowCount() > 0) {
+        echo "Update successful!";
+    } else {
+        echo "No rows updated.";
+    }
+
         exit();
     }
 
@@ -33,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if (isset($_POST['delete'])) {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
         $customer_id = $_POST['id'];
     
         try {
@@ -45,12 +65,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$customer_id]);
             $user_id = $stmt->fetchColumn();
     
-            if ($user_id) {
-                // Delete from customer table
-                $stmt = $pdo->prepare("DELETE FROM customer WHERE id = ?");
-                $stmt->execute([$customer_id]);
+            // Delete from customer table
+            $stmt = $pdo->prepare("DELETE FROM customer WHERE id = ?");
+            $stmt->execute([$customer_id]);
     
-                // Delete from users table
+            // If user_id exists, delete from users table
+            if ($user_id) {
                 $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
                 $stmt->execute([$user_id]);
             }
@@ -60,10 +80,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
             $_SESSION['success'] = "Account deleted successfully.";
         } catch (Exception $e) {
+            // Rollback transaction on error
             $pdo->rollBack();
             $_SESSION['error'] = "Error deleting account: " . $e->getMessage();
         }
     
+        // Redirect back to accounts.php
         header("Location: accounts.php");
         exit();
     }
@@ -199,7 +221,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Open Edit Modal
     function openEditModal(customer) {
-        document.getElementById("editCustomerId").value = customer.customer_id;
+        document.getElementById("editCustomerId").value = customer.id;
         document.getElementById("editCustomerName").value = customer.customer_name;
         document.getElementById("editCustomerEmail").value = customer.customer_email;
         document.getElementById("editCustomerPhone").value = customer.customer_phone;
@@ -208,25 +230,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // Open View Modal
     function openViewModal(customer) {
-        document.getElementById("verificationDetails").innerText = `
-            Name: ${customer.customer_name}
-            Email: ${customer.customer_email}
-            Phone: ${customer.customer_phone}
-        `;
-        const verificationImage = document.getElementById("verificationImage");
+        console.log(customer); // Debugging
 
-        if (customer.submitted_id) {
-            const imagePath = `../uploads/${customer.submitted_id}`;
-            verificationImage.src = imagePath;
-            verificationImage.style.display = "block";
-            verificationImage.setAttribute("data-full-image", imagePath); // Store the full image path
-        } else {
-            verificationImage.style.display = "none";
-        }
+    document.getElementById("verificationDetails").innerText = `
+        Name: ${customer.customer_name}
+        Email: ${customer.customer_email}
+        Phone: ${customer.customer_phone}
+    `;
 
-        document.getElementById("verificationCustomerId").value = customer.customer_id;
-        viewModal.style.display = "block";
+    const verificationImage = document.getElementById("verificationImage");
+
+    if (customer.submitted_id) {
+        const imagePath = `../uploads/${customer.submitted_id}`;
+        verificationImage.src = imagePath;
+        verificationImage.style.display = "block";
+        verificationImage.setAttribute("data-full-image", imagePath); // Store the full image path
+    } else {
+        verificationImage.style.display = "none";
     }
+
+    document.getElementById("verificationCustomerId").value = customer.id; // Use 'id' instead of 'customer_id'
+    viewModal.style.display = "block";
+}
 
     // Open Image Modal
     function openImageModal() {
