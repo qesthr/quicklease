@@ -253,7 +253,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
         <div id="editCarModal" class="modal">
-            <div class="modal-content">
+            <div class="modal-content-edit">
                 <span class="close" id="closeEditModal">&times;</span>
                 <h2>Edit Car</h2>
                 <form method="post">

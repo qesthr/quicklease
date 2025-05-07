@@ -74,11 +74,12 @@
     cursor: pointer;
     transition: background 0.3s;
     width: 149px;
-    padding: 10px;
+    padding: 16px;
     position: fixed;
     bottom: 70vh;
     right: 81px;
     z-index: 1000;
+    font-size: 21px;
 }
 
 .car-list-page .btn-edit {
@@ -133,6 +134,18 @@
     border-radius: 10px;
     position: relative;
 }
+
+.car-list-page .modal-content-edit {
+    background-color: #fff;
+    margin: 5% auto;
+    padding: 30px;
+    border: 1px solid #888;
+    width: 34%;
+    height: 89vh;
+    border-radius: 10px;
+    position: relative;
+}
+
 
 .car-list-page .modal-content h2 {
     margin-top: 0;
