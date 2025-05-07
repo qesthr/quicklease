@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 05, 2025 at 05:14 PM
+-- Generation Time: May 07, 2025 at 02:49 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -24,28 +24,6 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admin`
---
-
-CREATE TABLE `admin` (
-  `ID` varchar(225) DEFAULT NULL,
-  `f_name` varchar(255) DEFAULT NULL,
-  `l_name` varchar(255) DEFAULT NULL,
-  `email` varchar(255) DEFAULT NULL,
-  `username` varchar(255) DEFAULT NULL,
-  `PASSWORD` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `admin`
---
-
-INSERT INTO `admin` (`ID`, `f_name`, `l_name`, `email`, `username`, `PASSWORD`) VALUES
-('2301', 'Queen', 'de los Reyes', 'queenninadlr@gmail.com', 'royalty', 'gwapako123');
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `bookings`
 --
 
@@ -61,6 +39,14 @@ CREATE TABLE `bookings` (
   `status` enum('Active','Completed','Cancelled') DEFAULT 'Active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `bookings`
+--
+
+INSERT INTO `bookings` (`id`, `users_id`, `customer_id`, `car_id`, `location`, `booking_date`, `return_date`, `preferences`, `status`, `created_at`) VALUES
+(1, 3, 1, 1, 'Malaybalay City', '2024-05-10', '2024-05-15', 'GPS, Child Seat', 'Active', '2025-05-07 09:20:08'),
+(7, 3, 2, 2, 'Los Angeles', '2025-06-01', '2025-06-07', 'Extra Insurance', 'Active', '2025-05-07 11:12:56');
 
 --
 -- Triggers `bookings`
@@ -91,7 +77,7 @@ DELIMITER ;
 --
 
 CREATE TABLE `car` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL COMMENT 'Count',
   `model` varchar(255) NOT NULL,
   `plate_no` varchar(50) NOT NULL,
   `price` decimal(10,2) NOT NULL,
@@ -108,8 +94,8 @@ CREATE TABLE `car` (
 --
 
 INSERT INTO `car` (`id`, `model`, `plate_no`, `price`, `status`, `image`, `seats`, `transmission`, `mileage`, `features`) VALUES
-(6, 'wigo', '342-weq', 1000.00, 'Rented', '6817a7168d2d3_wigo.jpg', 5, 'automatic', 10000, 'queen'),
-(7, 'toyota', '123-qwe', 1000.00, 'Available', '6817bbd27aafb_fortuner.jpg', 0, '', 0, '');
+(1, 'toyota', '123-qws', 1000.00, 'Available', '68190da42551c_fortuner.jpg', 5, 'automatic', 10000, 'ede sheng'),
+(2, 'navarra', '123-asd', 1233.00, 'Available', '681b3fd654533_nissannavara.jpg', 12, 'automatic', 31241, '414dasdasd');
 
 -- --------------------------------------------------------
 
@@ -118,10 +104,10 @@ INSERT INTO `car` (`id`, `model`, `plate_no`, `price`, `status`, `image`, `seats
 --
 
 CREATE TABLE `customer` (
-  `id` varchar(20) NOT NULL,
+  `id` int(20) NOT NULL,
   `customer_name` varchar(100) DEFAULT NULL,
   `customer_email` varchar(100) DEFAULT NULL,
-  `customer_phone` varchar(20) DEFAULT NULL,
+  `customer_phone` varchar(15) NOT NULL,
   `status` enum('Pending Approval','Approved','Rejected','') NOT NULL,
   `submitted_id` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -131,19 +117,32 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`id`, `customer_name`, `customer_email`, `customer_phone`, `status`, `submitted_id`) VALUES
-('1', 'joenil', 'esaxample@gmail.com', '09363034124', 'Approved', '6817851853455_honndaaccord.jpg');
+(1, 'joenil acero', '2301107552@student.buksu.edu.ph', '09856864187', 'Approved', '6817851853455_honndaaccord.jpg'),
+(2, 'joenil acero', 'john@example.com', '09363034122', 'Approved', '');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `driver`
+-- Table structure for table `notifications`
 --
 
-CREATE TABLE `driver` (
-  `driver_ID` varchar(255) NOT NULL,
-  `customer_ID` varchar(255) DEFAULT NULL,
-  `driver_name` varchar(255) DEFAULT NULL
+CREATE TABLE `notifications` (
+  `id` int(11) NOT NULL,
+  `customer_id` varchar(20) NOT NULL,
+  `message` text NOT NULL,
+  `is_read` tinyint(1) DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `notifications`
+--
+
+INSERT INTO `notifications` (`id`, `customer_id`, `message`, `is_read`, `created_at`) VALUES
+(1, '1', 'Your booking has been approved.', 0, '2025-05-07 07:19:05'),
+(2, '1', 'Your profile has been updated successfully.', 0, '2025-05-07 07:19:05'),
+(3, '1', 'Your booking has been rejected.', 1, '2025-05-07 07:19:05'),
+(4, '1', 'Your booking has been approved.', 0, '2025-05-07 10:22:09');
 
 -- --------------------------------------------------------
 
@@ -169,11 +168,23 @@ CREATE TABLE `rental_period` (
 
 CREATE TABLE `users` (
   `id` int(11) NOT NULL,
+  `firstname` varchar(255) NOT NULL,
+  `lastname` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `password` varchar(255) NOT NULL,
+  `user_type` enum('admin','client') NOT NULL DEFAULT 'client',
   `reset_code` varchar(6) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `users`
+--
+
+INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `user_type`, `reset_code`, `created_at`) VALUES
+(2, 'joenil', 'acero', 'joen', 'joenilacero20@gmail.com', '$2y$10$sgoPwgoL45hFvJs6KoZR3uJY1d00F0HRrYrnj.YrIWSWbhD/Drydq', 'admin', NULL, '2025-05-05 15:52:50'),
+(3, 'joenil', 'panal', 'joenil', '2301107552@student.buksu.edu.ph', '$2y$10$APcuoUEQ.Lyk8s33Jug46e7rq549O4hFskhR2yJKoM11lvdmnmbfW', 'client', NULL, '2025-05-05 18:08:50');
 
 --
 -- Indexes for dumped tables
@@ -184,9 +195,9 @@ CREATE TABLE `users` (
 --
 ALTER TABLE `bookings`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `customer_id` (`customer_id`),
   ADD KEY `users_id` (`users_id`),
-  ADD KEY `car_id` (`car_id`);
+  ADD KEY `car_id` (`car_id`),
+  ADD KEY `customer_id` (`customer_id`);
 
 --
 -- Indexes for table `car`
@@ -202,11 +213,11 @@ ALTER TABLE `customer`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `driver`
+-- Indexes for table `notifications`
 --
-ALTER TABLE `driver`
-  ADD PRIMARY KEY (`driver_ID`),
-  ADD KEY `customer_ID` (`customer_ID`);
+ALTER TABLE `notifications`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `customer_id` (`customer_id`);
 
 --
 -- Indexes for table `rental_period`
@@ -229,19 +240,25 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `car`
 --
 ALTER TABLE `car`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Count', AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `users`
+-- AUTO_INCREMENT for table `customer`
 --
-ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+ALTER TABLE `customer`
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `notifications`
+--
+ALTER TABLE `notifications`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables
@@ -253,12 +270,6 @@ ALTER TABLE `users`
 ALTER TABLE `bookings`
   ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`car_id`) REFERENCES `car` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `driver`
---
-ALTER TABLE `driver`
-  ADD CONSTRAINT `driver_ibfk_1` FOREIGN KEY (`customer_ID`) REFERENCES `customer` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

@@ -1,5 +1,7 @@
-<?php 
-require_once '../../db.php'; ?>
+
+<?php
+echo realpath('../../db.php');
+exit; ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

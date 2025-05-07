@@ -4,14 +4,14 @@ require_once '../db.php';
 // Handle Add Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
     // Validate and sanitize input
-    $customer_name = isset($_POST['customer_name']) ? trim($_POST['customer_name']) : null;
+    $customer_id = isset($_POST['customer_id']) ? trim($_POST['customer_id']) : null;
     $car_id = isset($_POST['car_id']) ? intval($_POST['car_id']) : null;
     $booking_date = isset($_POST['booking_date']) ? trim($_POST['booking_date']) : null;
     $return_date = isset($_POST['return_date']) ? trim($_POST['return_date']) : null;
     $status = isset($_POST['status']) ? trim($_POST['status']) : null;
 
     // Check for missing fields
-    if (empty($customer_name) || empty($car_id) || empty($booking_date) || empty($return_date) || empty($status)) {
+    if (empty($customer_id) || empty($car_id) || empty($booking_date) || empty($return_date) || empty($status)) {
         $_SESSION['error'] = "All fields are required.";
         header("Location: bookings.php");
         exit;
@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     try {
         // Insert booking into the database
-        $stmt = $pdo->prepare("INSERT INTO bookings (customer_name, car_id, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$customer_name, $car_id, $booking_date, $return_date, $status]);
+        $stmt = $pdo->prepare("INSERT INTO bookings (customer_id, car_id, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$customer_id, $car_id, $booking_date, $return_date, $status]);
 
         // Redirect with success message
         $_SESSION['success'] = "Booking added successfully.";
@@ -50,17 +50,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // Handle Edit Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit') {
-    $stmt = $pdo->prepare("UPDATE bookings SET customer_name=?, car_id=?, booking_date=?, return_date=?, status=? WHERE id=?");
+    $stmt = $pdo->prepare("UPDATE bookings SET customer_id=?, car_id=?, booking_date=?, return_date=?, status=? WHERE id=?");
     $stmt->execute([
-        $_POST['customer_name'],
+        $_POST['customer_id'],
         $_POST['car_id'],
         $_POST['booking_date'],
         $_POST['return_date'],
         $_POST['status'],
         $_POST['id']
     ]);
-    header("Location: bookings.php");
-    exit;
+   // Redirect with a success message
+   $_SESSION['success'] = "Booking updated successfully.";
+   header("Location: bookings.php");
+   exit;
 }
 
 // Handle Cancel Booking
@@ -71,10 +73,58 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     exit;
 }
 
+// Handle Approve Booking
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'approve') {
+    $stmt = $pdo->prepare("UPDATE bookings SET status = 'Approved' WHERE id = ?");
+    $stmt->execute([$_POST['id']]);
+
+    // Fetch customer ID and name
+    $stmt = $pdo->prepare("SELECT cu.id, cu.customer_id FROM bookings b INNER JOIN customer cu ON b.customer_id = cu.id WHERE b.id = ?");
+    $stmt->execute([$_POST['id']]);
+    $customer = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Insert notification
+    $message = "Dear {$customer['customer_id']}, your booking has been approved.";
+    $stmt = $pdo->prepare("INSERT INTO notifications (customer_id, message) VALUES (?, ?)");
+    $stmt->execute([$customer['id'], $message]);
+}
+
+// Handle Reject Booking
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'reject') {
+    $stmt = $pdo->prepare("UPDATE bookings SET status = 'Rejected' WHERE id = ?");
+    $stmt->execute([$_POST['id']]);
+
+    // Fetch customer ID and name
+    $stmt = $pdo->prepare("SELECT cu.id, cu.customer_id FROM bookings b INNER JOIN customer cu ON b.customer_id = cu.id WHERE b.id = ?");
+    $stmt->execute([$_POST['id']]);
+    $customer = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Insert notification
+    $message = "Dear {$customer['customer_id']}, your booking has been rejected.";
+    $stmt = $pdo->prepare("INSERT INTO notifications (customer_id, message) VALUES (?, ?)");
+    $stmt->execute([$customer['id'], $message]);
+}
+
 // Fetch bookings
-$stmt = $pdo->query("SELECT b.id, b.customer_name, c.model AS car_model, b.booking_date, b.return_date, b.status FROM bookings bINNER JOIN car c ON b.car_id = c.idORDER BY b.booking_date DESC");
+$stmt = $pdo->query("SELECT 
+        b.id, 
+        cu.customer_name, 
+        c.model AS car_model, 
+        b.location,
+        b.booking_date, 
+        b.return_date, 
+        b.status 
+    FROM bookings b
+    INNER JOIN customer cu ON b.customer_id = cu.id
+    INNER JOIN car c ON b.car_id = c.id
+    ORDER BY b.booking_date DESC");
 $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
-?>
+
+// echo '<pre>';
+// print_r($bookings);
+// echo '</pre>';
+// exit;
+// ?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -102,6 +152,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Booking ID</th>
             <th>Customer Name</th>
             <th>Car Model</th>
+            <th>Location</th>
             <th>Booking Date</th>
             <th>Return Date</th>
             <th>Status</th>
@@ -114,6 +165,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
               <td><?= htmlspecialchars($booking['id']) ?></td>
               <td><?= htmlspecialchars($booking['customer_name']) ?></td>
               <td><?= htmlspecialchars($booking['car_model']) ?></td>
+              <td><?= htmlspecialchars($booking['location']) ?></td>
               <td><?= htmlspecialchars($booking['booking_date']) ?></td>
               <td><?= htmlspecialchars($booking['return_date']) ?></td>
               <td><?= htmlspecialchars($booking['status']) ?></td>
@@ -140,7 +192,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <h2>Add Booking</h2>
       <form method="POST">
         <input type="hidden" name="action" value="add">
-        <label>Customer Name: <input type="text" name="customer_name" required></label>
+        <label>Customer Name: <input type="text" name="customer_id" id="edit-customer" required></label>
         <label>Car:</label>
         <select name="car_id" required>
           <?php
@@ -171,7 +223,15 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <form method="POST" id="editForm">
         <input type="hidden" name="action" value="edit">
         <input type="hidden" name="id" id="edit-id">
-        <label>Customer Name: <input type="text" name="customer_name" id="edit-customer" required></label>
+        <label>Customer:</label>
+<select name="customer_id" id="edit-customer" required>
+  <?php
+  $customers = $pdo->query("SELECT id, customer_name FROM customer")->fetchAll(PDO::FETCH_ASSOC);
+  foreach ($customers as $customer) {
+      echo "<option value='{$customer['id']}'>{$customer['customer_name']}</option>";
+  }
+  ?>
+</select>
         <label>Car:</label>
         <select name="car_id" id="edit-car-id" required>
           <?php
@@ -206,6 +266,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <p><strong>Booking Date:</strong> <span id="view-date"></span></p>
       <p><strong>Return Date:</strong> <span id="view-return"></span></p>
       <p><strong>Status:</strong> <span id="view-status"></span></p>
+      <button onclick="closeModal('viewModal')">Close</button> <!-- Add a close button -->
     </div>
   </div>
 
@@ -218,7 +279,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     function openEditModal(data) {
       document.getElementById('edit-id').value = data.id;
-      document.getElementById('edit-customer').value = data.customer_name;
+      document.getElementById('edit-customer').value = data.customer_id;
       document.getElementById('edit-car-id').value = data.car_id;
       document.getElementById('edit-date').value = data.booking_date;
       document.getElementById('edit-return').value = data.return_date;
@@ -227,7 +288,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     function openViewModal(data) {
       document.getElementById('view-id').innerText = data.id;
-      document.getElementById('view-customer').innerText = data.customer_name;
+      document.getElementById('view-customer').innerText = data.customer_id;
       document.getElementById('view-car').innerText = data.car_model;
       document.getElementById('view-date').innerText = data.booking_date;
       document.getElementById('view-return').innerText = data.return_date;
