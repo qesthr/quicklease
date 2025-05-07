@@ -53,39 +53,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit();
     }
 
-    if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
+    // Check if the delete button was clicked
+    if (isset($_POST['delete']) && isset($_POST['id'])) {
         $customer_id = $_POST['id'];
-    
+
         try {
             // Begin transaction
             $pdo->beginTransaction();
-    
-            // Get the user_id from the customer table
-            $stmt = $pdo->prepare("SELECT user_id FROM customer WHERE id = ?");
+
+            // Retrieve the user_id associated with the customer
+            $stmt = $pdo->prepare("SELECT id FROM customer WHERE id = ?");
             $stmt->execute([$customer_id]);
             $user_id = $stmt->fetchColumn();
-    
-            // Delete from customer table
+
+            // Delete the customer record
             $stmt = $pdo->prepare("DELETE FROM customer WHERE id = ?");
             $stmt->execute([$customer_id]);
-    
-            // If user_id exists, delete from users table
+
+            // If a user_id exists, delete the corresponding user record
             if ($user_id) {
                 $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
                 $stmt->execute([$user_id]);
             }
-    
-            // Commit transaction
+
+            // Commit the transaction
             $pdo->commit();
-    
+
             $_SESSION['success'] = "Account deleted successfully.";
         } catch (Exception $e) {
-            // Rollback transaction on error
+            // Roll back the transaction on error
             $pdo->rollBack();
             $_SESSION['error'] = "Error deleting account: " . $e->getMessage();
         }
-    
-        // Redirect back to accounts.php
+
+        // Redirect back to the accounts page
         header("Location: accounts.php");
         exit();
     }
@@ -137,10 +138,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <td>
                             <button class="btn edit" onclick="openEditModal(<?= htmlspecialchars(json_encode($row)) ?>)">Edit</button>
                             <button class="btn view" onclick="openViewModal(<?= htmlspecialchars(json_encode($row)) ?>)">View Verification</button>
-                            <form method="POST" style="display:inline;">
-                                <input type="hidden" name="id" value="<?= $row['id'] ?>">
-                                <button type="submit" name="delete" class="btn delete" onclick="return confirm('Are you sure you want to delete this account?')">Delete</button>
-                            </form>
+                            <form method="POST" onsubmit="return confirm('Are you sure you want to delete this account?');">
+                            <input type="hidden" name="id" value="<?= htmlspecialchars($row['id']) ?>">
+                            <input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token'] ?>">
+                            <button type="submit" name="delete" class="btn delete">Delete</button>
+                        </form>
                         </td>
                     </tr>
                 <?php

@@ -64,3 +64,4 @@ document.addEventListener('DOMContentLoaded', function () {
         console.error('Bell icon not found.');
     }
 });
+

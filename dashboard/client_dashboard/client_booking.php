@@ -1,6 +1,6 @@
 <?php
-echo realpath('../../db.php');
-exit; ?>
+require_once '../../db.php';
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -156,7 +156,7 @@ exit; ?>
   <div class="sidebar">
     <div class="logo">Quick<span>Lease</span></div>
     <ul class="nav">
-      <li><a href="client_profile.userdetails.html">Profile</a></li>
+      <li><a href="client_profile.userdetails.php">Profile</a></li>
       <li><a href="client_cars.php">Cars</a></li>
       <li class="active"><a href="#">Bookings</a></li>
     </ul>
@@ -185,88 +185,163 @@ exit; ?>
       <!-- Car cards will be dynamically inserted here -->
     </section>
   </div>
+  <!-- Booking Confirmation Modal -->
+<div class="modal fade" id="bookingConfirmationModal" tabindex="-1" role="dialog" aria-labelledby="bookingConfirmationModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Your Booking</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p><strong>Car Model:</strong> <span id="confirmCarModel"></span></p>
+        <p><strong>Location:</strong> <span id="confirmLocation"></span></p>
+        <p><strong>Booking Date:</strong> <span id="confirmBookingDate"></span></p>
+        <p><strong>Return Date:</strong> <span id="confirmReturnDate"></span></p>
+        <p><strong>Preferences:</strong> <span id="confirmPreferences"></span></p>
+        <p><strong>Total Price:</strong> ₱<span id="confirmTotalPrice"></span></p>
+        <p><strong>Plate No:</strong> <span id="confirmPlateNo"></span></p>
+        <p><strong>Transmission:</strong> <span id="confirmTransmission"></span></p>
+        <p><strong>Seats:</strong> <span id="confirmSeats"></span></p>
+        <p><strong>Features:</strong> <span id="confirmFeatures"></span></p>
+      
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-primary" id="confirmBookingBtn">Confirm Booking</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <script>
     // Fetch available cars and render them
     function fetchCars() {
-      fetch('fetch_cars.php')
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            const carOptions = document.getElementById('carOptions');
-            carOptions.innerHTML = ''; // Clear existing cars
+    fetch('fetch_cars.php')
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          const carOptions = document.getElementById('carOptions');
+          carOptions.innerHTML = '';
+  
+          data.data.forEach(car => {
+            const carCard = document.createElement('div');
+            carCard.classList.add('car-card');
+            carCard.dataset.carId = car.id;
+            carCard.dataset.carModel = car.model;
+            carCard.dataset.carRate = car.price;
+  
+            carCard.innerHTML = `
+              <h3>${car.model}</h3>
+              <img src="${car.image || 'https://via.placeholder.com/150'}" alt="${car.model}" style="width: 100%; height: 120px; object-fit: cover;">
+              <ul class="car-info">
+                <li><strong>Plate:</strong> ${car.plate_no}</li>
+                <li><strong>Seats:</strong> ${car.seats}</li>
+                <li><strong>Transmission:</strong> ${car.transmission}</li>
+                <li><strong>Mileage:</strong> ${car.mileage} km</li>
+                <li><strong>Features:</strong> ${car.features}</li>
+                <li><strong>Price:</strong> ₱${parseFloat(car.price).toFixed(2)}/day</li>
+              </ul>
+              <button class="book-now">Confirm</button>
+            `;
+  
+            carOptions.appendChild(carCard);
+          });
+  
+          attachBookingListeners();
+        } else {
+          alert('Failed to fetch cars: ' + data.error);
+        }
+      })
+      .catch(error => {
+        console.error('Error fetching cars:', error);
+      });
+  }
+  
+    // Function to calculate the total price based on booking dates and car rate
+function calculateTotalPrice(startDate, endDate, dailyRate) {
+  const start = new Date(startDate);
+  const end = new Date(endDate);
+  const timeDiff = end - start;
+  const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+  return days * dailyRate;
+}
 
-            data.data.forEach(car => {
-              const carCard = document.createElement('div');
-              carCard.classList.add('car-card');
-              carCard.dataset.carModel = car.model;
+// Attach event listeners to booking buttons
+function attachBookingListeners() {
+  document.querySelectorAll('.book-now').forEach(button => {
+    button.addEventListener('click', function () {
+      const carCard = this.closest('.car-card');
+      const carModel = carCard.dataset.carModel;
+      const plateNo = carCard.querySelector('li:nth-child(1)').textContent.replace('Plate:', '').trim();
+      const transmission = carCard.querySelector('li:nth-child(3)').textContent.replace('Transmission:', '').trim();
+      const seats = carCard.querySelector('li:nth-child(2)').textContent.replace('Seats:', '').trim();
+      const features = carCard.querySelector('li:nth-child(5)').textContent.replace('Features:', '').trim();
 
-              carCard.innerHTML = `
-                <h3>${car.model}</h3>
-                <img src="${car.image_url || 'https://via.placeholder.com/150'}" alt="${car.model}">
-                <ul class="car-info">
-                  <li>${car.transmission}</li>
-                  <li>${car.seats} Seats</li>
-                  <li>${car.mpg} MPG</li>
-                </ul>
-                <button class="book-now">Confirm</button>
-              `;
 
-              carOptions.appendChild(carCard);
-            });
+      if (!location || !bookingDate || !returnDate) {
+        alert("Please complete all booking fields.");
+        return;
+      }
 
-            // Attach event listeners to the new buttons
-            attachBookingListeners();
+      const totalPrice = calculateTotalPrice(bookingDate, returnDate, dailyRate);
+
+      // Populate modal with booking details
+      document.getElementById('confirmCarModel').textContent = carModel;
+      document.getElementById('confirmPlateNo').textContent = plateNo;
+      document.getElementById('confirmTransmission').textContent = transmission;
+      document.getElementById('confirmSeats').textContent = seats;
+      document.getElementById('confirmFeatures').textContent = features;
+
+
+      // Store booking data for submission
+      const bookingData = {
+        car_model: carModel,
+        plate_no: plateNo,
+        transmission: transmission,
+        seats: seats,
+        features: features,
+        location: location,
+        booking_date: bookingDate,
+        return_date: returnDate,
+        preferences: preferences,
+        total_price: totalPrice
+      };
+
+      // Show the confirmation modal
+      $('#bookingConfirmationModal').modal('show');
+
+      // Handle confirmation button click
+      document.getElementById('confirmBookingBtn').onclick = function () {
+        // Submit booking data to the server
+        fetch('submit_booking.php', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(bookingData)
+        })
+        .then(response => response.text())
+        .then(responseText => {
+          $('#bookingConfirmationModal').modal('hide');
+          if (responseText.trim() === 'success') {
+            alert("Booking successful!");
+            location.reload();
           } else {
-            alert('Failed to fetch cars: ' + data.error);
+            alert("Booking failed: " + responseText);
           }
         })
         .catch(error => {
-          console.error('Error fetching cars:', error);
+          $('#bookingConfirmationModal').modal('hide');
+          alert("Error submitting booking: " + error);
         });
-    }
-
-    // Attach event listeners to booking buttons
-    function attachBookingListeners() {
-      document.querySelectorAll('.book-now').forEach(button => {
-        button.addEventListener('click', function () {
-          const carModel = this.closest('.car-card').dataset.carModel;
-          const location = document.getElementById('location').value;
-          const bookingDate = document.getElementById('bookingDate').value;
-          const returnDate = document.getElementById('returnDate').value;
-          const preferences = document.getElementById('preferences').value;
-
-          if (!location || !bookingDate || !returnDate) {
-            alert("Please complete all booking fields.");
-            return;
-          }
-
-          const formData = new FormData();
-          formData.append('location', location);
-          formData.append('car_model', carModel);
-          formData.append('booking_date', bookingDate);
-          formData.append('return_date', returnDate);
-          formData.append('preferences', preferences);
-
-          fetch('submit_booking.php', {
-            method: 'POST',
-            body: formData
-          })
-          .then(res => res.text())
-          .then(response => {
-            if (response.trim() === 'success') {
-              alert("Booking successful!");
-              location.reload();
-            } else {
-              alert("Booking failed: " + response);
-            }
-          })
-          .catch(error => {
-            alert("Error submitting booking: " + error);
-          });
-        });
-      });
-    }
+      };
+    });
+  });
+}
 
     // Fetch cars on page load
     fetchCars();

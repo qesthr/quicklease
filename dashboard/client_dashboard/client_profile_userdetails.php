@@ -3,18 +3,24 @@
 session_start();
 include_once '../../db.php';
 
-// Assuming the client is logged in and their ID is stored in the session
-$client_id = $_SESSION['customer_id'] ?? null;
+// Debug: print session user_id
+echo "<!-- Debug: session user_id = " . htmlspecialchars($_SESSION['user_id'] ?? 'null') . " -->";
 
-if (!$customer_id) {
+// Assuming the client is logged in and their ID is stored in the session
+$client_id = $_SESSION['user_id'] ?? null;
+
+if (!$client_id) {
     echo "You must be logged in to view this page.";
     exit();
 }
 
 // Fetch client details from the database
-$stmt = $pdo->prepare("SELECT * FROM customer WHERE id = ?");
-$stmt->execute([$customer_id]);
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->execute([$client_id]);
 $client = $stmt->fetch(PDO::FETCH_ASSOC);
+
+// Debug: print fetched client data
+echo "<!-- Debug: fetched client = " . htmlspecialchars(json_encode($client)) . " -->";
 
 if (!$client) {
     echo "Client not found.";
@@ -60,7 +66,7 @@ if (!$client) {
           </div>
 
           <div class="user-details">
-            <div id="userName"><?= htmlspecialchars($client['customer_name']) ?></div>
+            <div id="userName"><?= htmlspecialchars($client['firstname'] . ' ' . $client['lastname']) ?></div>
             <div id="userProfession">University Professor</div> <!-- Placeholder -->
           </div>
         </div>
@@ -79,11 +85,11 @@ if (!$client) {
           <div class="row">
             <div class="col">
               <label for="first-name">First Name</label>
-              <input id="first-name" type="text" value="<?= htmlspecialchars(explode(' ', $client['customer_name'])[0]) ?>" readonly>
+              <input id="first-name" type="text" value="<?= htmlspecialchars($client['firstname']) ?>" readonly>
             </div>
             <div class="col">
               <label for="last-name">Last Name</label>
-              <input id="last-name" type="text" value="<?= htmlspecialchars(explode(' ', $client['customer_name'])[1] ?? '') ?>" readonly>
+              <input id="last-name" type="text" value="<?= htmlspecialchars($client['lastname']) ?>" readonly>
             </div>
           </div>
 
@@ -91,7 +97,7 @@ if (!$client) {
           <div class="row full-width">
             <label for="email">Email</label>
             <div class="email-container">
-              <input id="email" type="email" value="<?= htmlspecialchars($client['customer_email']) ?>" readonly>
+              <input id="email" type="email" value="<?= htmlspecialchars($client['email']) ?>" readonly>
               <span class="verified">verified</span>
             </div>
           </div>
@@ -106,7 +112,7 @@ if (!$client) {
           <div class="row">
             <div class="col">
               <label for="phone-number">Phone Number</label>
-              <input id="phone-number" type="text" value="<?= htmlspecialchars($client['customer_phone']) ?>" readonly>
+              <input id="phone-number" type="text" value="(phone number)" readonly>
             </div>
             <div class="col">
               <label for="dob">Date of Birth</label>
