@@ -2,10 +2,6 @@
     path = loginpage/vendor/graham-campbell/result-type
     url = https://github.com/GrahamCampbell/Result-Type.git
 
-[submodule "loginpage/vendor/phpoption/phpoption"]
-	path = loginpage/vendor/phpoption/phpoption
-	url = https://github.com/erusev/parsedown.git
-
 [submodule "loginpage/vendor/symfony/polyfill-ctype"]
     path = loginpage/vendor/symfony/polyfill-ctype
     url = https://github.com/symfony/polyfill-ctype.git
