@@ -257,6 +257,8 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <option value="Pending">Pending</option>
                     <option value="Active">Active</option>
                     <option value="Completed">Completed</option>
+                    <option value="Pending">Pending</option>
+
                 </select>
             </div>
             

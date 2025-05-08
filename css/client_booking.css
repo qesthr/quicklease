@@ -1,0 +1,146 @@
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  display: flex;
+}
+.sidebar {
+  width: 220px;
+  background: #2B2BAF;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+  height: 100vh;
+}
+.sidebar .logo h2 {
+  color: white;
+}
+.sidebar .logo span {
+  color: #F9C638;
+}
+.nav-btn {
+  margin: 10px 0;
+  padding: 10px;
+  color: white;
+  background: none;
+  border: none;
+  text-align: left;
+  font-weight: bold;
+}
+.nav-btn.active {
+  background: #F9C638;
+  color: black;
+  border-radius: 8px;
+}
+.logout-btn button {
+  margin-top: auto;
+  background: #F9C638;
+  color: black;
+  border: none;
+  padding: 10px;
+  border-radius: 6px;
+}
+.main {
+  flex: 1;
+  background: #f2f2f2;
+  padding: 30px;
+}
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.booking-section {
+  background: #2B2BAF;
+  color: white;
+  border-radius: 10px;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-top: 20px;
+}
+.booking-form-panel {
+  width: 30%;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.booking-form-panel input,
+.booking-form-panel select,
+.booking-form-panel button {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+.cars-display {
+  width: 65%;
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+}
+.car-card {
+  background: white;
+  color: black;
+  border-radius: 16px;
+  padding: 15px;
+  min-width: 250px;
+  text-align: center;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.car-card img {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.car-card button {
+  margin-top: 10px;
+  background: #F9C638;
+  color: black;
+  padding: 10px;
+  width: 100%;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+
+}
+.car-card button[disabled] {
+  background: #ccc;
+  cursor: not-allowed;
+}
+.icon-row {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+/* Modal styles */
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto;
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%;
+}
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}

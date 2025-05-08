@@ -7,44 +7,10 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 <head>
     <meta charset="UTF-8">
     <title>Client Cars</title>
-    <link rel="stylesheet" href="client_cars.css">
+    <link rel="stylesheet" href="../../css/client_cars.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
-    <style>
-        .search-container {
-            flex-grow: 1;
-            margin: 0 20px;
-        }
-
-        .search-container form {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .search-container input[type="text"] {
-            padding: 8px 15px;
-            border: 1px solid #ddd;
-            border-radius: 20px;
-            flex-grow: 1;
-            max-width: 400px;
-        }
-
-        .search-container button {
-            padding: 8px 20px;
-            background: #2216e2;
-            color: white;
-            border: none;
-            border-radius: 20px;
-            cursor: pointer;
-        }
-
-        .clear-search {
-            color: #e74c3c;
-            text-decoration: none;
-            font-size: 0.9em;
-            margin-left: 10px;
-        }
-    </style>
+    <link rel="stylesheet" href="../../css/sidebar.css">
+    <link rel="stylesheet" href="../../css/header.css">
 </head>
 <body>
     <div class="sidebar">
