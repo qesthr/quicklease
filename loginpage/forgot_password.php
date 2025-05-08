@@ -72,110 +72,18 @@ ob_end_flush(); // End buffering
     <title>Forgot Password</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-image: url('images/background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
 
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .card {
-            background-color:rgba(37, 41, 41, 0.86);
-            border-radius: 12px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.1);
-            padding: 40px;
-            width: 100%;
-            max-width: 360px;
-            animation: floatIn 0.5s ease;
-        }
-
-        @keyframes floatIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .card img {
-            max-width: 100px;
-            margin-bottom: 20px;
-        }
-
-        .card input[type="email"] {
-            width: 100%;
-            padding: 12px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .card button {
-            width: 100%;
-            background-color: #2563eb;
-            color: white;
-            padding: 12px;
-            border: none;
-            border-radius: 6px;
-            font-size: 15px;
-            cursor: pointer;
-            transition: background-color 0.2s ease;
-        }
-
-        .card button:hover {
-            background-color: #1d4ed8;
-        }
-
-        .alert {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 6px;
-            font-size: 14px;
-        }
-
-        .alert-danger {
-            background-color: #fee2e2;
-            color: #b91c1c;
-        }
-
-        .alert-success {
-            background-color: #dcfce7;
-            color: #15803d;
-        }
-
-        .text-center a {
-            color: #2563eb;
-            text-decoration: none;
-        }
-    </style>
+    <link rel="stylesheet" href="../css/loginandsignup.css">
+    <link rel="stylesheet" href="../css/forgotpass.css">
 </head>
-<body>
-    <div class="container">
+<body class="forgot-password-page">
+   <div>
         <div class="card">
-            <div class="text-center mb-4">
-                <img src="logo.png" alt="Logo" class="img-fluid" width="110px" height="110px">
+            <div class="logo-wrapper">
+                <img src="../images/logo.png" alt="Logo">
             </div>
 
-            <h3 class="text-center mb-4"style="color:rgb(255, 255, 255)">Forgot Password</h3>
+            <h3 class="text-center mb-4"style="color:rgb(0, 0, 0)">Forgot Password</h3>
 
             <?php
             if (isset($_SESSION['success'])) {
@@ -192,13 +100,15 @@ ob_end_flush(); // End buffering
                 <div class="form-floating mb-3">
                     <input required type="email" name="email" class="form-control" placeholder="Email Address">
                 </div>
-                <button type="submit" class="btn btn-primary btn-block">Send Code</button>
+                <button type="submit" class="btn">Send Code</button>
             </form>
 
             <div class="text-center mt-3">
-                <p class="text-white"style="color:rgb(255, 255, 255)">Remember your password? <a href="login.php">Login</a></p>
+                <p class="text-white"style="color:rgb(0, 0, 0)">Remember your password? <a href="login.php">Login</a></p>
             </div>
         </div>
-    </div>
+   </div>
+    
+
 </body>
 </html>

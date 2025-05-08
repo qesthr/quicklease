@@ -1,0 +1,41 @@
+.logo-wrapper img {
+    width: 122%;
+    height: 101%;
+    object-fit: cover;
+    margin-left: -10%;
+}
+
+.logo-wrapper {
+    width: 30vh;
+    height: 18vh;
+    overflow: hidden;
+    margin-left: 6vh;
+}
+
+.card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 25px;
+    width: 49vh;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.forgot-password-page .btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #1211ca;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.forgot-password-page .btn:hover {
+    background-color: #dca20f;
+}
+
