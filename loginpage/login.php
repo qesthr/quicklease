@@ -28,10 +28,13 @@ $googleLoginUrl = $client->createAuthUrl();
     
     <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script src="https://apis.google.com/js/platform.js" async defer></script>
+
 </head>
 <body>
-    <div class="card">
-        <img src="../images/logo.png" alt="Logo">
+    <div class="card"> 
+        <div class="logo-wrapper">
+            <img src="../images/logo.png" alt="Logo">
+        </div>
 
         <?php if (isset($_SESSION['error'])): ?>
             <div class="alert alert-danger"><?= $_SESSION['error']; unset($_SESSION['error']); ?></div>
@@ -40,29 +43,32 @@ $googleLoginUrl = $client->createAuthUrl();
             <div class="alert alert-success"><?= $_SESSION['success']; unset($_SESSION['success']); ?></div>
         <?php endif; ?>
 
-        <form action="login_validate.php" method="post">
+        <form class="login-forms" action="login_validate.php" method="post">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
             <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>"></div>
             <button type="submit">Login</button>
         </form>
-        
+
         <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
 
         <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-            <a href="forgot_password.php">Forgot password?</a>
-            <a href="signup.php">Create an account</a>
-        </div>
 
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-    <script>
-        function onSignIn(googleUser) {
-            // Handle the Google Sign-In response here
-            var profile = googleUser.getBasicProfile();
-            console.log('ID: ' + profile.getId());
-            console.log('Name: ' + profile.getName());
-            console.log('Email: ' + profile.getEmail());
-        }
-    </script>
+        <a href="forgot_password.php">Forgot password?</a>
+        <a href="signup.php">Create an account</a>
+
+        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+        <script>
+            function onSignIn(googleUser) {
+                // Handle the Google Sign-In response here
+                var profile = googleUser.getBasicProfile();
+                console.log('ID: ' + profile.getId());
+                console.log('Name: ' + profile.getName());
+                console.log('Email: ' + profile.getEmail());
+            }
+        </script>
+    </div>
+       
+    
 </body>
 </html>
