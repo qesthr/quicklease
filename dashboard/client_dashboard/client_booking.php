@@ -1,4 +1,5 @@
 <?php
+// client_booking.php
 require_once realpath(__DIR__ . '/../../db.php');
 session_start();
 $search = isset($_GET['search']) ? $_GET['search'] : '';
@@ -76,7 +77,8 @@ header('Access-Control-Allow-Methods: GET');
           <form id="bookingForm-<?php echo $row['id']; ?>" method="POST">
             <input type="hidden" name="car_id" value="<?php echo $row['id']; ?>">
             <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id'] ?? 1; ?>">
-            <button type="button" class="confirm-button" data-car-id="<?php echo $row['id']; ?>">
+            <button type="button" class="confirm-button" data-car-id="<?php echo $row['id']; ?>" data-rate="<?php echo $row['price']; ?>">
+               Book Now
               Confirm
             </button>
           </form>
@@ -126,6 +128,14 @@ header('Access-Control-Allow-Methods: GET');
             userId: form.querySelector('[name="user_id"]').value,
             carId: form.querySelector('[name="car_id"]').value
           };
+          // Calculate total days and total amount
+            const rate = parseFloat(e.target.dataset.rate);
+            const start = new Date(`${bookingData.bookingDate}T${bookingData.bookingTime}`);
+            const end = new Date(`${bookingData.returnDate}T${bookingData.returnTime}`);
+            const timeDiff = end - start;
+            const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            const totalAmount = days * rate;
+
 
           // Populate modal
           document.getElementById('booking-details').innerHTML = `
@@ -133,6 +143,7 @@ header('Access-Control-Allow-Methods: GET');
             <strong>Location:</strong> ${bookingData.location}<br>
             <strong>Pickup:</strong> ${bookingData.bookingDate} ${bookingData.bookingTime}<br>
             <strong>Return:</strong> ${bookingData.returnDate} ${bookingData.returnTime}<br>
+            <strong>Total:</strong> ₱ ${totalAmount.toFixed(2)} (${days} day${days > 1 ? 's' : ''})<br>
             <strong>Preferences:</strong> ${bookingData.preferences}
           `;
 
@@ -152,6 +163,9 @@ header('Access-Control-Allow-Methods: GET');
           const startDate = formData.get('start_date');
           const endDate = formData.get('end_date');
           const userId = formData.get('user_id');
+
+          const price = formData.get('price');  // Get rate set on button as data attribute
+
   
           // Instead of getting dates from formData, get directly from inputs
           const startDateInput = document.querySelector('input[name="start_date"]').value;
