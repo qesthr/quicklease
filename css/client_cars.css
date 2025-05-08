@@ -1,7 +1,7 @@
 body {
     margin: 0;
-    font-family: 'Arial', sans-serif;
-    background: #fffef0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #f8f9fa;
     display: flex;
 }
 
@@ -9,7 +9,6 @@ body {
     width: 220px;
     background: #1818ca;
     color: white;
-    padding: 20px 0;
     height: 100vh;
     position: fixed;
     left: 0;
@@ -17,28 +16,30 @@ body {
     display: flex;
     flex-direction: column;
     align-items: center;
+    padding-top: 30px;
     border-top-right-radius: 40px;
     border-bottom-right-radius: 40px;
 }
 
 .logo h2 {
     color: white;
-    font-size: 20px;
+    font-size: 22px;
+    margin-bottom: 40px;
 }
 .logo span {
     color: #fbcc63;
 }
 
 .nav-btn {
-    background: none;
     color: white;
-    padding: 10px;
+    text-decoration: none;
+    padding: 12px 20px;
     margin: 10px 0;
-    border: none;
     width: 80%;
-    text-align: left;
+    text-align: center;
     border-radius: 20px;
-    cursor: pointer;
+    transition: 0.3s ease;
+    font-weight: bold;
 }
 .nav-btn.active,
 .nav-btn:hover {
@@ -48,58 +49,115 @@ body {
 
 .logout-btn {
     margin-top: auto;
-    padding: 10px;
+    padding: 20px;
 }
 .logout-btn button {
     background: #fbcc63;
     color: black;
     border: none;
-    padding: 10px 20px;
+    padding: 10px 25px;
     border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
 }
 
 .main {
     margin-left: 220px;
     padding: 30px;
-    width: 100%;
+    width: calc(100% - 220px);
 }
 
 header {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+}
+.header-icons {
+    display: flex;
+    align-items: center;
+    gap: 15px;
 }
 .header-icons img {
-    width: 35px;
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
+    object-fit: cover;
+}
+.bell-icon {
+    font-size: 18px;
+}
+
+.search-container {
+    flex-grow: 1;
+    margin: 20px 0;
+}
+.search-container form {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+.search-container input[type="text"] {
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    flex-grow: 1;
+    max-width: 400px;
+}
+.search-container button {
+    padding: 10px 20px;
+    background: #1818ca;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+}
+.clear-search {
+    color: #e74c3c;
+    text-decoration: none;
+    font-size: 0.9em;
+    margin-left: 10px;
 }
 
 .swiper {
     padding: 30px 0;
 }
 .swiper-slide {
-    background: #fff;
-    border-radius: 10px;
+    background: white;
+    border-radius: 12px;
     padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
     text-align: center;
+    transition: transform 0.3s;
+}
+.swiper-slide:hover {
+    transform: translateY(-5px);
 }
 .car-card img {
     width: 100%;
-    height: auto;
-    max-height: 150px;
-    object-fit: contain;
+    height: 160px;
+    object-fit: cover;
+    border-radius: 10px;
     margin-bottom: 10px;
+}
+.car-card h3 {
+    margin: 10px 0;
+    font-size: 20px;
+    color: #333;
+}
+.car-card p {
+    font-size: 14px;
+    margin: 5px 0;
 }
 .available {
     color: white;
     background: green;
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 10px;
 }
 .not-available {
     color: white;
     background: red;
-    padding: 3px 10px;
+    padding: 4px 12px;
     border-radius: 10px;
 }
