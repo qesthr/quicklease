@@ -4,6 +4,7 @@ require_once '../db.php'; // Ensure this initializes $pdo
 // Initialize variables
 $error = "";
 
+
 // Handle Add Car Form Submission
 if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
     if ($_POST["action"] === "add_car") {
@@ -128,7 +129,7 @@ if (isset($_GET["delete_id"])) {
 }
 
 // Fetch all cars
-$stmt = $pdo->query("SELECT * FROM car");
+$stmt = $pdo->query("SELECT * FROM car ORDER BY id DESC");
 $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
