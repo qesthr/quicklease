@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 07, 2025 at 02:49 PM
+-- Generation Time: May 08, 2025 at 07:47 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -36,7 +36,7 @@ CREATE TABLE `bookings` (
   `booking_date` date NOT NULL,
   `return_date` date NOT NULL,
   `preferences` text DEFAULT NULL,
-  `status` enum('Active','Completed','Cancelled') DEFAULT 'Active',
+  `status` enum('Pending','Active','Completed','Cancelled') DEFAULT 'Active',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -45,8 +45,7 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`id`, `users_id`, `customer_id`, `car_id`, `location`, `booking_date`, `return_date`, `preferences`, `status`, `created_at`) VALUES
-(1, 3, 1, 1, 'Malaybalay City', '2024-05-10', '2024-05-15', 'GPS, Child Seat', 'Active', '2025-05-07 09:20:08'),
-(7, 3, 2, 2, 'Los Angeles', '2025-06-01', '2025-06-07', 'Extra Insurance', 'Active', '2025-05-07 11:12:56');
+(1, 3, 101, 1, 'Malaybalay City', '2024-05-10', '2024-05-15', 'GPS, Child Seat', 'Pending', '2025-05-07 09:20:08');
 
 --
 -- Triggers `bookings`
@@ -94,8 +93,14 @@ CREATE TABLE `car` (
 --
 
 INSERT INTO `car` (`id`, `model`, `plate_no`, `price`, `status`, `image`, `seats`, `transmission`, `mileage`, `features`) VALUES
-(1, 'toyota', '123-qws', 1000.00, 'Available', '68190da42551c_fortuner.jpg', 5, 'automatic', 10000, 'ede sheng'),
-(2, 'navarra', '123-asd', 1233.00, 'Available', '681b3fd654533_nissannavara.jpg', 12, 'automatic', 31241, '414dasdasd');
+(1, 'toyota', '123-qws', 1000.00, 'Rented', '68190da42551c_fortuner.jpg', 342, 'automatic', 10000, 'ede sheng'),
+(8, 'navarra', '123-qwe', 123.00, 'Available', '681cbceb7db36_nissannavara.jpg', 2, 'manual', 12313, '1312312'),
+(9, 'wigo', '342-fhs', 4354.00, 'Rented', '681cbd11b024c_wigo.jpg', 5, 'automatic', 345345, '353453'),
+(10, 'Innova', '234-asd', 3123.00, 'Maintenance', '681cbd2f6700f_innova.jpg', 12, 'manual', 3123123, 'fasdfsaasdva'),
+(11, 'montero sport', '312-fdas', 32123.00, 'Maintenance', '681cbd8b649be_montero.jpg', 121, 'automatic', 123123123, 'fasdasdas'),
+(12, 'fortuner', '123-asd', 4214.00, 'Available', '681cbdaf5a3fc_fortuner.jpg', 21, 'automatic', 4142313, 'fsadfasdfasdfa'),
+(13, 'minivan', '100-asd', 1250.00, 'Available', '681cc1977212f_minivan.jpg', 10, 'manual', 10000, 'gamay nga bann'),
+(14, 'hiace', '809', 2500.00, 'Available', '681cc1c791189_hiace.jpg', 18, 'automatic', 10000, 'dako nga ban');
 
 -- --------------------------------------------------------
 
@@ -117,8 +122,7 @@ CREATE TABLE `customer` (
 --
 
 INSERT INTO `customer` (`id`, `customer_name`, `customer_email`, `customer_phone`, `status`, `submitted_id`) VALUES
-(1, 'joenil acero', '2301107552@student.buksu.edu.ph', '09856864187', 'Approved', '6817851853455_honndaaccord.jpg'),
-(2, 'joenil acero', 'john@example.com', '09363034122', 'Approved', '');
+(101, 'John Doe', 'johndoe@example.com', '+1234567890', '', 'A12345');
 
 -- --------------------------------------------------------
 
@@ -183,7 +187,6 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `user_type`, `reset_code`, `created_at`) VALUES
-(2, 'joenil', 'acero', 'joen', 'joenilacero20@gmail.com', '$2y$10$sgoPwgoL45hFvJs6KoZR3uJY1d00F0HRrYrnj.YrIWSWbhD/Drydq', 'admin', NULL, '2025-05-05 15:52:50'),
 (3, 'joenil', 'panal', 'joenil', '2301107552@student.buksu.edu.ph', '$2y$10$APcuoUEQ.Lyk8s33Jug46e7rq549O4hFskhR2yJKoM11lvdmnmbfW', 'client', NULL, '2025-05-05 18:08:50');
 
 --
@@ -240,19 +243,19 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17;
 
 --
 -- AUTO_INCREMENT for table `car`
 --
 ALTER TABLE `car`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Count', AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Count', AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `customer`
 --
 ALTER TABLE `customer`
-  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=102;
 
 --
 -- AUTO_INCREMENT for table `notifications`
