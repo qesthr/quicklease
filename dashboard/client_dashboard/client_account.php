@@ -1,10 +1,5 @@
-<?php
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
-    echo "<pre>";
-    print_r($_FILES['submitted_id']);
-    echo "</pre>";
-    exit();
-}?>
+// File: client_account.php
+// Description: This file handles the client account page, including image upload functionality.
 <?php
 // filepath: c:\xamppss\htdocs\quicklease\dashboard\client_dashboard\client_account.php
 include '../../db.php';
