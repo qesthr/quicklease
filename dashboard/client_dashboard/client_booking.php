@@ -23,7 +23,7 @@ header('Access-Control-Allow-Methods: GET');
     <div class="logo">
       <h2>Quick<span>Lease</span></h2>
     </div>
-    <a href="client_profile.userdetails.php" class="nav-btn">PROFILE</a>
+    <a href="client_profile_userdetails.php" class="nav-btn">PROFILE</a>
     <a href="client_cars.php" class="nav-btn">CARS</a>
     <a href="client_booking.php" class="nav-btn active">BOOKINGS</a>
     <div class="logout-btn">

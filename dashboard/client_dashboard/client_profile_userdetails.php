@@ -4,16 +4,16 @@ session_start();
 include_once '../../db.php';
 
 // Assuming the client is logged in and their ID is stored in the session
-$client_id = $_SESSION['customer_id'] ?? null;
+$client_id = $_SESSION['users_id'] ?? null;
 
-if (!$customer_id) {
+if (!$users_id) {
     echo "You must be logged in to view this page.";
     exit();
 }
 
 // Fetch client details from the database
 $stmt = $pdo->prepare("SELECT * FROM customer WHERE id = ?");
-$stmt->execute([$customer_id]);
+$stmt->execute([$users_id]);
 $client = $stmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$client) {
