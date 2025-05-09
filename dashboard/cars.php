@@ -19,83 +19,153 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
     <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 </head>
 
-<body class="client-cars-body">
-    <?php include '../client_dashboard/includes/sidebar.php'; ?>
+        <div class="content">
+            <h2>Car List</h2>
+            
+            <div class="table-container">
 
-    <div class="main">
-        <header>
-            <?php include '../client_dashboard/includes/topbar.php'; ?>
-        </header>
+                <div class="add-car-button-container">
+                    <button id="openModal" class="btn btn-add">Add Car</button>
+                </div>                
+                <table class="car-table">
+                    <thead class="table-header">
+                        <tr>
+                            <th>Car ID</th>
+                            <th>Image</th>
+                            <th>Car Model</th>
+                            <th>Plate No.</th>
+                            <th>Price</th>
+                            <th>Status</th>
+                            <th>Seats</th>
+                            <th>Transmission</th>
+                            <th>Mileage</th>
+                            <th>Features</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
 
-        <div class="card-container">
-            <div class="swiper mySwiper">
-                
-                <div class="swiper-wrapper"> <!-- Changed from 'card' to 'swiper-wrapper' for proper Swiper.js structure -->
-                    <?php
-                    // Fetch cars using PDO
-                    if (!empty($search)) {
-                        $stmt = $pdo->prepare("SELECT * FROM car WHERE model LIKE :search OR transmission LIKE :search");
-                        $stmt->execute(['search' => "%$search%"]);
-                    } else {
-                        $stmt = $pdo->query("SELECT * FROM car");
-                    }
-
-                    // Loop through results and display each car
-                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-                        <div class="swiper-slide car-card">
-                            <!-- Card Header -->
-                            <div class="car-card-header">
-                                <h3 class="car-model"><?= htmlspecialchars($row['model']) ?></h3>
-                                <span class="availability-badge <?= strtolower($row['status']) ?>">
-                                    <?= htmlspecialchars($row['status']) ?>
-                                </span>
-                            </div>
-                            
-                            <!-- Main Image -->
-                            <div class="car-image-wrapper">
-                                <img src="../../uploads/<?= htmlspecialchars($row['image']) ?>" 
-                                    alt="<?= htmlspecialchars($row['model']) ?>" 
-                                    class="car-main-image">
-                            </div>
-                            
-                            <!-- Specifications Grid -->
-                            <div class="car-specs-grid">
-                                <div class="spec-item">
-                                    <span class="spec-icon"><i class="fas fa-car"></i></span>
-                                    <span class="spec-text"><?= htmlspecialchars($row['seats']) ?> seats</span>
-                                </div>
-                                <div class="spec-item">
-                                    <span class="spec-icon"><i class="fas fa-cogs"></i></span>
-                                    <span class="spec-text"><?= htmlspecialchars($row['transmission']) ?></span>
-                                </div>
-                                <div class="spec-item">
-                                    <span class="spec-icon"><i class="fa-solid fa-gas-pump"></i></span>
-                                    <span class="spec-text"><?= htmlspecialchars($row['mileage']) ?> miles</span>
-                                </div>
-                            </div>
-                            
-                            <!-- Pricing Section -->
-                            <div class="car-pricing">
-                                <span class="price-amount">₱<?= number_format($row['price'], 2) ?></span>
-                                <span class="price-period">per day</span>
-                            </div>
-                            
-                            <!-- Features Section -->
-                            <div class="car-features">
-                                <h4 class="features-heading">Features</h4>
-                                <p class="features-text"><?= htmlspecialchars($row['features']) ?></p>
-                            </div>
-                            
-                            <!-- Action Button -->
-                            <button class="view-details-btn" data-car-id="<?= $row['id'] ?>">
-                                View Details
-                            </button>
-                        </div>
-                    <?php endwhile; ?>
-                </div>
-                <div class="swiper-pagination"></div>
+                    <tbody>
+                        <?php foreach ($cars as $car): ?>
+                            <tr>
+                                <td><?= htmlspecialchars($car['id']) ?></td>
+                                <td><img src="../uploads/<?= htmlspecialchars($car['image']) ?>" alt="Car Image"></td>
+                                <td><?= htmlspecialchars($car['model']) ?></td>
+                                <td><?= htmlspecialchars($car['plate_no']) ?></td>
+                                <td><?= htmlspecialchars($car['price']) ?>/Day</td>
+                                <td><?= htmlspecialchars($car['status']) ?></td>
+                                <td><?= htmlspecialchars($car['seats']) ?></td>
+                                <td><?= htmlspecialchars($car['transmission']) ?></td>
+                                <td><?= htmlspecialchars($car['mileage']) ?></td>
+                                <td><?= htmlspecialchars($car['features']) ?></td>
+                                <td>
+                                    <button class="btn btn-edit" 
+                                        onclick="openEditModal(
+                                            <?= htmlspecialchars($car['id']) ?>, 
+                                            '<?= htmlspecialchars($car['model']) ?>', 
+                                            '<?= htmlspecialchars($car['plate_no']) ?>', 
+                                            <?= htmlspecialchars($car['price']) ?>, 
+                                            '<?= htmlspecialchars($car['status']) ?>', 
+                                            <?= htmlspecialchars($car['seats']) ?>, 
+                                            '<?= htmlspecialchars($car['transmission']) ?>', 
+                                            <?= htmlspecialchars($car['mileage']) ?>, 
+                                            '<?= htmlspecialchars($car['features']) ?>'
+                                        )">
+                                        Edit
+                                    </button>
+                                    <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
             </div>
-        </div>              
+        </div>
+
+        
+
+        <div id="addCarModal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="closeModal">&times;</span>
+                <h2>Add a New Car</h2>
+                <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
+                <form method="post" enctype="multipart/form-data">
+                    <input type="hidden" name="action" value="add_car">
+                    <label>Car Model:</label>
+                    <input type="text" name="model" required>
+                    
+                    <label>Plate No:</label>
+                    <input type="text" name="plate_no" required>
+                    
+                    <label>Price Per Day:</label>
+                    <input type="number" name="price" step="0.01" required>
+                    
+                    <label>Status:</label>
+                    <select name="status">
+                        <option value="Available">Available</option>
+                        <option value="Rented">Rented</option>
+                        <option value="Maintenance">Maintenance</option>
+                    </select>
+                    
+                    <label>Number of Seats:</label>
+                    <input type="number" name="seats" required>
+                    
+                    <label>Transmission:</label>
+                    <input type="text" name="transmission" required>
+                    
+                    <label>Mileage (miles):</label>
+                    <input type="number" name="mileage" required>
+                    
+                    <label>Features:</label>
+                    <textarea name="features" rows="4" required></textarea>
+                    
+                    <label>Upload Car Image:</label>
+                    <input type="file" name="image" accept="image/*" required>
+
+                    <button type="submit" class="form button">Add Car</button>
+                </form>
+            </div>
+        </div>
+
+        <div id="editCarModal" class="modal">
+            <div class="modal-content-edit">
+                <span class="close" id="closeEditModal">&times;</span>
+                <h2>Edit Car</h2>
+                <form method="post">
+                    <input type="hidden" name="action" value="edit_car">
+                    <input type="hidden" name="car_id" id="editCarId">
+                    
+                    <label>Car Model:</label>
+                    <input type="text" name="model" id="editCarModel" required>
+                    
+                    <label>Plate No:</label>
+                    <input type="text" name="plate_no" id="editCarPlateNo" required>
+                    
+                    <label>Price Per Day:</label>
+                    <input type="number" name="price" id="editCarPrice" step="0.01" required>
+                    
+                    <label>Status:</label>
+                    <select name="status" id="editCarStatus">
+                        <option value="Available">Available</option>
+                        <option value="Rented">Rented</option>
+                        <option value="Maintenance">Maintenance</option>
+                    </select>
+                    
+                    <label>Number of Seats:</label>
+                    <input type="number" name="seats" id="editCarSeats" required>
+                    
+                    <label>Transmission:</label>
+                    <input type="text" name="transmission" id="editCarTransmission" required>
+                    
+                    <label>Mileage (miles):</label>
+                    <input type="number" name="mileage" id="editCarMileage" required>
+                    
+                    <label>Features:</label>
+                    <textarea name="features" id="editCarFeatures" rows="4" required></textarea>
+
+                    <button type="submit" class="form button">Update Car</button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
