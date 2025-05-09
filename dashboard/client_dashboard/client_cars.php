@@ -12,8 +12,11 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
     <link rel="stylesheet" href="../../css/client.css">
     <link rel="stylesheet" href="../../css/client_cars.css">
     
-
+    <link rel="preload" href="https://kit.fontawesome.com/b7bdbf86fb.js" as="script">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
+
+    <!--lenk to fontawesome-->
+    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 </head>
 
 <body class="client-cars-body">
@@ -26,6 +29,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 
         <div class="card-container">
             <div class="swiper mySwiper">
+                
                 <div class="swiper-wrapper"> <!-- Changed from 'card' to 'swiper-wrapper' for proper Swiper.js structure -->
                     <?php
                     // Fetch cars using PDO
@@ -57,15 +61,15 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                             <!-- Specifications Grid -->
                             <div class="car-specs-grid">
                                 <div class="spec-item">
-                                    <span class="spec-icon"><i class="fa-regular fa-car-side"></i></span>
+                                    <span class="spec-icon"><i class="fas fa-car"></i></span>
                                     <span class="spec-text"><?= htmlspecialchars($row['seats']) ?> seats</span>
                                 </div>
                                 <div class="spec-item">
-                                    <span class="spec-icon">🛞</span>
+                                    <span class="spec-icon"><i class="fas fa-cogs"></i></span>
                                     <span class="spec-text"><?= htmlspecialchars($row['transmission']) ?></span>
                                 </div>
                                 <div class="spec-item">
-                                    <span class="spec-icon">📍</span>
+                                    <span class="spec-icon"><i class="fa-solid fa-gas-pump"></i></span>
                                     <span class="spec-text"><?= htmlspecialchars($row['mileage']) ?> miles</span>
                                 </div>
                             </div>
@@ -118,7 +122,6 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
         });
     </script>
     
-    <!--lenk to fontawesome-->
-    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
+    
 </body>
 </html>
