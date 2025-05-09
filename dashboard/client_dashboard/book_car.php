@@ -1,5 +1,10 @@
+
 <!-- book_car.php -->
 <?php
+ob_start();
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 require_once realpath(__DIR__ . '/../../db.php');
 
 header('Content-Type: application/json');
@@ -25,18 +30,18 @@ try {
     $pdo->beginTransaction();
 
     // Insert booking
-    $stmt = $pdo->prepare("INSERT INTO bookings 
-        (users_id, customer_id, car_id, location, booking_date, return_date, preferences, status)
-        VALUES (?, ?, ?, ?, ?, ?, ?, 'Active')");
+    $sql = "INSERT INTO bookings (users_id, car_id, location, booking_date, return_date, phone,  status)
+        VALUES (:users_id, :car_id, :location, :booking_date, :return_date, :phone, :status)";
+$stmt = $pdo->prepare($sql);
+$stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
         
     $stmt->execute([
-        $_POST['user_id'],
         $_POST['user_id'],  // Set customer_id same as users_id for now
         $_POST['car_id'],
         $_POST['location'],
         $booking_datetime,
         $return_datetime,
-        $_POST['preferences'] ?? ''
+        $phone = $_POST['phone'] ?? null,
     ]);
 
     // Update car status
