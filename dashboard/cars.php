@@ -1,354 +1,127 @@
 <?php
-require_once '../db.php'; // Ensure this initializes $pdo
-
-// Initialize variables
-$error = "";
-
-
-// Handle Add Car Form Submission
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["action"])) {
-    if ($_POST["action"] === "add_car") {
-        $model = trim($_POST["model"]);
-        $plate_no = trim($_POST["plate_no"]);
-        $price = trim($_POST["price"]);
-        $status = $_POST["status"];
-        $seats = $_POST["seats"];
-        $transmission = trim($_POST["transmission"]);
-        $mileage = $_POST["mileage"];
-        $features = trim($_POST["features"]);
-
-        // Validate input
-        if (empty($model) || empty($plate_no) || empty($price) || empty($status) || empty($seats) || empty($transmission) || empty($mileage) || empty($features)) {
-            $error = "All fields are required!";
-        } else {
-            // Check for duplicate plate_no
-            $stmt = $pdo->prepare("SELECT COUNT(*) FROM car WHERE plate_no = ?");
-            $stmt->execute([$plate_no]);
-            $count = $stmt->fetchColumn();
-
-            if ($count > 0) {
-                $error = "A car with this plate number already exists!";
-            } else {
-                // Handle file upload
-                if (!empty($_FILES["image"]["name"])) {
-                    $image = uniqid() . "_" . basename($_FILES["image"]["name"]);
-                    $target_dir = "../uploads/";
-                    $target_file = $target_dir . $image;
-
-                    // Check if the uploads directory exists
-                    if (!is_dir($target_dir)) {
-                        mkdir($target_dir, 0777, true); // Create the directory if it doesn't exist
-                    }
-
-                    // Check file type (only allow images)
-                    $allowed_types = ["image/jpeg", "image/png", "image/gif"];
-                    if (!in_array($_FILES["image"]["type"], $allowed_types)) {
-                        $error = "Invalid file type! Please upload JPEG, PNG, or GIF.";
-                    } elseif ($_FILES["image"]["size"] > 5000000) { // Limit: 5MB
-                        $error = "File size too large! Max 5MB.";
-                    } else {
-                        if (!move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                            $error = "Error uploading file!";
-                        }
-                    }
-                }
-
-                if (empty($error)) {
-                    // Insert into database using PDO
-                    $stmt = $pdo->prepare("INSERT INTO car (model, plate_no, price, status, image, seats, transmission, mileage, features) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                    if ($stmt->execute([$model, $plate_no, $price, $status, $image, $seats, $transmission, $mileage, $features])) {
-                        header("Location: cars.php");
-                        exit();
-                    } else {
-                        $error = "Error adding car.";
-                    }
-                }
-            }
-        }
-    }
-}
-$plate_no = isset($_POST["plate_no"]) ? trim($_POST["plate_no"]) : null;
-if (empty($plate_no)) {
-    $error = "Plate number is required.";
-}
-$stmt = $pdo->prepare("SELECT COUNT(*) FROM car WHERE plate_no = ?");
-$stmt->execute([$plate_no]);
-$count = $stmt->fetchColumn();
-if ($count > 0) {
-    $error = "A car with this plate number already exists!";
-}
-
-   // Handle Edit Car Form Submission
-if ($_SERVER["REQUEST_METHOD"] === "POST" && isset($_POST["action"]) && $_POST["action"] === "edit_car") {
-    $car_id = $_POST["car_id"];
-    $model = trim($_POST["model"]);
-    $plate_no = trim($_POST["plate_no"]);
-    $price = trim($_POST["price"]);
-    $status = $_POST["status"];
-    $seats = $_POST["seats"];
-    $transmission = trim($_POST["transmission"]);
-    $mileage = $_POST["mileage"];
-    $features = trim($_POST["features"]);
-
-    // Validate input
-    if (empty($car_id) || empty($model) || empty($plate_no) || empty($price) || empty($status) || empty($seats) || empty($transmission) || empty($mileage) || empty($features)) {
-        $error = "All fields are required!";
-    } elseif (!is_numeric($price) || $price <= 0) {
-        $error = "Price must be a positive number.";
-    } elseif (!is_numeric($seats) || $seats <= 0) {
-        $error = "Seats must be a positive number.";
-    } elseif (!is_numeric($mileage) || $mileage < 0) {
-        $error = "Mileage must be a non-negative number.";
-    } else {
-        try {
-            // Update the car in the database
-            $stmt = $pdo->prepare("UPDATE car SET model = ?, plate_no = ?, price = ?, status = ?, seats = ?, transmission = ?, mileage = ?, features = ? WHERE id = ?");
-            $stmt->execute([$model, $plate_no, $price, $status, $seats, $transmission, $mileage, $features, $car_id]);
-
-            // Redirect on success
-            $_SESSION['success'] = "Car updated successfully.";
-            header("Location: cars.php");
-            exit();
-        } catch (PDOException $e) {
-            $error = "Error updating car: " . $e->getMessage();
-        }
-    }
-}
-
-
-// Handle Delete Car
-if (isset($_GET["delete_id"])) {
-    $car_id = $_GET["delete_id"];
-    $stmt = $pdo->prepare("DELETE FROM car WHERE id = ?");
-    if ($stmt->execute([$car_id])) {
-        header("Location: cars.php");
-        exit();
-    } else {
-        $error = "Error deleting car.";
-    }
-}
-
-// Fetch all cars
-$stmt = $pdo->query("SELECT * FROM car ORDER BY id DESC");
-$cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
+require_once realpath(__DIR__ . '/../../db.php');
+$search = isset($_GET['search']) ? $_GET['search'] : '';
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Cars Catalogue</title>
-    <link rel="stylesheet" href="../css/dashboard.css">
-    <link rel="stylesheet" href="../css/cars.css">
+    <title>Client | Cars Catalogue</title>
+
+    <link rel="stylesheet" href="../../css/client.css">
+    <link rel="stylesheet" href="../../css/client_cars.css">
+    
+    <link rel="preload" href="https://kit.fontawesome.com/b7bdbf86fb.js" as="script">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
+
+    <!--lenk to fontawesome-->
+    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 </head>
-<body>
-    <div class="car-list-page">
-        <?php include 'includes/sidebar.php'; ?>
-        <?php include 'includes/topbar.php'; ?>
 
-        <div class="content">
-            <h2>Car List</h2>
-            
-            <div class="table-container">
+<body class="client-cars-body">
+    <?php include '../client_dashboard/includes/sidebar.php'; ?>
 
-                <div class="add-car-button-container">
-                    <button id="openModal" class="btn btn-add">Add Car</button>
-                </div>                
-                <table class="car-table">
-                    <thead class="table-header">
-                        <tr>
-                            <th>Car ID</th>
-                            <th>Image</th>
-                            <th>Car Model</th>
-                            <th>Plate No.</th>
-                            <th>Price</th>
-                            <th>Status</th>
-                            <th>Seats</th>
-                            <th>Transmission</th>
-                            <th>Mileage</th>
-                            <th>Features</th>
-                            <th>Action</th>
-                        </tr>
-                    </thead>
+    <div class="main">
+        <header>
+            <?php include '../client_dashboard/includes/topbar.php'; ?>
+        </header>
 
-                    <tbody>
-                        <?php foreach ($cars as $car): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($car['id']) ?></td>
-                                <td><img src="../uploads/<?= htmlspecialchars($car['image']) ?>" alt="Car Image"></td>
-                                <td><?= htmlspecialchars($car['model']) ?></td>
-                                <td><?= htmlspecialchars($car['plate_no']) ?></td>
-                                <td><?= htmlspecialchars($car['price']) ?>/Day</td>
-                                <td><?= htmlspecialchars($car['status']) ?></td>
-                                <td><?= htmlspecialchars($car['seats']) ?></td>
-                                <td><?= htmlspecialchars($car['transmission']) ?></td>
-                                <td><?= htmlspecialchars($car['mileage']) ?></td>
-                                <td><?= htmlspecialchars($car['features']) ?></td>
-                                <td>
-                                    <button class="btn btn-edit" 
-                                        onclick="openEditModal(
-                                            <?= htmlspecialchars($car['id']) ?>, 
-                                            '<?= htmlspecialchars($car['model']) ?>', 
-                                            '<?= htmlspecialchars($car['plate_no']) ?>', 
-                                            <?= htmlspecialchars($car['price']) ?>, 
-                                            '<?= htmlspecialchars($car['status']) ?>', 
-                                            <?= htmlspecialchars($car['seats']) ?>, 
-                                            '<?= htmlspecialchars($car['transmission']) ?>', 
-                                            <?= htmlspecialchars($car['mileage']) ?>, 
-                                            '<?= htmlspecialchars($car['features']) ?>'
-                                        )">
-                                        Edit
-                                    </button>
-                                    <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+        <div class="card-container">
+            <div class="swiper mySwiper">
+                
+                <div class="swiper-wrapper"> <!-- Changed from 'card' to 'swiper-wrapper' for proper Swiper.js structure -->
+                    <?php
+                    // Fetch cars using PDO
+                    if (!empty($search)) {
+                        $stmt = $pdo->prepare("SELECT * FROM car WHERE model LIKE :search OR transmission LIKE :search");
+                        $stmt->execute(['search' => "%$search%"]);
+                    } else {
+                        $stmt = $pdo->query("SELECT * FROM car");
+                    }
+
+                    // Loop through results and display each car
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                        <div class="swiper-slide car-card">
+                            <!-- Card Header -->
+                            <div class="car-card-header">
+                                <h3 class="car-model"><?= htmlspecialchars($row['model']) ?></h3>
+                                <span class="availability-badge <?= strtolower($row['status']) ?>">
+                                    <?= htmlspecialchars($row['status']) ?>
+                                </span>
+                            </div>
+                            
+                            <!-- Main Image -->
+                            <div class="car-image-wrapper">
+                                <img src="../../uploads/<?= htmlspecialchars($row['image']) ?>" 
+                                    alt="<?= htmlspecialchars($row['model']) ?>" 
+                                    class="car-main-image">
+                            </div>
+                            
+                            <!-- Specifications Grid -->
+                            <div class="car-specs-grid">
+                                <div class="spec-item">
+                                    <span class="spec-icon"><i class="fas fa-car"></i></span>
+                                    <span class="spec-text"><?= htmlspecialchars($row['seats']) ?> seats</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-icon"><i class="fas fa-cogs"></i></span>
+                                    <span class="spec-text"><?= htmlspecialchars($row['transmission']) ?></span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-icon"><i class="fa-solid fa-gas-pump"></i></span>
+                                    <span class="spec-text"><?= htmlspecialchars($row['mileage']) ?> miles</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Pricing Section -->
+                            <div class="car-pricing">
+                                <span class="price-amount">₱<?= number_format($row['price'], 2) ?></span>
+                                <span class="price-period">per day</span>
+                            </div>
+                            
+                            <!-- Features Section -->
+                            <div class="car-features">
+                                <h4 class="features-heading">Features</h4>
+                                <p class="features-text"><?= htmlspecialchars($row['features']) ?></p>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <button class="view-details-btn" data-car-id="<?= $row['id'] ?>">
+                                View Details
+                            </button>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
+                <div class="swiper-pagination"></div>
             </div>
-        </div>
-
-        
-
-        <div id="addCarModal" class="modal">
-            <div class="modal-content">
-                <span class="close" id="closeModal">&times;</span>
-                <h2>Add a New Car</h2>
-                <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
-                <form method="post" enctype="multipart/form-data">
-                    <input type="hidden" name="action" value="add_car">
-                    <label>Car Model:</label>
-                    <input type="text" name="model" required>
-                    
-                    <label>Plate No:</label>
-                    <input type="text" name="plate_no" required>
-                    
-                    <label>Price Per Day:</label>
-                    <input type="number" name="price" step="0.01" required>
-                    
-                    <label>Status:</label>
-                    <select name="status">
-                        <option value="Available">Available</option>
-                        <option value="Rented">Rented</option>
-                        <option value="Maintenance">Maintenance</option>
-                    </select>
-                    
-                    <label>Number of Seats:</label>
-                    <input type="number" name="seats" required>
-                    
-                    <label>Transmission:</label>
-                    <input type="text" name="transmission" required>
-                    
-                    <label>Mileage (miles):</label>
-                    <input type="number" name="mileage" required>
-                    
-                    <label>Features:</label>
-                    <textarea name="features" rows="4" required></textarea>
-                    
-                    <label>Upload Car Image:</label>
-                    <input type="file" name="image" accept="image/*" required>
-
-                    <button type="submit" class="form button">Add Car</button>
-                </form>
-            </div>
-        </div>
-
-        <div id="editCarModal" class="modal">
-            <div class="modal-content-edit">
-                <span class="close" id="closeEditModal">&times;</span>
-                <h2>Edit Car</h2>
-                <form method="post">
-                    <input type="hidden" name="action" value="edit_car">
-                    <input type="hidden" name="car_id" id="editCarId">
-                    
-                    <label>Car Model:</label>
-                    <input type="text" name="model" id="editCarModel" required>
-                    
-                    <label>Plate No:</label>
-                    <input type="text" name="plate_no" id="editCarPlateNo" required>
-                    
-                    <label>Price Per Day:</label>
-                    <input type="number" name="price" id="editCarPrice" step="0.01" required>
-                    
-                    <label>Status:</label>
-                    <select name="status" id="editCarStatus">
-                        <option value="Available">Available</option>
-                        <option value="Rented">Rented</option>
-                        <option value="Maintenance">Maintenance</option>
-                    </select>
-                    
-                    <label>Number of Seats:</label>
-                    <input type="number" name="seats" id="editCarSeats" required>
-                    
-                    <label>Transmission:</label>
-                    <input type="text" name="transmission" id="editCarTransmission" required>
-                    
-                    <label>Mileage (miles):</label>
-                    <input type="number" name="mileage" id="editCarMileage" required>
-                    
-                    <label>Features:</label>
-                    <textarea name="features" id="editCarFeatures" rows="4" required></textarea>
-
-                    <button type="submit" class="form button">Update Car</button>
-                </form>
-            </div>
-        </div>
+        </div>              
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script>
-        // Get modal elements for Add Car
-        const modal = document.getElementById("addCarModal");
-        const openModalBtn = document.getElementById("openModal");
-        const closeModalBtn = document.getElementById("closeModal");
-
-        // Open Add Car Modal
-        openModalBtn.onclick = function() {
-            modal.style.display = "block";
-        };
-
-        // Close Add Car Modal
-        closeModalBtn.onclick = function() {
-            modal.style.display = "none";
-        };
-
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            if (event.target === modal) {
-                modal.style.display = "none";
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1, // Default for mobile
+            spaceBetween: 20,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
+            },
+            breakpoints: {
+                // When window width is >= 768px
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 25
+                },
+                // When window width is >= 1024px
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30
+                }
             }
-        };
-
-        // Get modal elements for Edit Car
-        const editModal = document.getElementById("editCarModal");
-        const closeEditModalBtn = document.getElementById("closeEditModal");
-
-        // Open Edit Modal
-        function openEditModal(id, model, plate_no, price, status, seats, transmission, mileage, features) {
-            document.getElementById("editCarId").value = id;
-            document.getElementById("editCarModel").value = model;
-            document.getElementById("editCarPlateNo").value = plate_no;
-            document.getElementById("editCarPrice").value = price;
-            document.getElementById("editCarStatus").value = status;
-            document.getElementById("editCarSeats").value = seats;
-            document.getElementById("editCarTransmission").value = transmission;
-            document.getElementById("editCarMileage").value = mileage;
-            document.getElementById("editCarFeatures").value = features;
-            editModal.style.display = "block";
-        }
-
-        // Close Edit Modal
-        closeEditModalBtn.onclick = function() {
-            editModal.style.display = "none";
-        };
-
-        // Close modal when clicking outside of it
-        window.onclick = function(event) {
-            if (event.target === editModal) {
-                editModal.style.display = "none";
-            }
-        };
+        });
     </script>
-
-<script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
+    
+    
 </body>
 </html>

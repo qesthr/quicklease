@@ -30,19 +30,26 @@ try {
     $pdo->beginTransaction();
 
     // Insert booking
-    $sql = "INSERT INTO bookings (users_id, car_id, location, booking_date, return_date, phone,  status)
-        VALUES (:users_id, :car_id, :location, :booking_date, :return_date, :phone, :status)";
-$stmt = $pdo->prepare($sql);
-$stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
+    $stmt = $pdo->prepare("
+    INSERT INTO bookings (users_id, car_id, location, booking_date, return_date, phone, status)
+    VALUES (:users_id, :car_id, :location, :booking_date, :return_date, :phone, :status)
+");
+    $stmt->bindParam(':users_id', $_POST['user_id'], PDO::PARAM_INT);
+    $stmt->bindParam(':car_id', $_POST['car_id'], PDO::PARAM_INT);
+    $stmt->bindParam(':location', $_POST['location'], PDO::PARAM_STR);
+    $stmt->bindParam(':booking_date', $booking_datetime, PDO::PARAM_STR);
+    $stmt->bindParam(':return_date', $return_datetime, PDO::PARAM_STR);
+    $stmt->bindParam(':phone', $phone, PDO::PARAM_STR);
         
-    $stmt->execute([
-        $_POST['user_id'],  // Set customer_id same as users_id for now
-        $_POST['car_id'],
-        $_POST['location'],
-        $booking_datetime,
-        $return_datetime,
-        $phone = $_POST['phone'] ?? null,
-    ]);
+$stmt->execute([
+    ':users_id' => $_POST['user_id'],
+    ':car_id' => $_POST['car_id'],
+    ':location' => $_POST['location'],
+    ':booking_date' => $booking_datetime,
+    ':return_date' => $return_datetime,
+    ':phone' => $_POST['phone'] ?? null,
+    ':status' => 'Pending'
+]);
 
     // Update car status
     $pdo->prepare("UPDATE car SET status = 'Pending' WHERE id = ?")

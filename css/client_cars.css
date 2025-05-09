@@ -88,6 +88,7 @@
     color: white;
     box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
     width: 9vh;
+    height: 3vh;
 }
 
 /* Rented/Unavailable status (red) */

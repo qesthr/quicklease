@@ -16,6 +16,7 @@ try {
         $token = $client->fetchAccessTokenWithAuthCode($_GET['code']);
 
         if (isset($token['error'])) {
+            error_log('Google Token Error: ' . $token['error_description']);
             throw new Exception('Error fetching access token: ' . $token['error_description']);
         }   
 
@@ -30,7 +31,7 @@ try {
         $picture = $userinfo->picture;
 
         // Check if the user exists in the database
-        require_once '../db.php';
+        require_once '../../db.php';
         $stmt = $pdo->prepare("SELECT * FROM users WHERE email = ?");
         $stmt->execute([$email]);
         $user = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -42,8 +43,8 @@ try {
             $_SESSION['user_type'] = $user['user_type'];
         } else {
             // User does not exist, create a new account
-            $stmt = $pdo->prepare("INSERT INTO users (firstname, lastname, email, user_type) VALUES (?, ?, ?, ?)");
-            $stmt->execute([$name, '', $email, 'client']); // Default role is 'client'
+$stmt = $pdo->prepare("INSERT INTO users (firstname, lastname, email, user_type) VALUES (?, ?, ?, ?)");
+$stmt->execute([$name, '', $email, 'client']); // Default role is 'client'
 
             // Log the user in
             $_SESSION['user_id'] = $pdo->lastInsertId();
@@ -55,7 +56,7 @@ try {
         if ($_SESSION['user_type'] === 'admin') {
             header('Location: http://localhost/quicklease/dashboard/reports.php'); // Admin dashboard
         } else {
-            header('Location: http://localhost/quicklease/dashboard/client_dashboard/client_booking.php'); // Client dashboard
+            header('Location: http://localhost/quicklease/dashboard/client_dashboard/client_cars.php'); // Client dashboard
         }
         exit();
     } else {
@@ -68,6 +69,6 @@ try {
 
     // Redirect to login page with error message
     $_SESSION['error'] = 'Google login failed: ' . $e->getMessage();
-    header('Location: http://localhost/quicklease/loginpage/login.php');
+    header('Location: http://localhost/quicklease/loginpagelogin.php');
     exit();
 }
