@@ -1,163 +1,218 @@
-body {
-    margin: 0;
-    font-family: 'Segoe UI', sans-serif;
-    background: #f8f9fa;
-    display: flex;
+.client-cars-body .main{
+    margin-left: 28vh;
+    margin-top: 4vh;
+    width: calc(100% - 28vh); /* Take remaining width */
+    padding-right: 20px; /* Add some right padding */
+    box-sizing: border-box; /* Include padding in width calculation */
 }
 
-.sidebar {
-    width: 220px;
-    background: #1818ca;
-    color: white;
-    height: 100vh;
-    position: fixed;
-    left: 0;
-    top: 0;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 30px;
-    border-top-right-radius: 40px;
-    border-bottom-right-radius: 40px;
+.main .topbar {
+    margin-left: 3vh;
+    width: calc(100% - 3vh); /* Responsive width */
+    max-width: none; /* Remove fixed width */
 }
 
-.logo h2 {
-    color: white;
-    font-size: 22px;
-    margin-bottom: 40px;
-}
-.logo span {
-    color: #fbcc63;
+/* Card container full width */
+.card-container {
+    width: 100%;
+    max-width: none; /* Remove fixed max-width */
+    padding: 20px 10px; /* Adjust padding */
 }
 
-.nav-btn {
-    color: white;
-    text-decoration: none;
-    padding: 12px 20px;
-    margin: 10px 0;
-    width: 80%;
-    text-align: center;
-    border-radius: 20px;
-    transition: 0.3s ease;
-    font-weight: bold;
-}
-.nav-btn.active,
-.nav-btn:hover {
-    background: #fbcc63;
-    color: #1818ca;
+/* Swiper container adjustments */
+.mySwiper {
+    width: 100%;
+    height: auto; /* Let content determine height */
+    min-height: 500px; /* Minimum height to prevent collapse */
+    padding: 10px 0;
 }
 
-.logout-btn {
-    margin-top: auto;
-    padding: 20px;
-}
-.logout-btn button {
-    background: #fbcc63;
-    color: black;
-    border: none;
-    padding: 10px 25px;
-    border-radius: 20px;
-    font-weight: bold;
-    cursor: pointer;
+/* Car card sizing */
+.swiper-slide.car-card {
+    height: auto; /* Flexible height */
+    min-height: 450px; /* Minimum card height */
+    margin: 5px; /* Reduce margin for better fit */
+    box-sizing: border-box; /* Include padding in height */
 }
 
-.main {
-    margin-left: 220px;
-    padding: 30px;
-    width: calc(100% - 220px);
+/* Hover effect for cards */
+.swiper-slide.car-card:hover {
+    transform: translateY(-5px); /* Slight lift on hover */
+    box-shadow: 0 6px 16px rgba(0,0,0,0.15); /* Bigger shadow on hover */
 }
 
-header {
+/* 4. Card Header */
+.car-card-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    flex-wrap: wrap;
-}
-.header-icons {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-.header-icons img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    object-fit: cover;
-}
-.bell-icon {
-    font-size: 18px;
+    margin-bottom: 15px;
 }
 
-.search-container {
-    flex-grow: 1;
-    margin: 20px 0;
+.car-model {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #333;
+    margin: 0;
 }
-.search-container form {
-    display: flex;
-    gap: 10px;
-    align-items: center;
-}
-.search-container input[type="text"] {
-    padding: 10px 15px;
-    border: 1px solid #ccc;
+
+/* Availability badge */
+.availability-badge {
+    padding: 5px 10px;
     border-radius: 20px;
-    flex-grow: 1;
-    max-width: 400px;
+    font-size: 0.8rem;
+    font-weight: bold;
 }
-.search-container button {
-    padding: 10px 20px;
-    background: #1818ca;
+
+/* Different colors for different statuses */
+.availability-badge.available {
+    background-color: #4CAF50; /* Green */
+    color: white;
+}
+
+.availability-badge.unavailable {
+    background-color: #F44336; /* Red */
+    color: white;
+}
+
+.availability-badge.maintenance {
+    background-color: #FFC107; /* Yellow */
+    color: black;
+}
+
+/* 5. Image section */
+.car-image-wrapper {
+    width: 100%;
+    height: 180px; /* Fixed height for all images */
+    overflow: hidden;
+    border-radius: 10px;
+    margin-bottom: 15px;
+}
+
+.car-main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensures image fills container without distortion */
+    transition: transform 0.3s ease;
+}
+
+/* Image zoom effect on hover */
+.car-card:hover .car-main-image {
+    transform: scale(1.05);
+}
+
+/* 6. Specifications grid */
+.car-specs-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 equal columns */
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.spec-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f5f5f5;
+    padding: 8px;
+    border-radius: 8px;
+}
+
+.spec-icon {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
+}
+
+.spec-text {
+    font-size: 0.8rem;
+    text-align: center;
+}
+
+/* 7. Pricing section */
+.car-pricing {
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 15px;
+}
+
+.price-amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #2196F3; /* Blue color for price */
+    margin-right: 5px;
+}
+
+.price-period {
+    font-size: 0.9rem;
+    color: #666;
+}
+
+/* 8. Features section */
+.car-features {
+    margin-bottom: 15px;
+}
+
+.features-heading {
+    font-size: 1rem;
+    color: #333;
+    margin-bottom: 5px;
+}
+
+.features-text {
+    font-size: 0.9rem;
+    color: #666;
+    line-height: 1.4;
+}
+
+/* 9. View Details button */
+.view-details-btn {
+    width: 100%;
+    padding: 12px;
+    background-color: #2196F3; /* Blue */
     color: white;
     border: none;
-    border-radius: 20px;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: bold;
     cursor: pointer;
-}
-.clear-search {
-    color: #e74c3c;
-    text-decoration: none;
-    font-size: 0.9em;
-    margin-left: 10px;
+    transition: background-color 0.3s ease;
 }
 
-.swiper {
-    padding: 30px 0;
+.view-details-btn:hover {
+    background-color: #0b7dda; /* Darker blue on hover */
 }
-.swiper-slide {
-    background: white;
-    border-radius: 12px;
-    padding: 20px;
-    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: transform 0.3s;
+
+/* 10. Swiper pagination dots */
+.swiper-pagination {
+    position: relative;
+    margin-top: 20px;
 }
-.swiper-slide:hover {
-    transform: translateY(-5px);
+
+.swiper-pagination-bullet {
+    width: 12px;
+    height: 12px;
+    background-color: #ccc;
+    opacity: 1;
 }
-.car-card img {
-    width: 100%;
-    height: 160px;
-    object-fit: cover;
-    border-radius: 10px;
-    margin-bottom: 10px;
+
+.swiper-pagination-bullet-active {
+    background-color: #2196F3; /* Blue for active dot */
 }
-.car-card h3 {
-    margin: 10px 0;
-    font-size: 20px;
-    color: #333;
-}
-.car-card p {
-    font-size: 14px;
-    margin: 5px 0;
-}
-.available {
-    color: white;
-    background: green;
-    padding: 4px 12px;
-    border-radius: 10px;
-}
-.not-available {
-    color: white;
-    background: red;
-    padding: 4px 12px;
-    border-radius: 10px;
+
+/* Responsive slides */
+@media (max-width: 768px) {
+    .client-cars-body .main {
+        margin-left: 0;
+        width: 100%;
+        padding: 10px;
+    }
+    
+    .main .topbar {
+        width: 100%;
+        margin-left: 0;
+    }
+    
+    .swiper-slide.car-card {
+        min-height: 400px;
+    }
 }
