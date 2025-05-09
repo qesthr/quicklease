@@ -169,62 +169,41 @@ header('Access-Control-Allow-Methods: GET');
       // Submit the booking form when the user confirms
       window.submitBooking = function () {
         if (formData) {
-          // Capture additional data
-          const location = document.querySelector('input[placeholder="Location"]').value;
-          const startDate = formData.get('start_date');
-          const endDate = formData.get('end_date');
-          const userId = formData.get('user_id');
-          const price = formData.get('price');  // Get rate set on button as data attribute
-
-  
-          // Instead of getting dates from formData, get directly from inputs
-          const startDateInput = document.querySelector('input[name="start_date"]').value;
-          const endDateInput = document.querySelector('input[name="end_date"]').value;
-  
-          // Validate required fields
-          if (!userId) {
-            alert('User not logged in or user ID missing.');
-            return;
-          }
-          if (!startDateInput) {
-            alert('Please select a booking start date.');
-            return;
-          }
-          if (!endDateInput) {
-            alert('Please select a booking end date.');
-            return;
-          }
-          if (!location) {
-            alert('Please enter a location.');
-            return;
-          }
-  
-          console.log('Submitting booking for user ID:', userId);
-  
-          // Add these to the FormData object
-          formData.set('location', location);
-          formData.set('booking_date', startDateInput);
-          formData.set('return_date', endDateInput);
-          formData.set('booking_time', bookingTime);
-          formData.set('return_time', returnTime);
-          formData.set('price', rate); // Add the price to formData
-  
-          // Append booking_time and return_time
+          // Get values first
+          const location = document.querySelector('input[placeholder="Pickup Location"]').value;
+          const startDate = document.querySelector('input[name="start_date"]').value;
+          const endDate = document.querySelector('input[name="end_date"]').value;
           const bookingTime = document.querySelector('input[name="start_time"]').value;
           const returnTime = document.querySelector('input[name="end_time"]').value;
+          const rate = parseFloat(document.querySelector(`.confirm-button[data-car-id="${currentCarId}"]`).dataset.rate);
+
+          const userId = formData.get('user_id');
+          const carId = formData.get('car_id');
+
+          // Validation
+          if (!userId || !startDate || !endDate || !location) {
+            alert("Missing required fields.");
+            return;
+          }
+
+          // Add to FormData
+          formData.set('location', location);
+          formData.set('booking_date', startDate);
+          formData.set('return_date', endDate);
           formData.set('booking_time', bookingTime);
           formData.set('return_time', returnTime);
-  
-          // Make AJAX request to save the booking
+          formData.set('price', rate);
+
+          // Send via AJAX
           const xhr = new XMLHttpRequest();
           xhr.open('POST', 'book_car.php', true);
           xhr.onload = function () {
             console.log('XHR status:', xhr.status);
             console.log('XHR response:', xhr.responseText);
-            if (xhr.status === 400) {
+            if (xhr.status === 200) {
               alert('Booking Confirmed');
-              closeModal(); // Close the modal after confirmation
-              // Optionally, refresh the page or update UI here
+              closeModal();
+              location.reload();
             } else {
               alert('Something went wrong. Try again!');
             }

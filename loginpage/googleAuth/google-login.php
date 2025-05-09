@@ -9,7 +9,6 @@ $client->addScope('email');
 $client->addScope('profile');
 
 $login_url = $client->createAuthUrl();
-exit();
 ?>
 
 <a href="<?= htmlspecialchars($login_url) ?>">Login with Google</a>
