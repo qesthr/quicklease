@@ -4,14 +4,14 @@ require_once '../db.php';
 // Handle Add Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
     // Validate and sanitize input
-    $customer_id = isset($_POST['customer_id']) ? trim($_POST['customer_id']) : null;
+    $users_id = isset($_POST['users_id']) ? trim($_POST['users_id']) : null;
     $car_id = isset($_POST['car_id']) ? intval($_POST['car_id']) : null;
     $booking_date = isset($_POST['booking_date']) ? trim($_POST['booking_date']) : null;
     $return_date = isset($_POST['return_date']) ? trim($_POST['return_date']) : null;
     $status = isset($_POST['status']) ? trim($_POST['status']) : null;
 
     // Check for missing fields
-    if (empty($customer_id) || empty($car_id) || empty($booking_date) || empty($return_date) || empty($status)) {
+    if (empty($users_id) || empty($car_id) || empty($booking_date) || empty($return_date) || empty($status)) {
         $_SESSION['error'] = "All fields are required.";
         header("Location: bookings.php");
         exit;
@@ -33,8 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
     try {
         // Insert booking into the database
-        $stmt = $pdo->prepare("INSERT INTO bookings (customer_id, car_id, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$customer_id, $car_id, $booking_date, $return_date, $status]);
+        $stmt = $pdo->prepare("INSERT INTO bookings (user_id, car_id, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$user_id, $car_id, $booking_date, $return_date, $status]);
 
         // Redirect with success message
         $_SESSION['success'] = "Booking added successfully.";
@@ -50,9 +50,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
 
 // Handle Edit Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit') {
-    $stmt = $pdo->prepare("UPDATE bookings SET customer_id=?, car_id=?, booking_date=?, return_date=?, status=? WHERE id=?");
+    $stmt = $pdo->prepare("UPDATE bookings SET users_id=?, car_id=?, booking_date=?, return_date=?, status=? WHERE id=?");
     $stmt->execute([
-        $_POST['customer_id'],
+        $_POST['users_id'],
         $_POST['car_id'],
         $_POST['booking_date'],
         $_POST['return_date'],
@@ -79,14 +79,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $stmt->execute([$_POST['id']]);
 
     // Fetch customer ID and name
-    $stmt = $pdo->prepare("SELECT cu.id, cu.customer_id FROM bookings b INNER JOIN customer cu ON b.customer_id = cu.id WHERE b.id = ?");
+    $stmt = $pdo->prepare("SELECT cu.id, cu.users_id FROM bookings b INNER JOIN users cu ON b.users_id = cu.id WHERE b.id = ?");
     $stmt->execute([$_POST['id']]);
-    $customer = $stmt->fetch(PDO::FETCH_ASSOC);
+    $users = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Insert notification
-    $message = "Dear {$customer['customer_id']}, your booking has been approved.";
-    $stmt = $pdo->prepare("INSERT INTO notifications (customer_id, message) VALUES (?, ?)");
-    $stmt->execute([$customer['id'], $message]);
+    $message = "Dear {$users['users_id']}, your booking has been approved.";
+    $stmt = $pdo->prepare("INSERT INTO notifications (users_id, message) VALUES (?, ?)");
+    $stmt->execute([$users['id'], $message]);
 }
 
 // Handle Reject Booking
@@ -95,27 +95,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $stmt->execute([$_POST['id']]);
 
     // Fetch customer ID and name
-    $stmt = $pdo->prepare("SELECT cu.id, cu.customer_id FROM bookings b INNER JOIN customer cu ON b.customer_id = cu.id WHERE b.id = ?");
+    $stmt = $pdo->prepare("SELECT cu.id, cu.users_id FROM bookings b INNER JOIN users cu ON b.users_id = cu.id WHERE b.id = ?");
     $stmt->execute([$_POST['id']]);
-    $customer = $stmt->fetch(PDO::FETCH_ASSOC);
+    $users = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // Insert notification
-    $message = "Dear {$customer['customer_id']}, your booking has been rejected.";
-    $stmt = $pdo->prepare("INSERT INTO notifications (customer_id, message) VALUES (?, ?)");
-    $stmt->execute([$customer['id'], $message]);
+    $message = "Dear {$users['users_id']}, your booking has been rejected.";
+    $stmt = $pdo->prepare("INSERT INTO notifications (users_id, message) VALUES (?, ?)");
+    $stmt->execute([$users['id'], $message]);
 }
 
 // Fetch bookings
 $stmt = $pdo->query("SELECT 
         b.id, 
-        cu.customer_name, 
+        cu.firstname, 
         c.model AS car_model, 
         b.location,
         b.booking_date, 
         b.return_date, 
         b.status 
     FROM bookings b
-    INNER JOIN customer cu ON b.customer_id = cu.id
+    INNER JOIN users cu ON b.users_id = cu.id
     INNER JOIN car c ON b.car_id = c.id
     ORDER BY b.booking_date DESC");
 $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -179,7 +179,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     <?php foreach ($bookings as $booking): ?>
                         <tr>
                             <td><?= htmlspecialchars($booking['id']) ?></td>
-                            <td><?= htmlspecialchars($booking['customer_name']) ?></td>
+                            <td><?= htmlspecialchars($booking['firstname']) ?></td>
                             <td><?= htmlspecialchars($booking['car_model']) ?></td>
                             <td><?= htmlspecialchars($booking['location']) ?></td>
                             <td><?= htmlspecialchars($booking['booking_date']) ?></td>
@@ -211,13 +211,13 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <input type="hidden" name="action" value="add">
             
             <div class="form-group">
-                <label for="add-customer">Customer Name:</label>
-                <select name="customer_id" id="add-customer" required>
+                <label for="add-users">Customer Name:</label>
+                <select name="users_id" id="add-users" required>
                     <option value="">Select Customer</option>
                     <?php
-                    $customers = $pdo->query("SELECT id, customer_name FROM customer")->fetchAll(PDO::FETCH_ASSOC);
-                    foreach ($customers as $customer) {
-                        echo "<option value='{$customer['id']}'>{$customer['customer_name']}</option>";
+                    $userss = $pdo->query("SELECT id, firstname FROM users")->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($userss as $users) {
+                        echo "<option value='{$users['id']}'>{$users['firstname']}</option>";
                     }
                     ?>
                 </select>
@@ -279,12 +279,12 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <input type="hidden" name="id" id="edit-id">
             
             <div class="form-group">
-                <label for="edit-customer">Customer Name:</label>
-                <select name="customer_id" id="edit-customer" required>
+                <label for="edit-users">Customer Name:</label>
+                <select name="users_id" id="edit-users" required>
                     <?php
-                    $customers = $pdo->query("SELECT id, customer_name FROM customer")->fetchAll(PDO::FETCH_ASSOC);
-                    foreach ($customers as $customer) {
-                        echo "<option value='{$customer['id']}'>{$customer['customer_name']}</option>";
+                    $userss = $pdo->query("SELECT id, firstname FROM users")->fetchAll(PDO::FETCH_ASSOC);
+                    foreach ($userss as $users) {
+                        echo "<option value='{$users['id']}'>{$users['firstname']}</option>";
                     }
                     ?>
                 </select>
@@ -340,7 +340,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
       <span class="close" onclick="closeModal('viewModal')">×</span>
       <h2>Booking Details</h2>
       <p><strong>ID:</strong> <span id="view-id"></span></p>
-      <p><strong>Customer:</strong> <span id="view-customer"></span></p>
+      <p><strong>Customer:</strong> <span id="view-users"></span></p>
       <p><strong>Car Model:</strong> <span id="view-car"></span></p>
       <p><strong>Booking Date:</strong> <span id="view-date"></span></p>
       <p><strong>Return Date:</strong> <span id="view-return"></span></p>
@@ -358,7 +358,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     function openEditModal(data) {
       document.getElementById('edit-id').value = data.id;
-      document.getElementById('edit-customer').value = data.customer_id;
+      document.getElementById('edit-users').value = data.users_id;
       document.getElementById('edit-car-id').value = data.car_id;
       document.getElementById('edit-date').value = data.booking_date;
       document.getElementById('edit-return').value = data.return_date;
@@ -367,7 +367,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
     function openViewModal(data) {
       document.getElementById('view-id').innerText = data.id;
-      document.getElementById('view-customer').innerText = data.customer_id;
+      document.getElementById('view-users').innerText = data.users_id;
       document.getElementById('view-car').innerText = data.car_model;
       document.getElementById('view-date').innerText = data.booking_date;
       document.getElementById('view-return').innerText = data.return_date;

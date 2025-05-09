@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($user['user_type'] === 'admin') {
             header('Location: /quicklease/dashboard/reports.php'); // Admin dashboard
         } else if ($user['user_type'] === 'client') {
-            header('Location: /quicklease/dashboard/client_dashboard/client_booking.html'); // Client dashboard
+            header('Location: /quicklease/dashboard/client_dashboard/client_booking.php'); // Client dashboard
         }
         exit();
     } else {
