@@ -96,36 +96,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Client Profile</title>
-    <link rel="stylesheet" href="../../css/sidebar.css">
-    <link rel="stylesheet" href="../../css/header.css">
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        .profile-container { max-width: 800px; margin: 0 auto; }
-        .profile-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .profile-card { border: 1px solid #ddd; border-radius: 8px; padding: 20px; margin-bottom: 20px; }
-        .form-group { margin-bottom: 15px; }
-        label { display: block; margin-bottom: 5px; font-weight: bold; }
-        input[type="text"], 
-        input[type="email"], 
-        input[type="tel"] {
-            width: 100%;
-            padding: 8px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-        .btn {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .btn:hover { background-color: #45a049; }
-        .alert-success { color: green; padding: 10px; background-color: #e6ffe6; border-radius: 4px; }
-        .alert-error { color: red; padding: 10px; background-color: #ffebeb; border-radius: 4px; }
-        .profile-image { max-width: 200px; max-height: 200px; margin-bottom: 15px; }
-    </style>
+    <link rel="stylesheet" href="../../css/client.css">
+    <link rel="stylesheet" href="../../css/client-account.css">
+
 </head>
 <body>
     <div class="profile-container">
