@@ -11,3 +11,5 @@
 2025-05-08 21:41:11 - SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`quicklease_db`.`bookings`, CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
 2025-05-08 21:47:43 - SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`quicklease_db`.`bookings`, CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
 2025-05-08 21:53:02 - SQLSTATE[23000]: Integrity constraint violation: 1452 Cannot add or update a child row: a foreign key constraint fails (`quicklease_db`.`bookings`, CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE)
+2025-05-09 12:55:14 - SQLSTATE[HY093]: Invalid parameter number: parameter was not defined
+2025-05-09 12:56:35 - SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens
