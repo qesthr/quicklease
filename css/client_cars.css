@@ -18,14 +18,16 @@
     max-width: none;
     padding: 20px 10px;
     margin-left: 2vh;
+    position: relative;
 }
 
 /* Swiper container adjustments */
 .mySwiper {
-    width: 150vh;
+    width: 176vh;
     height: 80vh; /* Let content determine height */
     min-height: 500px; /* Minimum height to prevent collapse */
     padding: 10px 0;
+    
 }
 
 /* Car card sizing */
@@ -43,7 +45,7 @@
 }
 
 .swiper-slide.car-card {
-    width: 528.333px;
+    width: 100vh;
     background: white;
     padding: 3rem;
     border-radius: 10px;
@@ -53,35 +55,31 @@
 /* 4. Card Header */
 .car-card-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+    justify-content: space-around;
+    margin-bottom: 50px;
+
 }
 
 .car-model {
-    font-size: 1.3rem;
+    font-size: 2.4rem;
     font-weight: bold;
     color: #333;
     margin: 0;
-}
-
-/* Availability badge */
-.availability-badge {
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
+    line-height: 0.9;
 }
 
 /* Different colors for different statuses */
 .availability-badge {
-    padding: 5px 12px;
+    padding: 8px 12px;
     border-radius: 8px;
-    font-size: 0.8rem;
+    font-size: 1rem;
     font-weight: bold;
     text-transform: capitalize;
     display: inline-block;
     margin-left: 10px;
+    width: 60px;;
+    text-align: center;
+    height: 3vh;
 }
 
 /* Available status (green) */
@@ -89,6 +87,7 @@
     background-color: #4CAF50; /* Green */
     color: white;
     box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
+    width: 9vh;
 }
 
 /* Rented/Unavailable status (red) */
@@ -104,6 +103,7 @@
     background-color: #9E9E9E; /* Gray */
     color: white;
     box-shadow: 0 2px 5px rgba(158, 158, 158, 0.3);
+    width: 14vh;
 }
 
 /* Optional: Add animation for status changes */
@@ -123,7 +123,7 @@
     height: 180px; /* Fixed height for all images */
     overflow: hidden;
     border-radius: 10px;
-    margin-bottom: 15px;
+    margin-bottom: 30px;
 }
 
 .car-main-image {
@@ -169,11 +169,11 @@
 .car-pricing {
     display: flex;
     align-items: baseline;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
 }
 
 .price-amount {
-    font-size: 1.5rem;
+    font-size: 2rem;
     font-weight: bold;
     color: #2196F3; /* Blue color for price */
     margin-right: 5px;
@@ -192,7 +192,8 @@
 .features-heading {
     font-size: 1rem;
     color: #333;
-    margin-bottom: 5px;
+    margin-bottom: -13px;
+    margin-top: 11px;
 }
 
 .features-text {
@@ -213,6 +214,8 @@
     font-weight: bold;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    margin-top: 71px;
+    position: sticky;
 }
 
 .view-details-btn:hover {

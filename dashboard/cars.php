@@ -148,12 +148,13 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         <div class="content">
             <h2>Car List</h2>
-
-            <div class="add-car-button-container">
-                <button id="openModal" class="btn btn-add">Add Car</button>
-            </div>
             
             <div class="table-container">
+
+                <div class="add-car-button-container">
+                    <button id="openModal" class="btn btn-add">Add Car</button>
+                </div>      
+                          
                 <table class="car-table">
                     <thead class="table-header">
                         <tr>

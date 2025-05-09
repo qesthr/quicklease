@@ -72,14 +72,29 @@
     border-radius: 8px;
     font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s;
+    transition: all 0.3s ease;
     width: 149px;
     padding: 16px;
-    position: fixed;
-    bottom: 70vh;
-    right: 81px;
+    position: absolute;
+    top: 23vh;
+    left: 186vh;
     z-index: 1000;
     font-size: 21px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    /* Prevent any animation that might make it appear to move */
+    transform: none !important; 
+}
+
+/* Hover effects */
+.car-list-page .btn-add:hover {
+    background: #F5C14D;
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Active/click effect */
+.car-list-page .btn-add:active {
+    transform: translateY(1px);
 }
 
 .car-list-page .btn-edit {
