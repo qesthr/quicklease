@@ -57,7 +57,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                             <!-- Specifications Grid -->
                             <div class="car-specs-grid">
                                 <div class="spec-item">
-                                    <span class="spec-icon">🚗</span>
+                                    <span class="spec-icon"><i class="fa-regular fa-car-side"></i></span>
                                     <span class="spec-text"><?= htmlspecialchars($row['seats']) ?> seats</span>
                                 </div>
                                 <div class="spec-item">
@@ -96,27 +96,29 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script>
-    var swiper = new Swiper(".mySwiper", {
-        slidesPerView: 1, // Default for mobile
-        spaceBetween: 20,
-        pagination: {
-            el: ".swiper-pagination",
-            clickable: true,
-        },
-        breakpoints: {
-            // When window width is >= 768px
-            768: {
-                slidesPerView: 2,
-                spaceBetween: 25
+        var swiper = new Swiper(".mySwiper", {
+            slidesPerView: 1, // Default for mobile
+            spaceBetween: 20,
+            pagination: {
+                el: ".swiper-pagination",
+                clickable: true,
             },
-            // When window width is >= 1024px
-            1024: {
-                slidesPerView: 3,
-                spaceBetween: 30
+            breakpoints: {
+                // When window width is >= 768px
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 25
+                },
+                // When window width is >= 1024px
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30
+                }
             }
-        }
-    });
-</script>
+        });
+    </script>
     
+    <!--lenk to fontawesome-->
+    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 </body>
 </html>

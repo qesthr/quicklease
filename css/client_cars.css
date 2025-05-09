@@ -14,15 +14,16 @@
 
 /* Card container full width */
 .card-container {
-    width: 100%;
-    max-width: none; /* Remove fixed max-width */
-    padding: 20px 10px; /* Adjust padding */
+    width: 100vh;
+    max-width: none;
+    padding: 20px 10px;
+    margin-left: 2vh;
 }
 
 /* Swiper container adjustments */
 .mySwiper {
-    width: 100%;
-    height: auto; /* Let content determine height */
+    width: 150vh;
+    height: 80vh; /* Let content determine height */
     min-height: 500px; /* Minimum height to prevent collapse */
     padding: 10px 0;
 }
@@ -39,6 +40,14 @@
 .swiper-slide.car-card:hover {
     transform: translateY(-5px); /* Slight lift on hover */
     box-shadow: 0 6px 16px rgba(0,0,0,0.15); /* Bigger shadow on hover */
+}
+
+.swiper-slide.car-card {
+    width: 528.333px;
+    background: white;
+    padding: 3rem;
+    border-radius: 10px;
+    margin-right: 30px;
 }
 
 /* 4. Card Header */
@@ -65,19 +74,47 @@
 }
 
 /* Different colors for different statuses */
+.availability-badge {
+    padding: 5px 12px;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    text-transform: capitalize;
+    display: inline-block;
+    margin-left: 10px;
+}
+
+/* Available status (green) */
 .availability-badge.available {
     background-color: #4CAF50; /* Green */
     color: white;
+    box-shadow: 0 2px 5px rgba(76, 175, 80, 0.3);
 }
 
-.availability-badge.unavailable {
+/* Rented/Unavailable status (red) */
+.availability-badge.unavailable,
+.availability-badge.rented { /* Add both for flexibility */
     background-color: #F44336; /* Red */
     color: white;
+    box-shadow: 0 2px 5px rgba(244, 67, 54, 0.3);
 }
 
+/* Maintenance status (gray) */
 .availability-badge.maintenance {
-    background-color: #FFC107; /* Yellow */
-    color: black;
+    background-color: #9E9E9E; /* Gray */
+    color: white;
+    box-shadow: 0 2px 5px rgba(158, 158, 158, 0.3);
+}
+
+/* Optional: Add animation for status changes */
+.availability-badge {
+    transition: all 0.3s ease;
+}
+
+/* Optional: Hover effects */
+.availability-badge:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 /* 5. Image section */
@@ -216,3 +253,4 @@
         min-height: 400px;
     }
 }
+
