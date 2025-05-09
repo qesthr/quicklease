@@ -1,0 +1,60 @@
+/* Scoped override for enter_code.php */
+
+.enter-code-page .logo-wrapper {
+    width: 30vh;
+    height: 18vh;
+    overflow: hidden;
+    margin-left: 6vh; /* centers the logo inside the wider card */
+}
+
+.enter-code-page .logo-wrapper img {
+    width: 122%;
+    height: 101%;
+    object-fit: cover;
+    margin-left: -6%;
+}
+
+/* Make the card wider on this page */
+.enter-code-page .card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 25px;
+    width: 49vh; /* wider to look good */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+/* Form input fix: make sure the input is wide enough too */
+.enter-code-page input[type="number"] {
+    width: 92%;
+    padding: 12px 15px;
+    margin: 15px 0;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+.enter-code-page input[type="number"]:focus {
+    border: 2px solid #1818CA;
+}
+
+/* Button tweak (if you want it a bit bigger) */
+.enter-code-page button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1211ca;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+.enter-code-page button:hover {
+    background-color: #dca20f;
+}

@@ -1,78 +1,124 @@
-
 <?php
-echo realpath('../../db.php');
-exit; ?>
+require_once realpath(__DIR__ . '/../../db.php');
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Client Cars</title>
-    <link rel="stylesheet" href="client_cars.css">
+    <title>Client | Cars Catalogue</title>
+
+    <link rel="stylesheet" href="../../css/client.css">
+    <link rel="stylesheet" href="../../css/client_cars.css">
+    
+
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
 </head>
-<body>
-    <div class="sidebar">
-        <div class="logo">
-            <h2>Quick<span>Lease</span></h2>
-        </div>
-        <a href="client_profile.userdetails.html" class="nav-btn">PROFILE</a>
-        <a href="client_cars.php" class="nav-btn active">CARS</a>
-        <a href="client_booking.html" class="nav-btn">BOOKINGS</a>
-        <div class="logout-btn">
-            <button>LOGOUT</button>
-        </div>
-    </div>
+
+<body class="client-cars-body">
+    <?php include '../client_dashboard/includes/sidebar.php'; ?>
 
     <div class="main">
         <header>
-            <h1>CARS</h1>
-            <div class="header-icons">
-                <i class="bell-icon">🔔</i>
-                <img src="../images/car.jpg" class="profile-pic">
-            </div>
+            <?php include '../client_dashboard/includes/topbar.php'; ?>
         </header>
 
-        <div class="swiper mySwiper">
-            <div class="swiper-wrapper">
-                <?php
-                // Fetch cars using PDO
-                $stmt = $pdo->query("SELECT * FROM car");
-                while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-                    ?>
-                    <div class="swiper-slide car-card">
-                        <h3><?php echo htmlspecialchars($row['model']); ?></h3>
-                        <img src="../uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="Car Image">
-                        <p>🚗 <?php echo htmlspecialchars($row['seats']); ?> seats</p>
-                        <p>🛞 Transmission: <?php echo htmlspecialchars($row['transmission']); ?></p>
-                        <p>📍 Mileage: <?php echo htmlspecialchars($row['mileage']); ?> miles</p>
-                        <p>₱ <?php echo htmlspecialchars($row['price']); ?>/day</p>
-                        <p><strong>Features:</strong> <?php echo htmlspecialchars($row['features']); ?></p>
-                        <p>
-                            <strong>Availability:</strong>
-                            <span class="<?php echo $row['status'] == 'Available' ? 'available' : 'not-available'; ?>">
-                                <?php echo htmlspecialchars($row['status']); ?>
-                            </span>
-                        </p>
-                        <!-- View Details Button -->
-                    </div>
+        <div class="card-container">
+            <div class="swiper mySwiper">
+                <div class="swiper-wrapper"> <!-- Changed from 'card' to 'swiper-wrapper' for proper Swiper.js structure -->
                     <?php
-                }
-                ?>
+                    // Fetch cars using PDO
+                    if (!empty($search)) {
+                        $stmt = $pdo->prepare("SELECT * FROM car WHERE model LIKE :search OR transmission LIKE :search");
+                        $stmt->execute(['search' => "%$search%"]);
+                    } else {
+                        $stmt = $pdo->query("SELECT * FROM car");
+                    }
+
+                    // Loop through results and display each car
+                    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                        <div class="swiper-slide car-card">
+                            <!-- Card Header -->
+                            <div class="car-card-header">
+                                <h3 class="car-model"><?= htmlspecialchars($row['model']) ?></h3>
+                                <span class="availability-badge <?= strtolower($row['status']) ?>">
+                                    <?= htmlspecialchars($row['status']) ?>
+                                </span>
+                            </div>
+                            
+                            <!-- Main Image -->
+                            <div class="car-image-wrapper">
+                                <img src="../../uploads/<?= htmlspecialchars($row['image']) ?>" 
+                                    alt="<?= htmlspecialchars($row['model']) ?>" 
+                                    class="car-main-image">
+                            </div>
+                            
+                            <!-- Specifications Grid -->
+                            <div class="car-specs-grid">
+                                <div class="spec-item">
+                                    <span class="spec-icon"><i class="fa-regular fa-car-side"></i></span>
+                                    <span class="spec-text"><?= htmlspecialchars($row['seats']) ?> seats</span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-icon">🛞</span>
+                                    <span class="spec-text"><?= htmlspecialchars($row['transmission']) ?></span>
+                                </div>
+                                <div class="spec-item">
+                                    <span class="spec-icon">📍</span>
+                                    <span class="spec-text"><?= htmlspecialchars($row['mileage']) ?> miles</span>
+                                </div>
+                            </div>
+                            
+                            <!-- Pricing Section -->
+                            <div class="car-pricing">
+                                <span class="price-amount">₱<?= number_format($row['price'], 2) ?></span>
+                                <span class="price-period">per day</span>
+                            </div>
+                            
+                            <!-- Features Section -->
+                            <div class="car-features">
+                                <h4 class="features-heading">Features</h4>
+                                <p class="features-text"><?= htmlspecialchars($row['features']) ?></p>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <button class="view-details-btn" data-car-id="<?= $row['id'] ?>">
+                                View Details
+                            </button>
+                        </div>
+                    <?php endwhile; ?>
+                </div>
+                <div class="swiper-pagination"></div>
             </div>
-            <div class="swiper-pagination"></div>
-        </div>
+        </div>              
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script>
         var swiper = new Swiper(".mySwiper", {
-            slidesPerView: 3,
-            spaceBetween: 30,
+            slidesPerView: 1, // Default for mobile
+            spaceBetween: 20,
             pagination: {
                 el: ".swiper-pagination",
                 clickable: true,
             },
+            breakpoints: {
+                // When window width is >= 768px
+                768: {
+                    slidesPerView: 2,
+                    spaceBetween: 25
+                },
+                // When window width is >= 1024px
+                1024: {
+                    slidesPerView: 3,
+                    spaceBetween: 30
+                }
+            }
         });
     </script>
+    
+    <!--lenk to fontawesome-->
+    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 </body>
 </html>

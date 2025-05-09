@@ -1,279 +1,238 @@
 <?php
-echo realpath('../../db.php');
-exit; ?>
+// client_booking.php
+require_once realpath(__DIR__ . '/../../db.php');
+session_start();
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+header('Access-Control-Allow-Origin: *'); // Replace * with your frontend domain in production
+header('Access-Control-Allow-Headers: Content-Type');
+header('Access-Control-Allow-Methods: GET');
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>QuickLease Booking Dashboard</title>
-  <style>
-    /* Styles remain unchanged */
-    body {
-      margin: 0;
-      font-family: 'Segoe UI', sans-serif;
-      display: flex;
-      height: 100vh;
-      background-color: #f3f1e7;
-    }
+  <title>Client Booking</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="../../css/client_booking.css">
+  <link rel="stylesheet" href="../../css/sidebar.css">
+  <link rel="stylesheet" href="../../css/header.css">
 
-    .sidebar {
-      width: 200px;
-      background-color: #2216e2;
-      color: white;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-
-    .logo {
-      font-size: 20px;
-      font-weight: bold;
-    }
-
-    .logo span {
-      color: #ffd500;
-    }
-
-    .nav {
-      list-style: none;
-      padding: 0;
-    }
-
-    .nav li {
-      margin: 15px 0;
-    }
-
-    .nav li a {
-      color: white;
-      text-decoration: none;
-      display: block;
-      padding: 8px 12px;
-      border-radius: 6px;
-      transition: background 0.3s;
-    }
-
-    .nav li a:hover {
-      background-color: #3c31e5;
-    }
-
-    .nav .active a {
-      background-color: #ffd500;
-      color: #2216e2;
-      font-weight: bold;
-    }
-
-    .logout {
-      background-color: orange;
-      color: white;
-      border: none;
-      padding: 10px;
-      border-radius: 20px;
-      cursor: pointer;
-    }
-
-    .main {
-      flex-grow: 1;
-      padding: 20px;
-    }
-
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .user-icon {
-      width: 40px;
-      height: 40px;
-      background-color: #ccc;
-      border-radius: 50%;
-    }
-
-    .booking-form {
-      margin-top: 20px;
-    }
-
-    .form-controls {
-      background: white;
-      padding: 20px;
-      display: grid;
-      gap: 15px;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-
-    textarea, input {
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
-
-    .car-options {
-      display: flex;
-      gap: 20px;
-      margin-top: 30px;
-      flex-wrap: wrap;
-    }
-
-    .car-card {
-      background-color: white;
-      padding: 15px;
-      border-radius: 10px;
-      width: 200px;
-      text-align: center;
-    }
-
-    .car-card h3 {
-      margin: 10px 0;
-    }
-
-    .car-info {
-      list-style: none;
-      padding: 0;
-      margin: 10px 0;
-    }
-
-    .car-info li {
-      margin: 5px 0;
-    }
-
-    .car-card button {
-      background-color: #ffc400;
-      border: none;
-      padding: 10px;
-      border-radius: 20px;
-      margin-top: 10px;
-      cursor: pointer;
-    }
-
-    .car-card.unavailable button {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-  </style>
 </head>
 <body>
   <div class="sidebar">
-    <div class="logo">Quick<span>Lease</span></div>
-    <ul class="nav">
-      <li><a href="client_profile.userdetails.html">Profile</a></li>
-      <li><a href="client_cars.php">Cars</a></li>
-      <li class="active"><a href="#">Bookings</a></li>
-    </ul>
-    <button class="logout" onclick="logout()">Logout</button>
+    <div class="logo">
+      <h2>Quick<span>Lease</span></h2>
+    </div>
+    <a href="client_profile_userdetails.php" class="nav-btn">PROFILE</a>
+    <a href="client_cars.php" class="nav-btn">CARS</a>
+    <a href="client_booking.php" class="nav-btn active">BOOKINGS</a>
+    <div class="logout-btn">
+      <button>LOGOUT</button>
+    </div>
   </div>
 
   <div class="main">
     <header>
       <h1>BOOKING</h1>
-      <div class="user-icon"></div>
+      <div class="header-icons">
+        <span>🔔</span>
+        <img src="../images/car.jpg" alt="Profile" style="width: 40px; border-radius: 50%;">
+      </div>
     </header>
 
-    <section class="booking-form">
-      <h2>BOOK A CAR</h2>
-      <div class="form-controls">
-        <input type="text" name="location" id="location" placeholder="Location" required>
-        <div>
-          <input type="date" name="booking_date" id="bookingDate" required>
-          <input type="date" name="return_date" id="returnDate" required>
+    <div class="booking-section">
+      <div class="booking-form-panel">
+      <input list="pickup-locations" name="location" placeholder="Pickup Location" required>
+<datalist id="pickup-locations">
+  <option value="DS CAR RENTAL SERVICES, NATIONAL HIGH WAY, ZONE 1, Malaybalay, 8700 Bukidnon">
+  <option value="JJL CAR RENTAL SERVICES AND CARWASH, Magsaysay Ext, Malaybalay, Bukidnon">
+  <option value="Shyne's Car Rental, 44PG+V8Q, Malaybalay, Bukidnon">
+  <option value="Bukidnon Car Rental, Malaybalay, Bukidnon">
+  <option value="Horhe Car Rental and Carwash, Km. 4 Sayre Hwy, Malaybalay, 8700 Bukidnon">
+  <option value="BukidnonWheels Car Rental, Grema Village, Malaybalay, 8700 Bukidnon">
+  <option value="R-Niel's Car Rental, Purok 8, Sayre Hwy, Barangay 9, Malaybalay, 8700 Bukidnon">
+  <option value="ZV Car Rental, P5, Malaybalay, 8700 Bukidnon">
+  <option value="Revned Car Rental Services, Malaybalay, Bukidnon">
+  <option value="Pren's Car Rental Services, Km. 4 Sayre Hwy, Malaybalay, Bukidnon">
+  <option value="CARELLE'S CAR RENTAL, Block 1 Lot 21 Kubayan, Malaybalay, Bukidnon">
+  <option value="XZZ Car Rental & Car Care Services - Malaybalay City, Bukidnon (BESIDE BUSECO Malaybalay), Buseco, Malaybalay, Bukidnon">
+  <option value="AJC Rides and Car Rental Services, Propia St, Malaybalay, 8700 Bukidnon">
+  <option value="KLB Car Rental Malaybalay, 34MW+7GV, P1, Malaybalay, Bukidnon">
+</datalist>
+        <label><input type="checkbox" checked> Return at the same address</label>
+        <input type="date" name="start_date" required>
+        <input type="date" name="end_date" required>
+        <input type="time" name="start_time" value="09:00">
+        <input type="time" name="end_time" value="18:00">
         </div>
-        <textarea name="preferences" id="preferences" placeholder="Default Car or Preferences"></textarea>
-      </div>
-    </section>
 
-    <section class="car-options" id="carOptions">
-      <!-- Car cards will be dynamically inserted here -->
-    </section>
+      <div class="cars-display">
+        <?php
+        // Update query to show only available cars
+        $query = "SELECT * FROM car WHERE status = 'Available'";
+        if (!empty($search)) {
+          $query .= " AND (model LIKE :search OR transmission LIKE :search)";
+          $stmt = $pdo->prepare($query);
+          $stmt->execute(['search' => "%$search%"]);
+        } else {
+          $stmt = $pdo->query($query);
+        }
+
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+        ?>
+        <div class="car-card">
+          <h3><?php echo htmlspecialchars($row['model']); ?></h3>
+          <img src="../../uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="Car Image">
+          <div class="icon-row">
+            <span>⚙ <?php echo $row['transmission']; ?></span>
+            <span>👥 <?php echo $row['seats']; ?> Seats</span>
+            <span>⛽ <?php echo $row['mileage']; ?> MPG</span>
+            <span>₱  <?php echo $row['price'];?> Rate </span>
+          </div>
+          <form id="bookingForm-<?php echo $row['id']; ?>" method="POST">
+            <input type="hidden" name="car_id" value="<?php echo $row['id']; ?>">
+            <input type="hidden" name="user_id" value="<?php echo $_SESSION['user_id'] ?? 1; ?>">
+            <button type="button" class="confirm-button" data-car-id="<?php echo $row['id']; ?>" data-rate="<?php echo $row['price']; ?>">
+               Book Now
+            </button>
+          </form>
+        </div>
+        <?php } ?>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal for Booking Confirmation -->
+  <div id="bookingModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Booking Overview</h2>
+      <p id="booking-details"></p>
+      <button onclick="submitBooking()">Confirm</button>
+      <button onclick="closeModal()">Cancel</button>
+    </div>
   </div>
 
   <script>
-    // Fetch available cars and render them
-    function fetchCars() {
-      fetch('fetch_cars.php')
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            const carOptions = document.getElementById('carOptions');
-            carOptions.innerHTML = ''; // Clear existing cars
+    document.addEventListener('DOMContentLoaded', () => {
+      let currentCarId = null;
+      let formData = null;
+      // Modal handling
+      const modal = document.getElementById('bookingModal');
+      const closeModal = () => modal.style.display = 'none';
 
-            data.data.forEach(car => {
-              const carCard = document.createElement('div');
-              carCard.classList.add('car-card');
-              carCard.dataset.carModel = car.model;
+      // Event delegation for confirm buttons
+      document.querySelector('.cars-display').addEventListener('click', e => {
+        if (e.target.classList.contains('confirm-button')) {
+          currentCarId = e.target.dataset.carId;
+          const form = document.getElementById(`bookingForm-${currentCarId}`);
 
-              carCard.innerHTML = `
-                <h3>${car.model}</h3>
-                <img src="${car.image_url || 'https://via.placeholder.com/150'}" alt="${car.model}">
-                <ul class="car-info">
-                  <li>${car.transmission}</li>
-                  <li>${car.seats} Seats</li>
-                  <li>${car.mpg} MPG</li>
-                </ul>
-                <button class="book-now">Confirm</button>
-              `;
+          // Create new FormData from form
+          formData = new FormData(form);
 
-              carOptions.appendChild(carCard);
-            });
+          // Collect all booking data for modal display
+          const bookingData = {
+            carModel: form.closest('.car-card').querySelector('h3').textContent,
+            location: document.querySelector('input[placeholder="Pickup Location"]').value,
+            bookingDate: document.querySelector('input[name="start_date"]').value,
+            bookingTime: document.querySelector('input[name="start_time"]').value,
+            returnDate: document.querySelector('input[name="end_date"]').value,
+            returnTime: document.querySelector('input[name="end_time"]').value,
+            userId: form.querySelector('[name="user_id"]').value,
+            carId: form.querySelector('[name="car_id"]').value
+          };
+          // Calculate total days and total amount
+            const rate = parseFloat(e.target.dataset.rate);
+            const start = new Date(`${bookingData.bookingDate}T${bookingData.bookingTime}`);
+            const end = new Date(`${bookingData.returnDate}T${bookingData.returnTime}`);
+            const timeDiff = end - start;
+            const days = Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            const totalAmount = days * rate;
 
-            // Attach event listeners to the new buttons
-            attachBookingListeners();
-          } else {
-            alert('Failed to fetch cars: ' + data.error);
-          }
-        })
-        .catch(error => {
-          console.error('Error fetching cars:', error);
-        });
-    }
 
-    // Attach event listeners to booking buttons
-    function attachBookingListeners() {
-      document.querySelectorAll('.book-now').forEach(button => {
-        button.addEventListener('click', function () {
-          const carModel = this.closest('.car-card').dataset.carModel;
-          const location = document.getElementById('location').value;
-          const bookingDate = document.getElementById('bookingDate').value;
-          const returnDate = document.getElementById('returnDate').value;
-          const preferences = document.getElementById('preferences').value;
+          // Populate modal
+          document.getElementById('booking-details').innerHTML = `
+            <strong>Car:</strong> ${bookingData.carModel}<br>
+            <strong>Location:</strong> ${bookingData.location}<br>
+            <strong>Pickup:</strong> ${bookingData.bookingDate} ${bookingData.bookingTime}<br>
+            <strong>Return:</strong> ${bookingData.returnDate} ${bookingData.returnTime}<br>
+            <strong>Total:</strong> ₱ ${totalAmount.toFixed(2)} (${days} day${days > 1 ? 's' : ''})<br>
+           `;
 
-          if (!location || !bookingDate || !returnDate) {
-            alert("Please complete all booking fields.");
+          modal.style.display = 'block';
+        }
+      });
+
+      // Close the modal
+      window.closeModal = closeModal;
+
+      // Submit the booking form when the user confirms
+      window.submitBooking = function () {
+        if (formData) {
+          // Capture additional data
+          const location = document.querySelector('input[placeholder="Location"]').value;
+          const startDate = formData.get('start_date');
+          const endDate = formData.get('end_date');
+          const userId = formData.get('user_id');
+          const price = formData.get('price');  // Get rate set on button as data attribute
+
+  
+          // Instead of getting dates from formData, get directly from inputs
+          const startDateInput = document.querySelector('input[name="start_date"]').value;
+          const endDateInput = document.querySelector('input[name="end_date"]').value;
+  
+          // Validate required fields
+          if (!userId) {
+            alert('User not logged in or user ID missing.');
             return;
           }
-
-          const formData = new FormData();
-          formData.append('location', location);
-          formData.append('car_model', carModel);
-          formData.append('booking_date', bookingDate);
-          formData.append('return_date', returnDate);
-          formData.append('preferences', preferences);
-
-          fetch('submit_booking.php', {
-            method: 'POST',
-            body: formData
-          })
-          .then(res => res.text())
-          .then(response => {
-            if (response.trim() === 'success') {
-              alert("Booking successful!");
-              location.reload();
+          if (!startDateInput) {
+            alert('Please select a booking start date.');
+            return;
+          }
+          if (!endDateInput) {
+            alert('Please select a booking end date.');
+            return;
+          }
+          if (!location) {
+            alert('Please enter a location.');
+            return;
+          }
+  
+          console.log('Submitting booking for user ID:', userId);
+  
+          // Add these to the FormData object
+          formData.set('location', location);
+          formData.set('booking_date', startDateInput);
+          formData.set('return_date', endDateInput);
+          formData.set('booking_time', bookingTime);
+          formData.set('return_time', returnTime);
+          formData.set('price', rate); // Add the price to formData
+  
+          // Append booking_time and return_time
+          const bookingTime = document.querySelector('input[name="start_time"]').value;
+          const returnTime = document.querySelector('input[name="end_time"]').value;
+          formData.set('booking_time', bookingTime);
+          formData.set('return_time', returnTime);
+  
+          // Make AJAX request to save the booking
+          const xhr = new XMLHttpRequest();
+          xhr.open('POST', 'book_car.php', true);
+          xhr.onload = function () {
+            console.log('XHR status:', xhr.status);
+            console.log('XHR response:', xhr.responseText);
+            if (xhr.status === 400) {
+              alert('Booking Confirmed');
+              closeModal(); // Close the modal after confirmation
+              // Optionally, refresh the page or update UI here
             } else {
-              alert("Booking failed: " + response);
+              alert('Something went wrong. Try again!');
             }
-          })
-          .catch(error => {
-            alert("Error submitting booking: " + error);
-          });
-        });
-      });
-    }
-
-    // Fetch cars on page load
-    fetchCars();
-
-    function logout() {
-      window.location.href = 'logout.php';
-    }
+          };
+          xhr.send(formData);
+        }
+      };
+    });
   </script>
 </body>
 </html>

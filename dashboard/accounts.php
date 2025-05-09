@@ -4,9 +4,9 @@ include '../db.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update'])) {
         // Handle Update
-        $customer_id = $_POST['id'];
-        $customer_name = trim($_POST['customer_name']);
-        $customer_email = trim($_POST['customer_email']);
+        $users_id = $_POST['id'];
+        $firstname = trim($_POST['firstname']);
+        $email = trim($_POST['email']);
         $customer_phone = trim($_POST['customer_phone']);
 
         if (!preg_match('/^09\d{9}$/', $customer_phone)) {
@@ -16,13 +16,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
             // Debugging: Print the values
-        echo "ID: $customer_id<br>";
-        echo "Name: $customer_name<br>";
-        echo "Email: $customer_email<br>";
+        echo "ID: $users_id<br>";
+        echo "Name: $firstname<br>";
+        echo "Email: $cemail<br>";
         echo "Phone: $customer_phone<br>";
 
-        $stmt = $pdo->prepare("UPDATE customer SET customer_name = ?, customer_email = ?, customer_phone = ? WHERE id = ?");
-        $stmt->execute([$customer_name, $customer_email, $customer_phone, $customer_id]);
+        $stmt = $pdo->prepare("UPDATE users SET firstname = ?, email = ?, customer_phone = ? WHERE id = ?");
+        $stmt->execute([$firstname, $email, $customer_phone, $users_id]);
         header("Location: accounts.php");
 
           // Debugging: Check if the query was successful
@@ -37,37 +37,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (isset($_POST['approve'])) {
         // Handle Approve
-        $customer_id = $_POST['id'];
-        $stmt = $pdo->prepare("UPDATE customer SET status = 'Approved' WHERE id = ?");
-        $stmt->execute([$customer_id]);
+        $users_id = $_POST['id'];
+        $stmt = $pdo->prepare("UPDATE users SET status = 'Approved' WHERE id = ?");
+        $stmt->execute([$users_id]);
         header("Location: accounts.php");
         exit();
     }
 
     if (isset($_POST['reject'])) {
         // Handle Reject
-        $customer_id = $_POST['id'];
-        $stmt = $pdo->prepare("UPDATE customer SET status = 'Rejected' WHERE id = ?");
-        $stmt->execute([$customer_id]);
+        $users_id = $_POST['id'];
+        $stmt = $pdo->prepare("UPDATE users SET status = 'Rejected' WHERE id = ?");
+        $stmt->execute([$users_id]);
         header("Location: accounts.php");
         exit();
     }
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete'])) {
-        $customer_id = $_POST['id'];
+        $users_id = $_POST['id'];
     
         try {
             // Begin transaction
             $pdo->beginTransaction();
     
             // Get the user_id from the customer table
-            $stmt = $pdo->prepare("SELECT user_id FROM customer WHERE id = ?");
-            $stmt->execute([$customer_id]);
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+            $stmt->execute([$users_id]);
             $user_id = $stmt->fetchColumn();
     
             // Delete from customer table
-            $stmt = $pdo->prepare("DELETE FROM customer WHERE id = ?");
-            $stmt->execute([$customer_id]);
+            $stmt = $pdo->prepare("DELETE FROM users WHERE id = ?");
+            $stmt->execute([$users_id]);
     
             // If user_id exists, delete from users table
             if ($user_id) {
@@ -122,16 +122,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php
                 try {
                     // Fetch all customers using PDO
-                    $stmt = $pdo->query("SELECT * FROM customer ORDER BY id ASC");
-                    $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    $stmt = $pdo->query("SELECT * FROM users ORDER BY id ASC");
+                    $userss = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    if (count($customers) > 0):
-                        foreach ($customers as $row):
+                    if (count($userss) > 0):
+                        foreach ($userss as $row):
                 ?>
                     <tr>
                         <td><?= htmlspecialchars($row['id'] ?? 'N/A') ?></td>
-                        <td><?= htmlspecialchars($row['customer_name'] ?? 'N/A') ?></td>
-                        <td><?= htmlspecialchars($row['customer_email'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($row['firstname'] ?? 'N/A') ?></td>
+                        <td><?= htmlspecialchars($row['email'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($row['customer_phone'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($row['status'] ?? 'Pending Approval') ?></td>
                         <td>
@@ -168,11 +168,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <span class="close" id="closeEditModal">&times;</span>
         <h2>Edit Customer</h2>
         <form method="POST">
-            <input type="hidden" name="id" id="editCustomerId">
-            <label for="editCustomerName">Name:</label>
-            <input type="text" id="editCustomerName" name="customer_name" required>
-            <label for="editCustomerEmail">Email:</label>
-            <input type="email" id="editCustomerEmail" name="customer_email" required>
+            <input type="hidden" name="id" id="editUsersId">
+            <label for="editFirstname">Name:</label>
+            <input type="text" id="editName" name="firstname" required>
+            <label for="editEmail">Email:</label>
+            <input type="email" id="editEmail" name="email" required>
             <label for="editCustomerPhone">Phone:</label>
             <input 
                 type="tel" 
@@ -195,7 +195,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <!-- Clickable Submitted ID -->
         <img id="verificationImage" src="" alt="Submitted ID" style="display: none; margin-top: 10px; cursor: pointer;" onclick="openImageModal()">
         <form method="POST">
-            <input type="hidden" name="id" id="verificationCustomerId">
+            <input type="hidden" name="id" id="verificationUsersId">
             <button type="submit" name="approve" class="btn view">Approve</button>
             <button type="submit" name="reject" class="btn delete">Reject</button>
         </form>
@@ -220,28 +220,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     const closeImageModal = document.getElementById("closeImageModal");
 
     // Open Edit Modal
-    function openEditModal(customer) {
-        document.getElementById("editCustomerId").value = customer.id;
-        document.getElementById("editCustomerName").value = customer.customer_name;
-        document.getElementById("editCustomerEmail").value = customer.customer_email;
-        document.getElementById("editCustomerPhone").value = customer.customer_phone;
+    function openEditModal(users) {
+        document.getElementById("editUserId").value = users.id;
+        document.getElementById("editFirstname").value = users.name;
+        document.getElementById("editEmail").value = users.email;
+        document.getElementById("editCustomerPhone").value = users.customer_phone;
         editModal.style.display = "block";
     }
 
     // Open View Modal
-    function openViewModal(customer) {
-        console.log(customer); // Debugging
+    function openViewModal(users) {
+        console.log(users); // Debugging
 
     document.getElementById("verificationDetails").innerText = `
-        Name: ${customer.customer_name}
-        Email: ${customer.customer_email}
-        Phone: ${customer.customer_phone}
+        Name: ${users.firstname}
+        Email: ${users.email}
+        Phone: ${users.customer_phone}
     `;
 
     const verificationImage = document.getElementById("verificationImage");
 
-    if (customer.submitted_id) {
-        const imagePath = `../uploads/${customer.submitted_id}`;
+    if (users.submitted_id) {
+        const imagePath = `../uploads/${users.submitted_id}`;
         verificationImage.src = imagePath;
         verificationImage.style.display = "block";
         verificationImage.setAttribute("data-full-image", imagePath); // Store the full image path
@@ -249,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         verificationImage.style.display = "none";
     }
 
-    document.getElementById("verificationCustomerId").value = customer.id; // Use 'id' instead of 'customer_id'
+    document.getElementById("verificationUsersId").value = users.id; // Use 'id' instead of 'customer_id'
     viewModal.style.display = "block";
 }
 
