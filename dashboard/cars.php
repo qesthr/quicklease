@@ -1,38 +1,57 @@
 <?php
-require_once realpath(__DIR__ . '/../../db.php');
+require_once('../db.php');
 $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Fetch cars data
+if (!empty($search)) {
+    $stmt = $pdo->prepare("SELECT * FROM car WHERE model LIKE :search OR transmission LIKE :search");
+    $stmt->execute(['search' => "%$search%"]);
+} else {
+    $stmt = $pdo->query("SELECT * FROM car");
+}
+$cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Client | Cars Catalogue</title>
-
-    <link rel="stylesheet" href="../../css/client.css">
-    <link rel="stylesheet" href="../../css/client_cars.css">
-    
-    <link rel="preload" href="https://kit.fontawesome.com/b7bdbf86fb.js" as="script">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
-
-    <!--lenk to fontawesome-->
-    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
+    <title>Admin | Cars Catalogue</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/cars.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
+
+<body class="car-list-page">
+    <?php include './includes/sidebar.php'; ?>
+    
+    <div class="main">
+        <?php include $_SERVER['DOCUMENT_ROOT'] . '/quicklease/dashboard/includes/topbar.php';;?>
+
+        <form class="search-container" action="" method="GET">
+            <input class="searchbar" type="text" name="search" placeholder="Search cars..." value="<?= htmlspecialchars($search) ?>">
+            <button type="submit" class="search-btn">
+                <i class="fas fa-search"></i>
+            </button>
+        </form>
 
         <div class="content">
             <h2>Car List</h2>
-            
-            <div class="table-container">
 
-                <div class="add-car-button-container">
-                    <button id="openModal" class="btn btn-add">Add Car</button>
-                </div>                
+            <div class="add-car-button-container">
+                <button id="openModal" class="btn btn-add">
+                    <i class="fas fa-plus"></i>
+                </button>
+                
+            </div>
+
+            <div class="table-container">               
                 <table class="car-table">
                     <thead class="table-header">
                         <tr>
-                            <th>Car ID</th>
+                            <th>ID</th>
                             <th>Image</th>
-                            <th>Car Model</th>
+                            <th>Model</th>
                             <th>Plate No.</th>
                             <th>Price</th>
                             <th>Status</th>
@@ -46,152 +65,266 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 
                     <tbody>
                         <?php foreach ($cars as $car): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($car['id']) ?></td>
-                                <td><img src="../uploads/<?= htmlspecialchars($car['image']) ?>" alt="Car Image"></td>
-                                <td><?= htmlspecialchars($car['model']) ?></td>
-                                <td><?= htmlspecialchars($car['plate_no']) ?></td>
-                                <td><?= htmlspecialchars($car['price']) ?>/Day</td>
-                                <td><?= htmlspecialchars($car['status']) ?></td>
-                                <td><?= htmlspecialchars($car['seats']) ?></td>
-                                <td><?= htmlspecialchars($car['transmission']) ?></td>
-                                <td><?= htmlspecialchars($car['mileage']) ?></td>
-                                <td><?= htmlspecialchars($car['features']) ?></td>
-                                <td>
-                                    <button class="btn btn-edit" 
-                                        onclick="openEditModal(
-                                            <?= htmlspecialchars($car['id']) ?>, 
-                                            '<?= htmlspecialchars($car['model']) ?>', 
-                                            '<?= htmlspecialchars($car['plate_no']) ?>', 
-                                            <?= htmlspecialchars($car['price']) ?>, 
-                                            '<?= htmlspecialchars($car['status']) ?>', 
-                                            <?= htmlspecialchars($car['seats']) ?>, 
-                                            '<?= htmlspecialchars($car['transmission']) ?>', 
-                                            <?= htmlspecialchars($car['mileage']) ?>, 
-                                            '<?= htmlspecialchars($car['features']) ?>'
-                                        )">
-                                        Edit
-                                    </button>
-                                    <a href="cars.php?delete_id=<?= htmlspecialchars($car['id']) ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
-                                </td>
-                            </tr>
+                        <tr>
+                            <td><?= htmlspecialchars($car['id']) ?></td>
+                            <td>
+                                <img src="../uploads/<?= htmlspecialchars($car['image']) ?>" 
+                                     alt="<?= htmlspecialchars($car['model']) ?>" 
+                                     class="car-image">
+                            </td>
+                            <td><?= htmlspecialchars($car['model']) ?></td>
+                            <td><?= htmlspecialchars($car['plate_no']) ?></td>
+                            <td>₱<?= number_format($car['price'], 2) ?>/day</td>
+                            <td>
+                                <span class="status-badge <?= strtolower($car['status']) ?>">
+                                    <?= htmlspecialchars($car['status']) ?>
+                                </span>
+                            </td>
+                            <td><?= htmlspecialchars($car['seats']) ?></td>
+                            <td><?= htmlspecialchars($car['transmission']) ?></td>
+                            <td><?= number_format($car['mileage']) ?> miles</td>
+                            <td class="features-cell">
+                                <?= htmlspecialchars($car['features']) ?>
+                            </td>
+                            <td class="action-buttons">
+                                <button class="btn btn-edit" onclick="openEditModal(
+                                    '<?= $car['id'] ?>',
+                                    '<?= addslashes($car['model']) ?>',
+                                    '<?= addslashes($car['plate_no']) ?>',
+                                    '<?= $car['price'] ?>',
+                                    '<?= $car['status'] ?>',
+                                    '<?= $car['seats'] ?>',
+                                    '<?= addslashes($car['transmission']) ?>',
+                                    '<?= $car['mileage'] ?>',
+                                    '<?= addslashes($car['features']) ?>'
+                                )">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <a href="cars.php?delete_id=<?= $car['id'] ?>" 
+                                   class="btn btn-delete"
+                                   onclick="return confirm('Are you sure you want to delete this car?')">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
                         <?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
 
-        
-
+        <!-- Add Car Modal -->
         <div id="addCarModal" class="modal">
             <div class="modal-content">
                 <span class="close" id="closeModal">&times;</span>
-                <h2>Add a New Car</h2>
-                <?php if (!empty($error)) echo "<p class='error'>$error</p>"; ?>
+                <h2>Add New Car</h2>
                 <form method="post" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="add_car">
-                    <label>Car Model:</label>
-                    <input type="text" name="model" required>
                     
-                    <label>Plate No:</label>
-                    <input type="text" name="plate_no" required>
+                    <div class="form-group">
+                        <label for="model">Car Model:</label>
+                        <input type="text" name="model" id="model" required>
+                    </div>
                     
-                    <label>Price Per Day:</label>
-                    <input type="number" name="price" step="0.01" required>
+                    <div class="form-group">
+                        <label for="plate_no">Plate No:</label>
+                        <input type="text" name="plate_no" id="plate_no" required>
+                    </div>
                     
-                    <label>Status:</label>
-                    <select name="status">
-                        <option value="Available">Available</option>
-                        <option value="Rented">Rented</option>
-                        <option value="Maintenance">Maintenance</option>
-                    </select>
+                    <div class="form-group">
+                        <label for="price">Price/Day:</label>
+                        <div class="input-with-icon">
+                            <span class="currency-symbol">₱</span>
+                            <input type="number" name="price" id="price" step="0.01" required>
+                        </div>
+                    </div>
                     
-                    <label>Number of Seats:</label>
-                    <input type="number" name="seats" required>
+                    <div class="form-group">
+                        <label for="status">Status:</label>
+                        <select name="status" id="status" required>
+                            <option value="Available">Available</option>
+                            <option value="Rented">Rented</option>
+                            <option value="Maintenance">Maintenance</option>
+                        </select>
+                    </div>
                     
-                    <label>Transmission:</label>
-                    <input type="text" name="transmission" required>
+                    <div class="form-group">
+                        <label for="seats">Seats:</label>
+                        <input type="number" name="seats" id="seats" min="1" max="10" required>
+                    </div>
                     
-                    <label>Mileage (miles):</label>
-                    <input type="number" name="mileage" required>
+                    <div class="form-group">
+                        <label for="transmission">Transmission:</label>
+                        <select name="transmission" id="transmission" required>
+                            <option value="Automatic">Automatic</option>
+                            <option value="Manual">Manual</option>
+                        </select>
+                    </div>
                     
-                    <label>Features:</label>
-                    <textarea name="features" rows="4" required></textarea>
+                    <div class="form-group">
+                        <label for="mileage">Mileage:</label>
+                        <div class="input-with-icon">
+                            <input type="number" name="mileage" id="mileage" required>
+                            <span class="unit">miles</span>
+                        </div>
+                    </div>
                     
-                    <label>Upload Car Image:</label>
-                    <input type="file" name="image" accept="image/*" required>
+                    <div class="form-group">
+                        <label for="features">Features:</label>
+                        <textarea name="features" id="features" rows="3" placeholder="Enter car features (e.g., GPS, Bluetooth, etc.)" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="image">Image:</label>
+                        <input type="file" name="image" id="image" accept="image/*" required>
+                        <div class="image-preview" id="imagePreview"></div>
+                    </div>
 
-                    <button type="submit" class="form button">Add Car</button>
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fas fa-save"></i> Save Car
+                    </button>
                 </form>
             </div>
         </div>
 
+        <!-- Edit Car Modal -->
         <div id="editCarModal" class="modal">
-            <div class="modal-content-edit">
+            <div class="modal-content">
                 <span class="close" id="closeEditModal">&times;</span>
                 <h2>Edit Car</h2>
-                <form method="post">
+                <form method="post" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="edit_car">
                     <input type="hidden" name="car_id" id="editCarId">
                     
-                    <label>Car Model:</label>
-                    <input type="text" name="model" id="editCarModel" required>
+                    <div class="form-group">
+                        <label for="editCarModel">Car Model:</label>
+                        <input type="text" name="model" id="editCarModel" required>
+                    </div>
                     
-                    <label>Plate No:</label>
-                    <input type="text" name="plate_no" id="editCarPlateNo" required>
+                    <div class="form-group">
+                        <label for="editPlateNo">Plate No:</label>
+                        <input type="text" name="plate_no" id="editPlateNo" required>
+                    </div>
                     
-                    <label>Price Per Day:</label>
-                    <input type="number" name="price" id="editCarPrice" step="0.01" required>
+                    <div class="form-group">
+                        <label for="editPrice">Price/Day:</label>
+                        <div class="input-with-icon">
+                            <span class="currency-symbol">₱</span>
+                            <input type="number" name="price" id="editPrice" step="0.01" required>
+                        </div>
+                    </div>
                     
-                    <label>Status:</label>
-                    <select name="status" id="editCarStatus">
-                        <option value="Available">Available</option>
-                        <option value="Rented">Rented</option>
-                        <option value="Maintenance">Maintenance</option>
-                    </select>
-                    
-                    <label>Number of Seats:</label>
-                    <input type="number" name="seats" id="editCarSeats" required>
-                    
-                    <label>Transmission:</label>
-                    <input type="text" name="transmission" id="editCarTransmission" required>
-                    
-                    <label>Mileage (miles):</label>
-                    <input type="number" name="mileage" id="editCarMileage" required>
-                    
-                    <label>Features:</label>
-                    <textarea name="features" id="editCarFeatures" rows="4" required></textarea>
+                    <div class="form-group">
+                        <label for="editStatus">Status:</label>
+                        <select name="status" id="editStatus" required>
+                            <option value="Available">Available</option>
+                            <option value="Rented">Rented</option>
+                            <option value="Maintenance">Maintenance</option>
+                        </select>
+                    </div>
 
-                    <button type="submit" class="form button">Update Car</button>
+                    <div class="form-group">
+                        <label for="editSeats">Seats:</label>
+                        <input type="number" name="seats" id="editSeats" min="1" max="10" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editTransmission">Transmission:</label>
+                        <select name="transmission" id="editTransmission" required>
+                            <option value="Automatic">Automatic</option>
+                            <option value="Manual">Manual</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editMileage">Mileage:</label>
+                        <div class="input-with-icon">
+                            <input type="number" name="mileage" id="editMileage" required>
+                            <span class="unit">miles</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editFeatures">Features:</label>
+                        <textarea name="features" id="editFeatures" rows="3" required></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="editImage">New Image (optional):</label>
+                        <input type="file" name="image" id="editImage" accept="image/*">
+                        <div class="image-preview" id="editImagePreview"></div>
+                    </div>
+
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fas fa-save"></i> Update Car
+                    </button>
                 </form>
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
     <script>
-        var swiper = new Swiper(".mySwiper", {
-            slidesPerView: 1, // Default for mobile
-            spaceBetween: 20,
-            pagination: {
-                el: ".swiper-pagination",
-                clickable: true,
-            },
-            breakpoints: {
-                // When window width is >= 768px
-                768: {
-                    slidesPerView: 2,
-                    spaceBetween: 25
-                },
-                // When window width is >= 1024px
-                1024: {
-                    slidesPerView: 3,
-                    spaceBetween: 30
-                }
+        // Modal handling
+        const addModal = document.getElementById('addCarModal');
+        const editModal = document.getElementById('editCarModal');
+        const openModalBtn = document.getElementById('openModal');
+        const closeModalBtn = document.getElementById('closeModal');
+        const closeEditModalBtn = document.getElementById('closeEditModal');
+        
+        openModalBtn.onclick = function() {
+            addModal.style.display = 'block';
+        }
+        
+        closeModalBtn.onclick = function() {
+            addModal.style.display = 'none';
+        }
+        
+        closeEditModalBtn.onclick = function() {
+            editModal.style.display = 'none';
+        }
+        
+        window.onclick = function(event) {
+            if (event.target == addModal) {
+                addModal.style.display = 'none';
             }
-        });
+            if (event.target == editModal) {
+                editModal.style.display = 'none';
+            }
+        }
+        
+        function openEditModal(id, model, plateNo, price, status, seats, transmission, mileage, features) {
+            document.getElementById('editCarId').value = id;
+            document.getElementById('editCarModel').value = model;
+            document.getElementById('editPlateNo').value = plateNo;
+            document.getElementById('editPrice').value = price;
+            document.getElementById('editStatus').value = status;
+            document.getElementById('editSeats').value = seats;
+            document.getElementById('editTransmission').value = transmission;
+            document.getElementById('editMileage').value = mileage;
+            document.getElementById('editFeatures').value = features;
+            
+            editModal.style.display = 'block';
+        }
+
+        // Image preview functionality
+        function handleImagePreview(input, previewId) {
+            const preview = document.getElementById(previewId);
+            input.addEventListener('change', function() {
+                preview.innerHTML = '';
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        preview.appendChild(img);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+            });
+        }
+
+        handleImagePreview(document.getElementById('image'), 'imagePreview');
+        handleImagePreview(document.getElementById('editImage'), 'editImagePreview');
     </script>
-    
-    
 </body>
 </html>
