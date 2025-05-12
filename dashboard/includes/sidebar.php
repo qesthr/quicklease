@@ -17,6 +17,9 @@
         <li>
             <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'bookings.php' ? 'active' : '' ?>" href="bookings.php">Bookings</a>
         </li>
+        <li>
+            <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : '' ?>" href="settings.php">Settings</a>
+        </li>
         <li >
             <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
         </li>

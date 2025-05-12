@@ -105,7 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <tbody>
                 <?php
                 try {
-                    $stmt = $pdo->query("SELECT * FROM users ORDER BY id ASC");
+                    $stmt = $pdo->query("SELECT * FROM users WHERE user_type = 'client' ORDER BY id ASC");
                     $userss = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
                     if (count($userss) > 0):

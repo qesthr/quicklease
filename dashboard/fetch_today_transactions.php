@@ -20,8 +20,8 @@ try {
     $stmtTotalCars = $pdo->query("SELECT COUNT(*) FROM car");
     $totalCars = $stmtTotalCars->fetchColumn();
 
-    // Fetch total accounts
-    $stmtTotalAccounts = $pdo->query("SELECT COUNT(*) FROM users");
+    // Fetch total accounts excluding admins (assuming user_type 'admin' for admins)
+    $stmtTotalAccounts = $pdo->query("SELECT COUNT(*) FROM users WHERE user_type != 'admin'");
     $totalAccounts = $stmtTotalAccounts->fetchColumn();
 
     // Fetch bookings for the given date
