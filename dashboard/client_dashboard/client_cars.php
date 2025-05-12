@@ -20,11 +20,11 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 </head>
 
 <body class="client-cars-body">
-    <?php include '/../client_dashboard/includes/sidebar.php'; ?>
+    <?php include __DIR__ . '/../client_dashboard/includes/sidebar.php'; ?>
 
     <div class="main">
         <header>
-            <?php include '../client_dashboard/includes/topbar.php'; ?>
+            <?php include __DIR__ . '/../client_dashboard/includes/topbar.php'; ?>
         </header>
 
         <div class="card-container">
