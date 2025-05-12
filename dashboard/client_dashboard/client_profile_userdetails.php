@@ -101,17 +101,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
     <link rel="stylesheet" href="../../css/header.css">
 </head>
 <body>
-<div class="container">
+ <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar">
-        <div class="sidebar-nav">
-            <div class="nav-item active">Profile</div>
-            <div class="nav-item">Cars</div>
-            <div class="nav-item">Bookings</div>
-        </div>
-        <div class="logout">
-            <a href="../../logout.php">Logout</a>
-        </div>
+      <div class="sidebar-nav">
+        <a href="client_profile_userdetails.php" class="nav-item">Profile</a>
+        <a href="client_cars.php" class="nav-item">Cars</a>
+        <a href="client_booking.php" class="nav-item active">Bookings</a>
+      </div>
+      <div class="logout">
+        <a href="/loginpage/login.php">Logout</a>
+      </div>
     </aside>
 
     <!-- Main Content Area -->
@@ -138,8 +138,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
             </div>
             <nav class="secondary-nav">
                 <a href="client_profile_userdetails.php" class="active">User Details</a>
-                <a href="client_profile_notification.php">Notifications</a>
-                <a href="client_profile_invoice.php">Invoices</a>
+                <a href="client_profile_notification.html">Notifications</a>
+                <a href="client_profile_invoice.html">Invoices</a>
             </nav>
         </header>
 

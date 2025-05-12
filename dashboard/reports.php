@@ -118,32 +118,94 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="main-content">
         <?php include 'includes/topbar.php'; ?>
 
-        <section class="dashboard-cards">
-            <article class="card card1" aria-label="Total Bookings Card">
-                <h3>Total Bookings</h3>
-                <p>120</p>
-            </article>
-            
-            <article class="card card2" aria-label="Total Cars Card">
-                <h3>Total Cars</h3>
-                <p>15</p>
-            </article>
-            
-            <article class="card card3" aria-label="Total Accounts Card">
-                <h3>Total Accounts</h3>
-                <p>35</p>
-            </article>
+    <section class="dashboard-cards">
+        <article class="card card1" aria-label="Total Bookings Card">
+            <h3>Total Bookings</h3>
+            <p>120</p>
+        </article>
+        
+        <article class="card card2" aria-label="Total Cars Card">
+            <h3>Total Cars</h3>
+            <p>15</p>
+        </article>
+        
+        <article class="card card3" aria-label="Total Accounts Card">
+            <h3>Total Accounts</h3>
+            <p>35</p>
+        </article>
 
-            <article class="card card4" aria-label="Reports Summary Card">
-                <h3>Reports Summary</h3>
-                <p>35</p>
-            </article>
+        <article class="card card4" aria-label="Reports Summary Card" id="reportsSummaryCard" style="cursor:pointer;">
+            <h3>Reports Summary</h3>
+            <p>35</p>
+        </article>
 
-            <article class="card card5" aria-label="Recent Bookings Card">
-                <h3>Recent Bookings</h3>
-                <p>35</p>
-            </article>
-        </section>
+        <article class="card card5" aria-label="Recent Bookings Card">
+            <h3>Recent Bookings</h3>
+            <p>35</p>
+        </article>
+    </section>
+
+    <!-- Reports Summary Modal -->
+    <div id="reportsSummaryModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-height: 80vh; overflow-y: auto;">
+            <span class="close" id="closeReportsSummaryModal" style="cursor:pointer; float:right; font-size: 24px;">&times;</span>
+            <h2>Today's Transactions</h2>
+            <button id="printReportsBtn" style="margin-bottom: 10px;">Print</button>
+            <table id="transactionsTable" border="1" cellpadding="5" cellspacing="0" style="width: 100%; border-collapse: collapse;">
+                <thead>
+                    <tr>
+                        <th>Time</th>
+                        <th>Type</th>
+                        <th>Details</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Transactions will be dynamically inserted here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('reportsSummaryCard').addEventListener('click', function() {
+            fetch('fetch_today_transactions.php')
+                .then(response => response.json())
+                .then(data => {
+                    const tbody = document.querySelector('#transactionsTable tbody');
+                    tbody.innerHTML = '';
+                    data.forEach(tx => {
+                        const tr = document.createElement('tr');
+                        const timeTd = document.createElement('td');
+                        timeTd.textContent = tx.time;
+                        const typeTd = document.createElement('td');
+                        typeTd.textContent = tx.type;
+                        const detailsTd = document.createElement('td');
+                        detailsTd.textContent = tx.details;
+                        tr.appendChild(timeTd);
+                        tr.appendChild(typeTd);
+                        tr.appendChild(detailsTd);
+                        tbody.appendChild(tr);
+                    });
+                    document.getElementById('reportsSummaryModal').style.display = 'block';
+                })
+                .catch(error => {
+                    alert('Failed to fetch transactions: ' + error);
+                });
+        });
+
+        document.getElementById('closeReportsSummaryModal').addEventListener('click', function() {
+            document.getElementById('reportsSummaryModal').style.display = 'none';
+        });
+
+        document.getElementById('printReportsBtn').addEventListener('click', function() {
+            const printContents = document.getElementById('reportsSummaryModal').innerHTML;
+            const originalContents = document.body.innerHTML;
+            document.body.innerHTML = printContents;
+            window.print();
+            document.body.innerHTML = originalContents;
+            location.reload();
+        });
+    </script>
 
     </div>
 

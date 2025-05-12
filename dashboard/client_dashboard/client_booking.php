@@ -1,9 +1,13 @@
 <?php
 // client_booking.php
-require_once realpath(__DIR__ . '/../../db.php');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+require_once '../../db.php';
 session_start();
 $search = isset($_GET['search']) ? $_GET['search'] : '';
-header('Access-Control-Allow-Origin: *'); // Replace * with your frontend domain in production
+header('Access-Control-Allow-Origin: '); // Replace * with your frontend domain in production
 header('Access-Control-Allow-Headers: Content-Type');
 header('Access-Control-Allow-Methods: GET');
 ?>
@@ -72,6 +76,8 @@ header('Access-Control-Allow-Methods: GET');
         $query = "SELECT * FROM car WHERE status = 'Available'";
         if (!empty($search)) {
           $query .= " AND (model LIKE :search OR transmission LIKE :search)";
+          echo "<!-- SQL Query: $query -->";
+          echo "<!-- Search term: $search -->";
           $stmt = $pdo->prepare($query);
           $stmt->execute(['search' => "%$search%"]);
         } else {
@@ -82,7 +88,7 @@ header('Access-Control-Allow-Methods: GET');
         ?>
         <div class="car-card">
           <h3><?php echo htmlspecialchars($row['model']); ?></h3>
-          <img src="../../uploads/<?php echo htmlspecialchars($row['image']); ?>" alt="Car Image">
+          <img src="../../uploads/<?php echo htmlspecialchars($row['image']) ?: 'default.jpg'; ?>" alt="Car Image">
           <div class="icon-row">
             <span>⚙ <?php echo $row['transmission']; ?></span>
             <span>👥 <?php echo $row['seats']; ?> Seats</span>
@@ -153,7 +159,7 @@ header('Access-Control-Allow-Methods: GET');
           // Populate modal
           document.getElementById('booking-details').innerHTML = `
             <strong>Car:</strong> ${bookingData.carModel}<br>
-            <strong>Location:</strong> ${bookingData.location}<br>
+            <strong>Pickup Location:</strong> ${bookingData.location}<br>
             <strong>Pickup:</strong> ${bookingData.bookingDate} ${bookingData.bookingTime}<br>
             <strong>Return:</strong> ${bookingData.returnDate} ${bookingData.returnTime}<br>
             <strong>Total:</strong> ₱ ${totalAmount.toFixed(2)} (${days} day${days > 1 ? 's' : ''})<br>
@@ -200,8 +206,8 @@ header('Access-Control-Allow-Methods: GET');
           xhr.onload = function () {
             console.log('XHR status:', xhr.status);
             console.log('XHR response:', xhr.responseText);
-            if (xhr.status === 200) {
-              alert('Booking Confirmed');
+          if (xhr.status === 200) {
+              showToast('Booking Confirmed');
               closeModal();
               location.reload();
             } else {
@@ -211,7 +217,41 @@ header('Access-Control-Allow-Methods: GET');
           xhr.send(formData);
         }
       };
+
+      // Toast notification function
+      function showToast(message) {
+        let toast = document.createElement('div');
+        toast.className = 'toast-notification';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+          toast.classList.add('show');
+        }, 100);
+        setTimeout(() => {
+          toast.classList.remove('show');
+          setTimeout(() => {
+            document.body.removeChild(toast);
+          }, 300);
+        }, 3000);
+      }
     });
   </script>
-</body>
-</html>
+  <style>
+    .toast-notification {
+      visibility: hidden;
+      min-width: 250px;
+      margin-left: -125px;
+      background-color: #333;
+      color: #fff;
+      text-align: center;
+      border-radius: 4px;
+      padding: 16px;
+      position: fixed;
+      z-index: 9999;
+      left: 50%;
+      bottom: 30px;
+      font-size: 17px;
+      opacity: 0;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .toast-notification.show {

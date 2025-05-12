@@ -7,16 +7,16 @@
   <link rel="stylesheet" href="client_profile_invoice.css"> <!-- Link to external CSS -->
 </head>
 <body>
-  <div class="container">
+   <div class="container">
     <!-- Sidebar -->
     <aside class="sidebar">
       <div class="sidebar-nav">
-        <div class="nav-item active">Profilediv>
-        <div class="nav-item">Cars</div>
-        <div class="nav-item">Bookings</div>
+        <a href="client_profile_userdetails.php" class="nav-item">Profile</a>
+        <a href="client_cars.php" class="nav-item">Cars</a>
+        <a href="client_booking.php" class="nav-item active">Bookings</a>
       </div>
       <div class="logout">
-        <a href="#">Logout</a>
+        <a href="/loginpage/login.php">Logout</a>
       </div>
     </aside>
 
@@ -49,7 +49,7 @@
         </div>
         <!-- Secondary Navigation -->
         <nav class="secondary-nav">
-            <a href="client_profile_userdetails.html">User Details</a>
+            <a href="client_profile_userdetails.php">User Details</a>
             <a href="client_profile_notification.html" class="active">Notifications</a>
             <a href="client_profile_invoice.html">Invoices</a>
         </nav>
