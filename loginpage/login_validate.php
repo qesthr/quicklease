@@ -47,7 +47,7 @@ require_once __DIR__ . '/../db.php';
         if ($user['user_type'] === 'admin') {
             header('Location: /quicklease/dashboard/reports.php'); // Admin dashboard
         } else if ($user['user_type'] === 'client') {
-            header('Location: /quicklease/dashboard/client_dashboard/client_booking.php'); // Client dashboard
+            header('Location: /quicklease/dashboard/client_dashboard/client_profile_userdetails.php'); // Client dashboard
         }
         exit();
     } else {
