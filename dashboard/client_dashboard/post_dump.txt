@@ -1,0 +1,11 @@
+Array
+(
+    [car_id] => 14
+    [user_id] => 6
+    [location] => JJL CAR RENTAL SERVICES AND CARWASH, Magsaysay Ext, Malaybalay, Bukidnon
+    [booking_date] => 2025-05-13
+    [return_date] => 2025-05-14
+    [booking_time] => 09:00
+    [return_time] => 18:00
+    [price] => 2500
+)

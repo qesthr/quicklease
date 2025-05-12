@@ -1,10 +1,135 @@
 <?php
 require_once('../db.php');
+
+$success = '';
+$error = '';
+
+// Handle delete car
+if (isset($_GET['delete_id'])) {
+    $deleteId = $_GET['delete_id'];
+    $stmt = $pdo->prepare("DELETE FROM car WHERE id = ?");
+    if ($stmt->execute([$deleteId])) {
+        $success = "Car deleted successfully.";
+    } else {
+        $error = "Failed to delete car.";
+    }
+}
+
+// Handle add car
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add_car') {
+    $model = $_POST['model'] ?? '';
+    $plate_no = $_POST['plate_no'] ?? '';
+    $price = $_POST['price'] ?? 0;
+    $status = $_POST['status'] ?? '';
+    $seats = $_POST['seats'] ?? 0;
+    $transmission = $_POST['transmission'] ?? '';
+    $mileage = $_POST['mileage'] ?? 0;
+    $features = $_POST['features'] ?? '';
+
+    // Handle image upload
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['image']['tmp_name'];
+        $fileName = $_FILES['image']['name'];
+        $fileSize = $_FILES['image']['size'];
+        $fileType = $_FILES['image']['type'];
+        $fileNameCmps = explode(".", $fileName);
+        $fileExtension = strtolower(end($fileNameCmps));
+
+        $allowedfileExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if (in_array($fileExtension, $allowedfileExtensions)) {
+            if ($fileSize <= 2 * 1024 * 1024) { // 2MB limit
+                $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+                $uploadFileDir = '../uploads/';
+                $dest_path = $uploadFileDir . $newFileName;
+
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    // Insert car with image
+                    $stmt = $pdo->prepare("INSERT INTO car (model, plate_no, price, status, seats, transmission, mileage, features, image) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                    if ($stmt->execute([$model, $plate_no, $price, $status, $seats, $transmission, $mileage, $features, $newFileName])) {
+                        $success = "Car added successfully.";
+                    } else {
+                        $error = "Failed to add car to database.";
+                    }
+                } else {
+                    $error = "Error moving the uploaded file.";
+                }
+            } else {
+                $error = "Image file size exceeds 2MB limit.";
+            }
+        } else {
+            $error = "Upload failed. Allowed file types: " . implode(", ", $allowedfileExtensions);
+        }
+    } else {
+        $error = "Image upload error or no image uploaded.";
+    }
+}
+
+// Handle edit car
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'edit_car') {
+    $car_id = $_POST['car_id'] ?? 0;
+    $model = $_POST['model'] ?? '';
+    $plate_no = $_POST['plate_no'] ?? '';
+    $price = $_POST['price'] ?? 0;
+    $status = $_POST['status'] ?? '';
+    $seats = $_POST['seats'] ?? 0;
+    $transmission = $_POST['transmission'] ?? '';
+    $mileage = $_POST['mileage'] ?? 0;
+    $features = $_POST['features'] ?? '';
+
+    $imageUpdated = false;
+    $newFileName = '';
+
+    // Handle image upload if provided
+    if (isset($_FILES['image']) && $_FILES['image']['error'] === UPLOAD_ERR_OK) {
+        $fileTmpPath = $_FILES['image']['tmp_name'];
+        $fileName = $_FILES['image']['name'];
+        $fileSize = $_FILES['image']['size'];
+        $fileType = $_FILES['image']['type'];
+        $fileNameCmps = explode(".", $fileName);
+        $fileExtension = strtolower(end($fileNameCmps));
+
+        $allowedfileExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+        if (in_array($fileExtension, $allowedfileExtensions)) {
+            if ($fileSize <= 2 * 1024 * 1024) { // 2MB limit
+                $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+                $uploadFileDir = '../uploads/';
+                $dest_path = $uploadFileDir . $newFileName;
+
+                if (move_uploaded_file($fileTmpPath, $dest_path)) {
+                    $imageUpdated = true;
+                } else {
+                    $error = "Error moving the uploaded file.";
+                }
+            } else {
+                $error = "Image file size exceeds 2MB limit.";
+            }
+        } else {
+            $error = "Upload failed. Allowed file types: " . implode(", ", $allowedfileExtensions);
+        }
+    }
+
+    if (!$error) {
+        if ($imageUpdated) {
+            $stmt = $pdo->prepare("UPDATE car SET model = ?, plate_no = ?, price = ?, status = ?, seats = ?, transmission = ?, mileage = ?, features = ?, image = ? WHERE id = ?");
+            $params = [$model, $plate_no, $price, $status, $seats, $transmission, $mileage, $features, $newFileName, $car_id];
+        } else {
+            $stmt = $pdo->prepare("UPDATE car SET model = ?, plate_no = ?, price = ?, status = ?, seats = ?, transmission = ?, mileage = ?, features = ? WHERE id = ?");
+            $params = [$model, $plate_no, $price, $status, $seats, $transmission, $mileage, $features, $car_id];
+        }
+
+        if ($stmt->execute($params)) {
+            $success = "Car updated successfully.";
+        } else {
+            $error = "Failed to update car.";
+        }
+    }
+}
+
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Fetch cars data
 if (!empty($search)) {
-    $stmt = $pdo->prepare("SELECT * FROM car WHERE model LIKE :search OR transmission LIKE :search");
+    $stmt = $pdo->prepare("SELECT * FROM car WHERE model LIKE :search OR transmission LIKE :search OR plate_no LIKE :search OR status LIKE :search");
     $stmt->execute(['search' => "%$search%"]);
 } else {
     $stmt = $pdo->query("SELECT * FROM car");
