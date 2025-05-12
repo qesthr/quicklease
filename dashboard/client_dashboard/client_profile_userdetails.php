@@ -96,138 +96,219 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>Client Profile</title>
-    <link rel="stylesheet" href="../../css/client_profile_invoice.css">
-    <link rel="stylesheet" href="../../css/sidebar.css">
-    <link rel="stylesheet" href="../../css/header.css">
+    <link rel="stylesheet" href="../../css/client.css">
+    <link rel="stylesheet" href="../../css/client-account.css">
+ 
 </head>
-<body>
- <div class="container">
-    <!-- Sidebar -->
-    <aside class="sidebar">
-      <div class="sidebar-nav">
-        <a href="client_profile_userdetails.php" class="nav-item">Profile</a>
-        <a href="client_cars.php" class="nav-item">Cars</a>
-        <a href="client_booking.php" class="nav-item active">Bookings</a>
-      </div>
-      <div class="logout">
-        <a href="/loginpage/login.php">Logout</a>
-      </div>
-    </aside>
+<body class="client-body">
+    
+    <div class="container">
+        <?php include __DIR__ . '/../client_dashboard/includes/sidebar.php'; ?>
 
-    <!-- Main Content Area -->
-    <main class="content">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-top">
-                <h1>PROFILE</h1>
-                <div class="icons">
-                    <span class="bell">🔔</span>
-                    <img src="profile-pic.png" alt="Profile" class="profile-icon" id="headerProfileIcon">
-                </div>
-            </div>
-            <div class="header-user-info">
-                <div class="header-left">
-                    <div class="user-thumb-clickable" id="userThumb">
-                        <img src="profile-pic.png" alt="User Profile Image" id="userProfileImage">
-                    </div>
-                </div>
-                <div class="header-right">
-                    <div class="sub-line" id="userName"><?= htmlspecialchars($user['firstname'] ?? 'John Doe') ?></div>
-                    <div class="sub-line" id="userProfession">Client</div>
-                </div>
-            </div>
-            <nav class="secondary-nav">
-                <a href="client_profile_userdetails.php" class="active">User Details</a>
-                <a href="client_profile_notification.html">Notifications</a>
-                <a href="client_profile_invoice.html">Invoices</a>
-            </nav>
-        </header>
+        <!-- Main Content Area -->
+        <main class="content">
 
-        <!-- Profile Details -->
-        <section class="booking-cards">
-            <div class="profile-container">
-                <?php if ($success): ?>
-                    <div class="alert-success"><?= htmlspecialchars($success) ?></div>
-                <?php elseif ($error): ?>
-                    <div class="alert-error"><?= htmlspecialchars($error) ?></div>
-                <?php endif; ?>
+            <header>
+                <?php include __DIR__ . '/../client_dashboard/includes/topbar.php'; ?>
+            </header>
 
-                <div class="profile-card">
-                    <h2>Personal Information</h2>
-                    <form method="POST" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="firstname">First Name</label>
-                            <input type="text" id="firstname" name="firstname" 
-                                   value="<?= htmlspecialchars($user['firstname'] ?? '') ?>" required>
+            <!-- Profile Details -->
+            <section class="profile-container">
+                <div class="profile-details">
+
+                    <?php if ($success): ?>
+                        <div class="alert-success"><?= htmlspecialchars($success) ?></div>
+                    <?php elseif ($error): ?>
+                        <div class="alert-error"><?= htmlspecialchars($error) ?></div>
+                    <?php endif; ?>
+
+                    <div class="profile-card">
+
+                        <h2>Personal Information</h2>
+
+                        <div class="profile-header">
+                            <img src="../../images/profile.jpg" alt="Profile Picture" class="profile-image">
+                            <div class="profile-header-info">        
+                                <h3 class="name"><?= htmlspecialchars($user['firstname'] ?? '') ?></h3>
+                                <p class="username"> @<?= htmlspecialchars($user['username'] ?? '') ?></p>
+                            </div>
+                            <div class="edit-icon-container">
+                                <button class="edit-icon-button">
+                                    <i class="fa-regular fa-pen-to-square"></i>
+                                </button>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="lastname">Last Name</label>
-                            <input type="text" id="lastname" name="lastname" 
-                                   value="<?= htmlspecialchars($user['lastname'] ?? '') ?>" required>
+                    
+                        <div class="tab-menu">
+                            <div class="tab-menu-container">
+                                <button class="tab-link active" data-tab="detailsTab">User Details</button>
+                                <button class="tab-link" data-tab="notificationsTab">Notifications</button>
+                                <button class="tab-link" data-tab="invoicesTab">Invoices</button>
+                            </div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="email">Email</label>
-                            <input type="email" id="email" name="email" 
-                                   value="<?= htmlspecialchars($user['email'] ?? '') ?>" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="phone">Phone Number</label>
-                            <input type="tel" id="phone" name="phone" 
-                                   value="<?= htmlspecialchars($user['customer_phone'] ?? '') ?>" required>
-                        </div>
-
-                        <div class="form-group">
-                            <label for="submitted_id">Verification ID (Upload/Update)</label>
-                            <?php if (!empty($user['submitted_id'])): ?>
-                                <div>
-                                    <img src="../../uploads/<?= htmlspecialchars($user['submitted_id']) ?>" 
-                                         alt="Current ID" class="profile-image">
+                        <div id="detailsTab" class="tab-content active-tab">
+                            <div id="detailsTab" class="tab-content active-tab">
+                                <div class="details-card">
+                                    <h3>Personal Information</h3>
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <label>First Name:</label>
+                                            <p><?= htmlspecialchars($user['firstname'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Last Name:</label>
+                                            <p><?= htmlspecialchars($user['lastname'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Email:</label>
+                                            <p><?= htmlspecialchars($user['email'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Phone Number:</label>
+                                            <p><?= htmlspecialchars($user['customer_phone'] ?? '') ?></p>
+                                        </div>
+                                    </div>
                                 </div>
-                            <?php endif; ?>
-                            <input type="file" id="submitted_id" name="submitted_id" accept="image/*">
+
+                                <div class="details-card">
+                                    <h3>Account Information</h3>
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <label>Username:</label>
+                                            <p><?= htmlspecialchars($user['username'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Account Type:</label>
+                                            <p><?= ucfirst($user['user_type'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Member Since:</label>
+                                            <p><?= date('F j, Y', strtotime($user['created_at'] ?? '')) ?></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="details-card">
+                                    <div class="id-verification-container">
+                                        <div class="id-left">
+                                            <?php if (!empty($user['submitted_id'])): ?>
+                                                <img id="idPreview" src="../../uploads/<?= htmlspecialchars($user['submitted_id']) ?>" alt="Submitted ID" class="submitted-id">
+                                            <?php else: ?>
+                                                <p>No ID uploaded yet.</p>
+                                                <img id="idPreview" src="#" alt="ID Preview" class="submitted-id hidden">
+                                            <?php endif; ?>
+
+                                            <label for="idImage">Upload New ID:</label>
+                                            <input type="file" id="idImage" accept="image/*">
+                                        </div>
+
+                                        <?php if ($isAdmin): ?>
+                                        <div class="id-right">
+                                            <span id="statusText" class="<?= $user['is_verified'] ? 'verified' : 'not-verified' ?>">
+                                                <?= $user['is_verified'] ? 'Verified' : 'Not Verified' ?>
+                                            </span>
+                                            <button id="verifyBtn">
+                                                <?= $user['is_verified'] ? 'Mark as Not Verified' : 'Mark as Verified' ?>
+                                            </button>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        
+                        <div id="notificationsTab" class="tab-content hidden">
+                            
+                        </div>
+                        
+                        <div id="invoicesTab" class="tab-content hidden">
 
-                        <button type="submit" class="btn">Update Profile</button>
-                    </form>
+                    </div>
+
+                    
                 </div>
+            </section>
+        </main>
+    </div>
 
-                <div class="profile-card">
-                    <h2>Account Information</h2>
-                    <p><strong>Username:</strong> <?= htmlspecialchars($user['username'] ?? '') ?></p>
-                    <p><strong>Account Type:</strong> <?= htmlspecialchars(ucfirst($user['user_type'] ?? '')) ?></p>
-                    <p><strong>Member Since:</strong> <?= date('F j, Y', strtotime($user['created_at'] ?? '')) ?></p>
+    
+    <!-- Hidden file input for profile picture update 
+    <input type="file" accept="image/*" id="profileUpload">
+
+    <script>
+        const headerProfileIcon = document.getElementById("headerProfileIcon");
+        const userProfileImage = document.getElementById("userProfileImage");
+        const userThumb = document.getElementById("userThumb");
+        const profileUpload = document.getElementById("profileUpload");
+
+        headerProfileIcon.addEventListener("click", () => profileUpload.click());
+        userThumb.addEventListener("click", () => profileUpload.click());
+
+        profileUpload.addEventListener("change", function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    headerProfileIcon.src = e.target.result;
+                    userProfileImage.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+    </script>
+    -->
+    
+    <!-- JavaScript -->
+    <script src="../../javascript/client-account.js"></script>
+
+    <!-- Font Awesome -->
+    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
+
+    <div id="editProfileModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="close" id="closeEditModal">&times;</span>
+            <h2>Edit Profile</h2>
+            <form id="editProfileForm">
+                <div class="form-group">
+                    <label for="editFirstName">First Name</label>
+                    <input type="text" id="editFirstName" name="firstname" 
+                           placeholder="<?= htmlspecialchars($user['firstname'] ?? '') ?>" 
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['firstname'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['firstname'] ?? '') ?>')">
                 </div>
-            </div>
-        </section>
-    </main>
-</div>
-
-<!-- Hidden file input for profile picture update -->
-<input type="file" accept="image/*" id="profileUpload">
-
-<script>
-    const headerProfileIcon = document.getElementById("headerProfileIcon");
-    const userProfileImage = document.getElementById("userProfileImage");
-    const userThumb = document.getElementById("userThumb");
-    const profileUpload = document.getElementById("profileUpload");
-
-    headerProfileIcon.addEventListener("click", () => profileUpload.click());
-    userThumb.addEventListener("click", () => profileUpload.click());
-
-    profileUpload.addEventListener("change", function(event) {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                headerProfileIcon.src = e.target.result;
-                userProfileImage.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-    });
-</script>
+                <div class="form-group">
+                    <label for="editLastName">Last Name</label>
+                    <input type="text" id="editLastName" name="lastname" 
+                           placeholder="<?= htmlspecialchars($user['lastname'] ?? '') ?>"
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['lastname'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['lastname'] ?? '') ?>')">
+                </div>
+                <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input type="email" id="editEmail" name="email" 
+                           placeholder="<?= htmlspecialchars($user['email'] ?? '') ?>"
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['email'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['email'] ?? '') ?>')">
+                </div>
+                <div class="form-group">
+                    <label for="editPhone">Phone Number</label>
+                    <input type="text" id="editPhone" name="phone"
+                           placeholder="<?= htmlspecialchars($user['customer_phone'] ?? '') ?>"
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')">
+                </div>
+                <div class="form-group">
+                    <label for="editUsername">Username</label>
+                    <input type="text" id="editUsername" name="username" 
+                           placeholder="<?= htmlspecialchars($user['username'] ?? '') ?>"
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['username'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['username'] ?? '') ?>')">
+                </div>
+                <button type="submit" class="btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
 </body>
 </html>

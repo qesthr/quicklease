@@ -100,12 +100,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
     <link rel="stylesheet" href="../../css/client-account.css">
 
 </head>
-<body>
+<body class="client-account">
+
+    <?php include __DIR__ . '/../client_dashboard/includes/sidebar.php'; ?>
+
     <div class="profile-container">
-        <div class="profile-header">
-            <h1>My Profile</h1>
-            <a href="../../logout.php" class="btn">Logout</a>
-        </div>
+
+        <header>
+            <?php include __DIR__ . '/../client_dashboard/includes/topbar.php'; ?>
+        </header>
 
         <?php if ($success): ?>
             <div class="alert-success"><?= htmlspecialchars($success) ?></div>

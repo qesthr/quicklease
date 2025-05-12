@@ -1,0 +1,386 @@
+/* topbar */
+.client-body header{
+    width: 173vh;
+}
+
+/* Container layout */
+.container {
+    display: flex;
+    min-height: 100vh;
+}
+
+/* Main content area */
+.content {
+    flex: 1;
+    padding: 30px;
+    margin-left: 30vh;
+}
+
+/* Profile Container */
+.profile-container {
+    max-width: 900px;
+    margin: auto;
+}
+
+/* Card style */
+.profile-card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.06);
+    padding: 30px;
+    transition: all 0.3s ease;
+    margin-top: 20px;
+    width: 166vh;
+    margin-left: -37vh;
+    margin-right: auto;
+}
+
+
+.profile-card .profile-header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    text-align: center;
+    gap: 28px;
+    text-align: center;
+    padding: 9px 50px;
+    margin-bottom: 20px;
+}
+
+.profile-header .profile-header-info {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.profile-header h3 {
+    font-size: 2.5rem;
+    margin-top: 0px;
+}
+
+.profile-header .username {
+    font-size: 1rem;
+    margin-top: -50px;
+}
+
+.profile-header img {
+    width: 150px; 
+    height: auto;
+    border-radius: 50%;
+}
+
+.profile-header .edit-icon-container {
+    margin-top: -2em;
+    margin-left: 10px;
+}
+
+.edit-icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 2rem;
+}
+
+.profile-card h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #1818CA;
+    font-size: 2rem;
+    
+}
+
+.tab-menu {
+    display: flex;
+    gap: 10px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+    
+}
+
+.tab-link {
+    position: relative;
+    padding: 8px 0;
+}
+  
+.tab-link.active::after {
+    content: "";
+    position: absolute;
+    bottom: -10px; /* places the underline right on the tab-menu's border */
+    left: 0;
+    width: 100%; /* matches the text width */
+    height: 2px;
+    background-color: #1818CA; /* or your desired active line color */
+}
+  
+
+.tab-menu-container {
+    display: flex;
+    gap: 10px;
+    padding-bottom: 10px;
+    margin-left: 6vh;
+}
+
+.tab-menu-container button {
+    background: none;
+    border: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-right: 42px;
+}
+
+.tab-content {
+    display: none;
+    padding: 20px 20px;
+}
+
+.active-tab {
+    display: block;
+}
+
+.details-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+.details-card h3 {
+    margin-bottom: 16px;
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 15px 30px;
+}
+
+.info-item label {
+    font-weight: bold;
+    color: #555;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.info-item p {
+    margin: 0;
+    color: #333;
+}
+
+.submitted-id {
+    max-width: 250px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.id-verification-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.id-left {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex: 1;
+}
+
+.submitted-id {
+    width: 250px;
+    height: auto;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.id-right {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+#statusText {
+    font-weight: bold;
+}
+
+.verified {
+    color: green;
+}
+
+.not-verified {
+    color: red;
+}
+
+.hidden {
+    display: none;
+}
+
+
+
+/* Form styling */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="tel"],
+.form-group input[type="file"] {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 15px;
+    transition: border-color 0.3s;
+}
+
+.form-group input:focus {
+    border-color: #3232D0;
+    outline: none;
+}
+
+/* Profile image display */
+.profile-image {
+    width: 100%;
+    max-width: 280px;
+    height: auto;
+    display: block;
+    margin: 10px 0;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+/* Button styling */
+.btn {
+    background-color: #3232D0;
+    color: #fff;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.btn:hover {
+    background-color: #1818CA;
+}
+
+/* Alert messages */
+.alert-success {
+    background-color: #e7fbe9;
+    color: #2c7a44;
+    padding: 12px 18px;
+    border: 1px solid #b1e5c5;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+.alert-error {
+    background-color: #ffe5e5;
+    color: #c0392b;
+    padding: 12px 18px;
+    border: 1px solid #f5bfbf;
+    border-radius: 8px;
+    margin-bottom: 20px;
+}
+
+
+
+
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+    .profile-card {
+        padding: 20px;
+    }
+
+    .btn {
+        width: 100%;
+    }
+
+    .form-group input {
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-card {
+        padding: 20px;
+        border-radius: 12px;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr; /* stack vertically */
+    }
+}
+
+/* Modal Styles */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    overflow: auto;
+    background: rgba(0,0,0,0.4);
+}
+
+.modal-content {
+    background: #fff;
+    margin: 5% auto;
+    padding: 30px 40px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.close {
+    color: #aaa;
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    font-size: 2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.close:hover { color: #1818CA; }
+
+.modal-content .form-group input {
+    width: 92%;
+    
+}
+
+.modal-content .btn {
+    background-color: #FBCC63;
+    width: 100%;
+}
+
+.modal-content .btn:hover {
+    background-color: #F9B315;
+}
+
+
+
+
+
