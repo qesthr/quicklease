@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_admin'])) {
     } elseif (!filter_var($aemail, FILTER_VALIDATE_EMAIL)) {
         $email_error = 'Invalid email address.';
     } else {
-        $stmt = $pdo->prepare("SELECT username, email, customer_phone FROM users WHERE username = ? OR email = ? OR customer_phone = ?");
+        $stmt = $pdo->prepare("SELECT username, email, phone FROM users WHERE username = ? OR email = ? OR phone = ?");
         $stmt->execute([$ausername, $aemail, $aphone]);
 
         while ($row = $stmt->fetch()) {
@@ -33,14 +33,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_admin'])) {
             if ($row['username'] === $ausername) {
                 $username_error = 'This username is already taken.';
             }
-            if ($row['customer_phone'] === $aphone) {
+            if ($row['phone'] === $aphone) {
                 $phone_error = 'This phone number is already registered.';
             }
         }
 
         if (!$email_error && !$username_error && !$phone_error) {
             $hashed_password = password_hash($apassword, PASSWORD_DEFAULT);
-            $insert_stmt = $pdo->prepare("INSERT INTO users (firstname, lastname, username, email, password, customer_phone, status, user_type, created_at) VALUES (?, ?, ?, ?, ?, ?, 'Approved', 'admin', NOW())");
+            $insert_stmt = $pdo->prepare("INSERT INTO users (firstname, lastname, username, email, password, phone, status, user_type, created_at) VALUES (?, ?, ?, ?, ?, ?, 'Approved', 'admin', NOW())");
             if ($insert_stmt->execute([$afirstname, $alastname, $ausername, $aemail, $hashed_password, $aphone])) {
                 $admin_message = 'New admin added successfully.';
                 $show_form = false;
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_admin'])) {
         }
     }
     // Refresh the admin list after deletion
-    $admins = $pdo->query("SELECT id, firstname, lastname, username, email, customer_phone, status, created_at FROM users WHERE user_type = 'admin'")->fetchAll();
+    $admins = $pdo->query("SELECT id, firstname, lastname, username, email, phone, status, created_at FROM users WHERE user_type = 'admin'")->fetchAll();
 }
 ?>
 
@@ -325,10 +325,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_admin'])) {
                     <td><?= htmlspecialchars($admin['created_at']) ?></td>
                     <td>
                         <?php if ($admin['id'] !== $_SESSION['user_id']): ?>
-<form method="POST" action="settings.php" class="delete-admin-form" data-admin-id="<?= htmlspecialchars($admin['id']) ?>" style="display:inline;">
-    <input type="hidden" name="delete_admin" value="<?= htmlspecialchars($admin['id']) ?>" />
-    <button type="button" class="delete-admin-btn" style="background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Delete</button>
-</form>
+                            <form method="POST" action="settings.php" class="delete-admin-form" data-admin-id="<?= htmlspecialchars($admin['id']) ?>" style="display:inline;">
+                                <input type="hidden" name="delete_admin" value="<?= htmlspecialchars($admin['id']) ?>" />
+                                <button type="button" class="delete-admin-btn" style="background-color: #dc3545; color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer;">Delete</button>
+                            </form>
                         <?php else: ?>
                             <em>Current User</em>
                         <?php endif; ?>

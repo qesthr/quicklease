@@ -4,8 +4,10 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-require_once '../../db.php';
-session_start();
+if (!isset($_SESSION)) {
+    session_start();
+}
+
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 header('Access-Control-Allow-Origin: '); // Replace * with your frontend domain in production
 header('Access-Control-Allow-Headers: Content-Type');
@@ -17,10 +19,10 @@ header('Access-Control-Allow-Methods: GET');
   <meta charset="UTF-8">
   <title>Client Booking</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <link rel="stylesheet" href="../../css/client_booking.css">
   <link rel="stylesheet" href="../../css/sidebar.css">
   <link rel="stylesheet" href="../../css/header.css">
-
 </head>
 <body>
   <div class="sidebar">
@@ -36,13 +38,7 @@ header('Access-Control-Allow-Methods: GET');
   </div>
 
   <div class="main">
-    <header>
-      <h1>BOOKING</h1>
-      <div class="header-icons">
-        <span>🔔</span>
-        <img src="../images/car.jpg" alt="Profile" style="width: 40px; border-radius: 50%;">
-      </div>
-    </header>
+    <?php include 'includes/topbar.php'; ?>
 
     <div class="booking-section">
       <div class="booking-form-panel">
@@ -248,10 +244,33 @@ header('Access-Control-Allow-Methods: GET');
       padding: 16px;
       position: fixed;
       z-index: 9999;
-      left: 50%;
-      bottom: 30px;
-      font-size: 17px;
-      opacity: 0;
-      transition: opacity 0.3s ease, visibility 0.3s ease;
     }
-    .toast-notification.show {
+
+    .main {
+      position: relative;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 100;
+    }
+
+    .notification-dropdown {
+      z-index: 1000;
+    }
+
+    .booking-section {
+      position: relative;
+      z-index: 1;
+    }
+
+    .notification-wrapper {
+      margin-right: 20px;
+    }
+
+    .modal {
+      z-index: 2000;
+    }
+  </style>
+</body>
+</html>
