@@ -10,6 +10,7 @@ session_start();
     <title>Admin | Dashboard</title>
     <link rel="stylesheet" href="../css/dashboard.css"> 
     <link rel="stylesheet" href="../css/reports.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
         .modal-content { background-color: #fff; margin: 5% auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 1000px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; }
@@ -20,6 +21,14 @@ session_start();
         .modal-content input[type="date"], .modal-content button { margin: 10px 5px; padding: 5px 10px; font-size: 13px; }
         .close { position: absolute; right: 20px; top: 15px; font-size: 28px; font-weight: bold; color: #000; }
         .close:hover { color: red; cursor: pointer; }
+        .chart-container { 
+            width: 100%; 
+            height: 300px; 
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
     </style>
 </head>
 <body>
@@ -31,7 +40,12 @@ session_start();
     <article class="card card2"><h3>Total Cars</h3><p id="totalCars">Loading...</p></article>
     <article class="card card3"><h3>Total Accounts</h3><p id="totalAccounts">Loading...</p></article>
     <article class="card card4" id="reportsSummaryCard" style="cursor:pointer;"><h3>Reports Summary</h3><p>View</p></article>
-    <article class="card card5"><h3>Recent Bookings</h3><p>35</p></article>
+    <article class="card card5">
+        <h3>Booking Activities</h3>
+        <div class="chart-container">
+            <canvas id="bookingChart"></canvas>
+        </div>
+    </article>
 </section>
 
 <!-- Modal -->
@@ -69,6 +83,8 @@ session_start();
 </div>
 
 <script>
+    let bookingChart;
+
     function loadDashboardSummary() {
         fetch('fetch_today_transactions.php')
             .then(res => res.json())
@@ -77,6 +93,77 @@ session_start();
                 document.getElementById('totalCars').textContent = data.totalCars;
                 document.getElementById('totalAccounts').textContent = data.totalAccounts;
             });
+    }
+
+    function loadBookingChart() {
+        // Fetch booking statistics
+        fetch('fetch_booking_stats.php')
+            .then(res => res.json())
+            .then(data => {
+                const ctx = document.getElementById('bookingChart').getContext('2d');
+                
+                if (bookingChart) {
+                    bookingChart.destroy();
+                }
+
+                bookingChart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: data.labels,
+                        datasets: [{
+                            data: data.values,
+                            backgroundColor: [
+                                '#4CAF50',  // Green
+                                '#2196F3',  // Blue
+                                '#FFC107',  // Yellow
+                                '#FF5722',  // Orange
+                                '#9C27B0',  // Purple
+                                '#E91E63',  // Pink
+                                '#795548'   // Brown
+                            ],
+                            borderColor: '#ffffff',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'right',
+                                labels: {
+                                    padding: 20,
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Booking Distribution',
+                                font: {
+                                    size: 16
+                                }
+                            },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(context) {
+                                        const label = context.label || '';
+                                        const value = context.parsed || 0;
+                                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                        const percentage = ((value * 100) / total).toFixed(1);
+                                        return `${label}: ${value} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+            });
+    }
+
+    function formatDate(date) {
+        return date.toISOString().split('T')[0];
     }
 
     function loadTransactionsByDate(date) {
@@ -138,7 +225,11 @@ session_start();
         document.getElementById('filterDate').value = today;
         document.getElementById('pdfDate').value = today;
         loadDashboardSummary();
+        loadBookingChart();
     };
+
+    // Refresh chart every 5 minutes
+    setInterval(loadBookingChart, 300000);
 </script>
 <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 </body>

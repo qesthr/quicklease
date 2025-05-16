@@ -3,42 +3,59 @@ require_once '../db.php';
 
 // Handle Add Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
-    $users_id = isset($_POST['users_id']) ? trim($_POST['users_id']) : null;
-    $car_id = isset($_POST['car_id']) ? intval($_POST['car_id']) : null;
-    $booking_date = isset($_POST['booking_date']) ? trim($_POST['booking_date']) : null;
-    $return_date = isset($_POST['return_date']) ? trim($_POST['return_date']) : null;
-    $status = isset($_POST['status']) ? trim($_POST['status']) : null;
-
-    if (empty($users_id) || empty($car_id) || empty($booking_date) || empty($return_date) || empty($status)) {
-        $_SESSION['error'] = "All fields are required.";
-        header("Location: bookings.php");
-        exit;
-    }
-
-    if (!strtotime($booking_date) || !strtotime($return_date)) {
-        $_SESSION['error'] = "Invalid booking or return date.";
-        header("Location: bookings.php");
-        exit;
-    }
-
-    if (strtotime($return_date) <= strtotime($booking_date)) {
-        $_SESSION['error'] = "Return date must be after the booking date.";
-        header("Location: bookings.php");
-        exit;
-    }
-
     try {
-        $stmt = $pdo->prepare("INSERT INTO bookings (user_id, car_id, booking_date, return_date, status) VALUES (?, ?, ?, ?, ?)");
-        $stmt->execute([$users_id, $car_id, $booking_date, $return_date, $status]);
+        $users_id = isset($_POST['users_id']) ? trim($_POST['users_id']) : null;
+        $car_id = isset($_POST['car_id']) ? intval($_POST['car_id']) : null;
+        $location = isset($_POST['location']) ? trim($_POST['location']) : null;
+        $booking_date = isset($_POST['booking_date']) ? trim($_POST['booking_date']) : null;
+        $return_date = isset($_POST['return_date']) ? trim($_POST['return_date']) : null;
+        $status = isset($_POST['status']) ? trim($_POST['status']) : null;
 
+        if (empty($users_id) || empty($car_id) || empty($location) || empty($booking_date) || empty($return_date) || empty($status)) {
+            throw new Exception("All fields are required.");
+        }
+
+        if (!strtotime($booking_date) || !strtotime($return_date)) {
+            throw new Exception("Invalid booking or return date.");
+        }
+
+        if (strtotime($return_date) <= strtotime($booking_date)) {
+            throw new Exception("Return date must be after the booking date.");
+        }
+
+        // Check if car is available
+        $stmt = $pdo->prepare("SELECT status FROM car WHERE id = ?");
+        $stmt->execute([$car_id]);
+        $car = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$car || $car['status'] !== 'Available') {
+            throw new Exception("Selected car is not available for booking.");
+        }
+
+        $pdo->beginTransaction();
+
+        // Insert booking
+        $stmt = $pdo->prepare("INSERT INTO bookings (users_id, car_id, location, booking_date, return_date, status) 
+                              VALUES (?, ?, ?, ?, ?, ?)");
+        $stmt->execute([$users_id, $car_id, $location, $booking_date, $return_date, $status]);
+
+        // Update car status if booking is Active
+        if ($status === 'Active') {
+            $stmt = $pdo->prepare("UPDATE car SET status = 'Booked' WHERE id = ?");
+            $stmt->execute([$car_id]);
+        }
+
+        $pdo->commit();
         $_SESSION['success'] = "Booking added successfully.";
-        header("Location: bookings.php");
-        exit;
-    } catch (PDOException $e) {
-        $_SESSION['error'] = "Error adding booking: " . $e->getMessage();
-        header("Location: bookings.php");
-        exit;
+    } catch (Exception $e) {
+        if ($pdo->inTransaction()) {
+            $pdo->rollBack();
+        }
+        $_SESSION['error'] = $e->getMessage();
     }
+    
+    header("Location: bookings.php");
+    exit;
 }
 
 // Handle Edit Booking
@@ -67,22 +84,49 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'cancel') {
 
 // ✅ Handle Approve Booking (with Notification)
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'approve') {
-    $id = $_POST['id'];
-    $status = "Active";
+    try {
+        $pdo->beginTransaction();
+        
+        $id = $_POST['id'];
+        $status = "Active";
 
-    // Update booking status
-    $stmt = $pdo->prepare("UPDATE bookings SET status = ? WHERE id = ?");
-    $stmt->execute([$status, $id]);
+        // Get booking and car information
+        $stmt = $pdo->prepare("SELECT b.*, c.id as car_id FROM bookings b 
+                              INNER JOIN car c ON b.car_id = c.id 
+                              WHERE b.id = ?");
+        $stmt->execute([$id]);
+        $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Fetch customer info
-    $stmt = $pdo->prepare("SELECT cu.id, cu.users_id FROM bookings b INNER JOIN users cu ON b.users_id = cu.id WHERE b.id = ?");
-    $stmt->execute([$id]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if (!$booking) {
+            throw new Exception("Booking not found");
+        }
 
-    if ($user) {
-        $message = "Dear {$user['users_id']}, your booking has been approved.";
-        $stmt = $pdo->prepare("INSERT INTO notifications (users_id, message) VALUES (?, ?)");
-        $stmt->execute([$user['id'], $message]);
+        // Update booking status
+        $stmt = $pdo->prepare("UPDATE bookings SET status = ? WHERE id = ?");
+        $stmt->execute([$status, $id]);
+
+        // Update car status to 'Booked'
+        $stmt = $pdo->prepare("UPDATE car SET status = 'Booked' WHERE id = ?");
+        $stmt->execute([$booking['car_id']]);
+
+        // Fetch customer info
+        $stmt = $pdo->prepare("SELECT u.id, u.firstname, u.email FROM bookings b 
+                              INNER JOIN users u ON b.users_id = u.id 
+                              WHERE b.id = ?");
+        $stmt->execute([$id]);
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($user) {
+            $message = "Dear {$user['firstname']}, your booking has been approved.";
+            $stmt = $pdo->prepare("INSERT INTO notifications (users_id, message) VALUES (?, ?)");
+            $stmt->execute([$user['id'], $message]);
+        }
+
+        $pdo->commit();
+        $_SESSION['success'] = "Booking approved successfully";
+    } catch (Exception $e) {
+        $pdo->rollBack();
+        $_SESSION['error'] = "Error approving booking: " . $e->getMessage();
     }
 
     header("Location: bookings.php");
@@ -187,6 +231,24 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php include 'includes/sidebar.php'; ?>
     <?php include 'includes/topbar.php'; ?>
 
+    <?php if (isset($_SESSION['success'])): ?>
+        <div class="alert alert-success">
+            <?php 
+                echo $_SESSION['success'];
+                unset($_SESSION['success']);
+            ?>
+        </div>
+    <?php endif; ?>
+
+    <?php if (isset($_SESSION['error'])): ?>
+        <div class="alert alert-danger">
+            <?php 
+                echo $_SESSION['error'];
+                unset($_SESSION['error']);
+            ?>
+        </div>
+    <?php endif; ?>
+
     <div class="booking-header">
         <div class="add-booking-button-container">
             <button class="btn btn-add" onclick="openModal('addModal')">Add Booking</button>
@@ -237,11 +299,13 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             <td class="actions">
                                 <button class="view-btn" onclick="openViewModal(<?= htmlspecialchars(json_encode($booking)) ?>)">View</button>
                                 <button class="edit-btn" onclick="openEditModal(<?= htmlspecialchars(json_encode($booking)) ?>)">Edit</button>
-                                <form method="POST" style="display:inline;">
-                                    <input type="hidden" name="id" value="<?= $booking['id'] ?>">
-                                    <input type="hidden" name="action" value="cancel">
-                                    <button type="submit" class="cancel-btn" onclick="return confirm('Cancel this booking?')">Cancel</button>
-                                </form>
+                                <?php if ($booking['status'] !== 'Cancelled' && $booking['status'] !== 'Completed'): ?>
+                                    <form method="POST" style="display:inline;">
+                                        <input type="hidden" name="id" value="<?= $booking['id'] ?>">
+                                        <input type="hidden" name="action" value="cancel">
+                                        <button type="submit" class="cancel-btn" onclick="return confirm('Cancel this booking?')">Cancel</button>
+                                    </form>
+                                <?php endif; ?>
                             </td>
                         </tr>
                     <?php endforeach; ?>
@@ -285,10 +349,7 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </select>
             </div>
             
-            <div class="form-group">
-                <label for="add-location">Location:</label>
-                <input type="text" name="location" id="add-location" required>
-            </div>
+
             
             <div class="form-group">
                 <label for="add-booking-date">Booking Date:</label>
@@ -301,13 +362,23 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
             
             <div class="form-group">
+                <label for="add-location">Location:</label>
+                <select name="location" id="add-location" required>
+                    <option value="">Select Location</option>
+                    <option value="Horhe Car Rental and Carwash">Horhe Car Rental and Carwash, Km. 4 Sayre Hwy, Malaybalay</option>
+                    <option value="JJL CAR RENTAL SERVICES">JJL CAR RENTAL SERVICES AND CARWASH, Magsaysay Ext, Malaybalay</option>
+                    <option value="DS CAR RENTAL SERVICES">DS CAR RENTAL SERVICES, NATIONAL HIGH WAY, ZONE 1, Malaybalay</option>
+                    <option value="Pren's Car Rental Services">Pren's Car Rental Services, Km. 4 Sayre Hwy, Malaybalay</option>
+                    <option value="ZV Car Rental">ZV Car Rental, P5, Malaybalay</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
                 <label for="add-status">Status:</label>
                 <select name="status" id="add-status" required>
                     <option value="Pending">Pending</option>
                     <option value="Active">Active</option>
                     <option value="Completed">Completed</option>
-                    <option value="Pending">Pending</option>
-
                 </select>
             </div>
             
@@ -419,10 +490,19 @@ $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     function openViewModal(data) {
       document.getElementById('view-id').innerText = data.id;
-      document.getElementById('view-users').innerText = data.users_id;
+      document.getElementById('view-users').innerText = data.firstname;
       document.getElementById('view-car').innerText = data.car_model;
-      document.getElementById('view-total-price').innerText = "₱" + data.total_price.toFixed(2);
       document.getElementById('view-location').innerText = data.location;
+      document.getElementById('view-price').innerText = "₱" + (data.price ? data.price.toFixed(2) : "0.00");
+      
+      // Calculate total price based on number of days
+      const bookingDate = new Date(data.booking_date);
+      const returnDate = new Date(data.return_date);
+      const diffTime = Math.abs(returnDate - bookingDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const totalPrice = diffDays * (data.price || 0);
+      
+      document.getElementById('view-total-price').innerText = "₱" + totalPrice.toFixed(2);
       document.getElementById('view-date').innerText = data.booking_date;
       document.getElementById('view-return').innerText = data.return_date;
       document.getElementById('view-status').innerText = data.status;
