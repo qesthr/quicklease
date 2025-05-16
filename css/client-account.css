@@ -46,6 +46,7 @@
     text-align: center;
     padding: 9px 50px;
     margin-bottom: 20px;
+
 }
 
 .profile-header .profile-header-info {
@@ -87,7 +88,7 @@
     margin-bottom: 20px;
     color: #1818CA;
     font-size: 2rem;
-    
+    margin-left: 6vh;
 }
 
 .tab-menu {
@@ -380,7 +381,218 @@
     background-color: #F9B315;
 }
 
+/* notification*/
+/* Tab Content */
+.tab-content {
+    display: block;
+    padding: 20px;
+}
+
+.notifications-container {
+    margin-top: 4vh;
+    margin-left: 4vh;
+}
+
+/* Notification Card */
+#notificationsTab .notification {
+    display: flex;
+    margin-bottom: 20px;
+    position: relative;
+}
+
+.notification-card {
+    flex: 1;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-left: 5px solid #e0e0e0;
+}
+
+.notification.new .notification-card {
+    border-left-color: #4CAF50;
+}
+
+.notification-header {
+    margin-bottom: 15px;
+    width: 90vh;
+    height: 2vh;
+}
+
+.notification-greeting {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.notification-body {
+    margin-bottom: 20px;
+}
+
+.notification-message {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.notification-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.view-booking-btn {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.view-booking-btn:hover {
+    background-color: #45a049;
+}
+
+/* Date Indicator */
+.date-indicator {
+    display: flex;
+    align-items: center;
+    margin-left: 20px;
+    position: relative;
+}
+
+.notification-dot {
+    width: 12px;
+    height: 12px;
+    background: #e0e0e0;
+    border-radius: 50%;
+    margin-right: 10px;
+}
+
+.notification.new .notification-dot {
+    background: #4CAF50;
+    animation: pulse 1.5s infinite;
+}
+
+.date-stack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 20px;
+    min-width: 60px;
+}
+
+.date-day {
+    font-size: 18px;
+    font-weight: bold;
+    color: #333;
+    line-height: 1;
+}
+
+.date-month-year {
+    font-size: 12px;
+    color: #666;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-top: 2px;
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
 
 
+/* Invoices */
+.invoices-list {
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
 
+.invoice-card {
+    display: flex;
+    align-items: center;
+    background: #f8f5e9;
+    border-radius: 16px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+    padding: 30px 40px;
+    min-height: 200px;
+    position: relative;
+    justify-content: flex-start;
+}
 
+.invoice-car-img img {
+    width: 220px;
+    height: auto;
+    border-radius: 12px;
+    margin-right: 40px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
+    background: #fff;
+}
+
+.invoice-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.invoice-details h2 {
+    font-size: 2.5rem;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+}
+
+.invoice-dates {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.invoice-price {
+    position: absolute;
+    right: 40px;
+    top: 40px;
+    font-size: 1.1rem;
+    color: #444;
+}
+
+.invoice-total {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 20px;
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.invoice-total .total-amount {
+    color: #1818CA;
+    font-size: 1.6rem;
+    font-weight: bold;
+}
+
+.print-invoice-link {
+    color: #4b4bbd;
+    text-decoration: none;
+    font-weight: 600;
+    margin-top: 18px;
+    font-size: 1.1rem;
+    align-self: flex-end;
+    transition: color 0.2s;
+}
+
+.print-invoice-link:hover {
+    color: #1818CA;
+    text-decoration: underline;
+}

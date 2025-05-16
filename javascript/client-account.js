@@ -120,7 +120,56 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 });
 
-
+// Notifications 
+document.addEventListener('DOMContentLoaded', function() {
+    // Function to add new notification
+    function addNotification(name, message, bookingDates, date) {
+      const container = document.querySelector('.notifications-container');
+      const newDate = date || new Date();
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+                         "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+      
+      const notification = document.createElement('div');
+      notification.className = 'notification new';
+      
+      notification.innerHTML = `
+        <div class="notification-card">
+          <div class="notification-header">
+            <p class="notification-greeting">Hi, ${name}!</p>
+          </div>
+          <div class="notification-body">
+            <p class="notification-message">
+              ${message}
+            </p>
+          </div>
+          <div class="notification-footer">
+            <button class="view-booking-btn">View Booking</button>
+          </div>
+        </div>
+        <div class="date-indicator">
+          <div class="notification-dot"></div>
+          <div class="date-stack">
+            <span class="date-day">${newDate.getDate()}</span>
+            <span class="date-month-year">${monthNames[newDate.getMonth()]} ${newDate.getFullYear()}</span>
+          </div>
+        </div>
+      `;
+      
+      container.insertBefore(notification, container.firstChild);
+      
+      // Remove 'new' class after 5 seconds
+      setTimeout(() => {
+        notification.classList.remove('new');
+      }, 5000);
+    }
+    
+    // Example usage:
+    // addNotification(
+    //   "John Doe",
+    //   "Good news! Your booking for Toyota Camry from April-28-2025 to April-29-2025 has been approved by our admin.",
+    //   new Date()
+    // );
+  });
 
 
 
