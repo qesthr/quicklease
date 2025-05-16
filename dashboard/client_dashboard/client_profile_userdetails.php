@@ -88,6 +88,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
         }
     }
 }
+
+// Example invoice data (replace with DB query in production)
+$invoices = [
+    [
+        'car_name' => 'Toyota Camry',
+        'car_image' => '../../images/camry-black.png', // Place your car image here
+        'date_from' => 'April-28-2025',
+        'date_to' => 'April-29-2025',
+        'price' => 5000,
+        'total' => 5000,
+        'invoice_id' => 1
+    ],
+    // Add more invoices as needed
+];
 ?>
 
 <!DOCTYPE html>
@@ -219,12 +233,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
                             </div>
                         </div>
                         
-                        <div id="notificationsTab" class="tab-content hidden">
-                            
+                    <div id="notificationsTab" class="tab-content hidden">
+                        <div class="notifications-container">
+                            <div class="notification new">
+                                <div class="notification-card">
+                                    <div class="notification-header">
+                                    <p class="notification-greeting">Hi, John Doe!</p>
+                                    </div>
+                                    <div class="notification-body">
+                                    <p class="notification-message">
+                                        Good news! Your booking for Toyota Camry from April-28-2025 to April-29-2025 has been approved by our admin.
+                                    </p>
+                                    </div>
+                                    <div class="notification-footer">
+                                    <button class="view-booking-btn">View Booking</button>
+                                    </div>
+                                </div>
+                                <div class="date-indicator">
+                                    <div class="notification-dot"></div>
+                                    <div class="date-stack">
+                                        <span class="date-day">27</span>
+                                        <span class="date-month-year">Apr 2025</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                    </div>
                         
-                        <div id="invoicesTab" class="tab-content hidden">
-
+                    <div id="invoicesTab" class="tab-content hidden">
+                        <div class="invoices-list">
+                            <?php foreach ($invoices as $invoice): ?>
+                                <div class="invoice-card">
+                                    <div class="invoice-car-img">
+                                        <img src="<?= htmlspecialchars($invoice['car_image']) ?>" alt="<?= htmlspecialchars($invoice['car_name']) ?>">
+                                    </div>
+                                    <div class="invoice-details">
+                                        <h2><?= htmlspecialchars($invoice['car_name']) ?></h2>
+                                        <div class="invoice-dates">
+                                            <?= htmlspecialchars($invoice['date_from']) ?> to <?= htmlspecialchars($invoice['date_to']) ?>
+                                        </div>
+                                        <div class="invoice-price">
+                                            <span>₱ <?= number_format($invoice['price'], 2) ?></span>
+                                        </div>
+                                        <div class="invoice-total">
+                                            <span>Total Amount</span>
+                                            <span class="total-amount">₱ <?= number_format($invoice['total'], 2) ?></span>
+                                        </div>
+                                        <a href="print_invoice.php?id=<?= $invoice['invoice_id'] ?>" class="print-invoice-link" target="_blank">PRINT INVOICE</a>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
                     </div>
 
                     
@@ -271,6 +330,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
             <span class="close" id="closeEditModal">&times;</span>
             <h2>Edit Profile</h2>
             <form id="editProfileForm">
+                <h2>Personal Information</h2>
                 <div class="form-group">
                     <label for="editFirstName">First Name</label>
                     <input type="text" id="editFirstName" name="firstname" 
@@ -299,6 +359,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
                            onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')"
                            onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')">
                 </div>
+
+                <h2>Account Information</h2>
                 <div class="form-group">
                     <label for="editUsername">Username</label>
                     <input type="text" id="editUsername" name="username" 
