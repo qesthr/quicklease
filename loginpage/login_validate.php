@@ -2,32 +2,32 @@
 session_start();
 require_once __DIR__ . '/../db.php';
 
-// // Load .env variables
-// require_once __DIR__ . '/vendor/autoload.php';
-// $dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-// $dotenv->load();
+ // Load .env variables
+ require_once __DIR__ . '/vendor/autoload.php';
+ $dotenv = Dotenv\Dotenv::createImmutable('C:/xampp/htdocs/quicklease');
+ $dotenv->load();
 
-// // Check if form was submitted
-// if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+ // Check if form was submitted
+ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     // // ✅ Step 1: reCAPTCHA verification
-    // if (!isset($_POST['g-recaptcha-response']) || empty($_POST['g-recaptcha-response'])) {
-    //     $_SESSION['error'] = 'Please complete the reCAPTCHA.';
-    //     header('Location: login.php');
-    //     exit();
-    // }
+    if (!isset($_POST['g-recaptcha-response']) || empty($_POST['g-recaptcha-response'])) {
+        $_SESSION['error'] = 'Please complete the reCAPTCHA.';
+        header('Location: login.php');
+        exit();
+    }
 
-    // $recaptchaSecret = $_ENV['RECAPTCHA_SECRET_KEY'];
-    // $recaptchaResponse = $_POST['g-recaptcha-response'];
+    $recaptchaSecret = $_ENV['RECAPTCHA_SECRET_KEY'];
+    $recaptchaResponse = $_POST['g-recaptcha-response'];
+
+    $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptchaSecret}&response={$recaptchaResponse}");
+    $captchaSuccess = json_decode($verifyResponse, true);
     
-    // $verifyResponse = file_get_contents("https://www.google.com/recaptcha/api/siteverify?secret={$recaptchaSecret}&response={$recaptchaResponse}");
-    // $captchaSuccess = json_decode($verifyResponse, true);
-    
-    // if (!$captchaSuccess['success']) {
-    //     $_SESSION['error'] = 'reCAPTCHA verification failed. Please try again.';
-    //     header('Location: login.php');
-    //     exit();
-    // }
+    if (!$captchaSuccess['success']) {
+         $_SESSION['error'] = 'reCAPTCHA verification failed. Please try again.';
+         header('Location: login.php');
+         exit();
+    }
 
     // ✅ Step 2: Proceed with login validation
     $username = $_POST['username'];
@@ -55,5 +55,5 @@ require_once __DIR__ . '/../db.php';
         header('Location: login.php');
         exit();
     }
-
+}
 ?>
