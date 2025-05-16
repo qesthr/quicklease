@@ -293,10 +293,8 @@
 
 /* Search Container */
 .search-container {
-    position: absolute; /* Position the search bar absolutely */
-    top: 50%; /* Adjust to overlap the topbar */
-    left: 50%; /* Center horizontally */
-    transform: translate(-50%, -50%); /* Center the search bar */
+    position: relative; /* Changed from absolute to relative */
+    /* Removed top, left, and transform properties */
     display: flex;
     align-items: center;
     justify-content: center;

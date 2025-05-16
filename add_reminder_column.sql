@@ -1,0 +1,1 @@
+ALTER TABLE bookings ADD COLUMN reminder_sent TINYINT(1) DEFAULT 0; 

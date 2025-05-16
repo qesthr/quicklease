@@ -129,10 +129,19 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 
 // Fetch cars data
 if (!empty($search)) {
-    $stmt = $pdo->prepare("SELECT * FROM car WHERE model LIKE :search OR transmission LIKE :search OR plate_no LIKE :search OR status LIKE :search");
+    $stmt = $pdo->prepare("SELECT * FROM car WHERE 
+        LOWER(model) LIKE LOWER(:search) OR 
+        LOWER(transmission) LIKE LOWER(:search) OR 
+        LOWER(plate_no) LIKE LOWER(:search) OR 
+        LOWER(status) LIKE LOWER(:search) OR 
+        CAST(price AS CHAR) LIKE :search OR
+        CAST(seats AS CHAR) LIKE :search OR
+        CAST(mileage AS CHAR) LIKE :search OR
+        LOWER(features) LIKE LOWER(:search)
+        ORDER BY id DESC");
     $stmt->execute(['search' => "%$search%"]);
 } else {
-    $stmt = $pdo->query("SELECT * FROM car");
+    $stmt = $pdo->query("SELECT * FROM car ORDER BY id DESC");
 }
 $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
