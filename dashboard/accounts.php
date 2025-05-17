@@ -168,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <span class="close" id="closeViewModal">&times;</span>
             <h2>Customer Verification</h2>
             <p id="verificationDetails"></p>
-            <img id="verificationImage" src="" alt="Submitted ID" style="display:none; margin-top:10px; cursor:pointer;" onclick="openImageModal()">
+            <img class="verification-image" id="verificationImage" src="" alt="Submitted ID" onclick="openImageModal()" style="max-width: 82%; width: 100vh;">
             <p id="statusBadge" class="status-badge"></p>
             <form method="POST">
                 <input type="hidden" name="id" id="verificationUsersId">
