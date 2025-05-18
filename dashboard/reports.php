@@ -13,14 +13,74 @@ session_start();
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
-        .modal-content { background-color: #fff; margin: 5% auto; padding: 20px; border-radius: 8px; width: 90%; max-width: 1000px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); position: relative; }
-        .modal-content h2 { margin-top: 0; text-align: center; }
-        .modal-content table { width: 100%; border-collapse: collapse; font-size: 13px; }
-        .modal-content th, .modal-content td { border: 1px solid #ddd; padding: 8px; text-align: center; }
-        .modal-content th { background-color: #f2f2f2; }
-        .modal-content input[type="date"], .modal-content button { margin: 10px 5px; padding: 5px 10px; font-size: 13px; }
-        .close { position: absolute; right: 20px; top: 15px; font-size: 28px; font-weight: bold; color: #000; }
-        .close:hover { color: red; cursor: pointer; }
+        .modal-content { 
+            background-color: #fff; 
+            margin: 2% auto; 
+            padding: 25px;
+            border-radius: 12px;
+            width: 95%;
+            max-width: 1400px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 { margin-top: 0; text-align: center; color: #1818CA; font-size: 24px; margin-bottom: 20px; }
+        .modal-content table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 14px;
+            margin-top: 20px;
+            background: white;
+        }
+        .modal-content th, .modal-content td { 
+            border: 1px solid #e0e0e0; 
+            padding: 12px; 
+            text-align: left; 
+        }
+        .modal-content th { 
+            background-color: #f8f9fa;
+            font-weight: 600;
+            color: #333;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+        .modal-content tr:hover { background-color: #f5f5f5; }
+        .modal-content input[type="date"], .modal-content button { 
+            margin: 10px 5px; 
+            padding: 8px 16px;
+            font-size: 14px;
+            border-radius: 6px;
+        }
+        .close { 
+            position: absolute; 
+            right: 25px; 
+            top: 20px; 
+            font-size: 28px; 
+            font-weight: bold; 
+            color: #666;
+            transition: color 0.3s;
+        }
+        .close:hover { color: #f44336; cursor: pointer; }
+        .error-message {
+            background-color: #fee;
+            color: #c00;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+            display: none;
+        }
+        .no-data-message {
+            text-align: center;
+            padding: 20px;
+            color: #666;
+            font-style: italic;
+            background: #f9f9f9;
+            border-radius: 4px;
+            margin: 20px 0;
+            display: none;
+        }
         .chart-container { 
             width: 100%; 
             height: 300px; 
@@ -52,33 +112,42 @@ session_start();
 <div id="reportsSummaryModal" class="modal">
     <div class="modal-content">
         <span class="close" id="closeReportsSummaryModal">&times;</span>
-        <h2>Booking Transactions</h2>
+        <div class="modal-header">
+            <h2>Booking Transactions</h2>
+        </div>
 
-        <label for="filterDate">Select Date:</label>
-        <input type="date" id="filterDate" value="">
-        <button id="filterBtn">Filter</button>
-        <form method="GET" action="generate_pdf_report.php" style="display:inline-block;">
-            <input type="date" name="date" id="pdfDate" value="">
-            <button type="submit">Download PDF</button>
-        </form>
+        <div class="filter-controls">
+            <label for="filterDate">Select Date:</label>
+            <input type="date" id="filterDate" value="">
+            <button id="filterBtn" class="filter-btn">Filter</button>
+            <form method="GET" action="generate_pdf_report.php" style="display:inline-block;">
+                <input type="date" name="date" id="pdfDate" value="">
+                <button type="submit" class="download-btn">Download PDF</button>
+            </form>
+        </div>
 
-        <table id="transactionsTable">
-            <thead>
-                <tr>
-                    <th>Booking ID</th>
-                    <th>Customer Name</th>
-                    <th>Car Model</th>
-                    <th>Booking Date</th>
-                    <th>Return Date</th>
-                    <th>Location</th>
-                    <th>Status</th>
-                    <th>Total Cost</th>
-                </tr>
-            </thead>
-            <tbody>
-                <!-- Filled dynamically -->
-            </tbody>
-        </table>
+        <div id="errorMessage" class="error-message"></div>
+        <div id="noDataMessage" class="no-data-message">No bookings found for the selected date.</div>
+
+        <div class="table-container">
+            <table id="transactionsTable" class="transactions-table">
+                <thead>
+                    <tr>
+                        <th>Booking ID</th>
+                        <th>Customer Name</th>
+                        <th>Car Model</th>
+                        <th>Booking Date</th>
+                        <th>Return Date</th>
+                        <th>Location</th>
+                        <th>Status</th>
+                        <th>Total Cost</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Filled dynamically -->
+                </tbody>
+            </table>
+        </div>
     </div>
 </div>
 
@@ -96,7 +165,6 @@ session_start();
     }
 
     function loadBookingChart() {
-        // Fetch booking statistics
         fetch('fetch_booking_stats.php')
             .then(res => res.json())
             .then(data => {
@@ -167,14 +235,35 @@ session_start();
     }
 
     function loadTransactionsByDate(date) {
+        const errorMessage = document.getElementById('errorMessage');
+        const noDataMessage = document.getElementById('noDataMessage');
+        const tableBody = document.querySelector('#transactionsTable tbody');
+        
+        errorMessage.style.display = 'none';
+        noDataMessage.style.display = 'none';
+        
         fetch(`fetch_today_transactions.php?date=${date}`)
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return res.json();
+            })
             .then(data => {
-                console.log('Booking transactions data:', data);
-                const tbody = document.querySelector('#transactionsTable tbody');
-                tbody.innerHTML = '';
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                tableBody.innerHTML = '';
+                
+                if (!data.bookings || data.bookings.length === 0) {
+                    noDataMessage.style.display = 'block';
+                    return;
+                }
+
                 data.bookings.forEach(row => {
                     const tr = document.createElement('tr');
+                    const statusClass = `status-${row.status.toLowerCase()}`;
                     tr.innerHTML = `
                         <td>${row.booking_id}</td>
                         <td>${row.customer_name}</td>
@@ -182,11 +271,16 @@ session_start();
                         <td>${row.booking_date}</td>
                         <td>${row.return_date}</td>
                         <td>${row.location}</td>
-                        <td>${row.status}</td>
-                        <td>${row.total_cost}</td>
+                        <td class="${statusClass}">${row.status}</td>
+                        <td>₱${row.total_cost}</td>
                     `;
-                    tbody.appendChild(tr);
+                    tableBody.appendChild(tr);
                 });
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                errorMessage.textContent = 'Error loading booking data. Please try again.';
+                errorMessage.style.display = 'block';
             });
     }
 

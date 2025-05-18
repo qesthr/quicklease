@@ -1,26 +1,33 @@
 <?php
-include '../../db.php';
-session_start();
+require_once '../../includes/session_handler.php';
+require_once '../../db.php';
+
+// Start client session
+startClientSession();
+
+// Check if user is logged in and is a client
+if (!isClient()) {
+    $_SESSION['error'] = "Please log in as a client.";
+    header("Location: ../../loginpage/login.php");
+    exit();
+}
 
 $user_id = $_SESSION['user_id'] ?? null;
 
-if (!$user_id) {
-    header("Location: ../../login.php");
+// Fetch client data
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    $_SESSION['error'] = "User not found.";
+    header("Location: ../../loginpage/login.php");
     exit();
 }
 
 // Initialize variables
 $success = '';
 $error = '';
-
-// Fetch client data
-$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ? AND user_type = 'client'");
-$stmt->execute([$user_id]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-if (!$user) {
-    die("User not found or not a client.");
-}
 
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -198,84 +205,87 @@ $invoices = [
                                     </div>
                                 </div>
 
-<<<<<<< HEAD
-                            <div class="details-card">
-                                <h3>ID Verification</h3>
-                                <div class="id-verification-container">
-                                    <?php if ($success === "ID successfully uploaded!"): ?>
-                                        <div class="alert-success">
-                                            <p><?= htmlspecialchars($success) ?></p>
-                                        </div>
-                                    <?php endif; ?>
-
-                                    <div class="id-verification-content">
-                                        <div class="id-preview-section">
-                                            <?php if (!empty($user['submitted_id'])): ?>
-                                                <div class="id-image-container">
-                                                    <img id="idPreview" 
-                                                         src="../../uploads/ids/<?= htmlspecialchars($user['submitted_id']) ?>" 
-                                                         alt="Submitted ID" 
-                                                         class="submitted-id">
-                                                </div>
-                                                
-                                                <?php
-                                                $status = isset($user['verification_status']) ? $user['verification_status'] : 'Pending';
-                                                $statusClass = $status === 'Verified' ? 'accepted' : ($status === 'Rejected' ? 'rejected' : 'pending');
-                                                ?>
-                                                <div class="verification-status <?= $statusClass ?>">
-                                                    <?php
-                                                    switch($status) {
-                                                        case 'Verified':
-                                                            echo '<p><i class="fas fa-check-circle"></i> Your ID has been verified</p>';
-                                                            break;
-                                                        case 'Rejected':
-                                                            echo '<p><i class="fas fa-times-circle"></i> Your ID verification was rejected</p>';
-                                                            break;
-                                                        default:
-                                                            echo '<p><i class="fas fa-clock"></i> Your ID is pending verification</p>';
-                                                    }
-                                                    ?>
-                                                </div>
-                                            <?php else: ?>
-                                                <div class="no-id-message">
-                                                    <i class="fas fa-id-card"></i>
-                                                    <p>Please upload a valid ID image to verify your account</p>
-                                                    <p class="id-requirements">Accepted formats: JPG, PNG (Max size: 5MB)</p>
-                                                </div>
-                                                <img id="idPreview" src="#" alt="ID Preview" class="submitted-id hidden">
-                                            <?php endif; ?>
-                                        </div>
-
-                                        <div class="id-upload-section">
-                                            <form method="POST" enctype="multipart/form-data" class="id-upload-form">
-                                                <div class="file-input-container">
-                                                    <label for="idImage" class="file-label">Upload New ID:</label>
-                                                    <input type="file" 
-                                                           id="idImage" 
-                                                           name="submitted_id" 
-                                                           accept="image/*" 
-                                                           class="file-input">
-                                                </div>
-                                                <button type="submit" id="saveIdBtn" class="save-id-btn">
-                                                    <i class="fas fa-upload"></i> Save ID
-                                                </button>
-                                            </form>
-                                        </div>
-
-                                        <?php 
-                                        $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin';
-                                        if ($isAdmin): 
-                                        ?>
-                                        <div class="admin-controls">
-                                            <span id="statusText" 
-                                                  class="status-indicator <?= $user['verification_status'] === 'Verified' ? 'verified' : 'not-verified' ?>">
-                                                <?= $user['verification_status'] ?>
-                                            </span>
-                                            <button id="verifyBtn" class="verify-button">
-                                                <?= $user['verification_status'] === 'Verified' ? 'Mark as Not Verified' : 'Mark as Verified' ?>
-                                            </button>
-                                        </div>
+                                <div class="details-card">
+                                    <h3>ID Verification</h3>
+                                    <div class="id-verification-container">
+                                        <?php if ($success === "ID successfully uploaded!"): ?>
+                                            <div class="alert-success">
+                                                <p><?= htmlspecialchars($success) ?></p>
+                                            </div>
                                         <?php endif; ?>
+
+                                        <div class="id-verification-content">
+                                            <div class="id-preview-section">
+                                                <?php if (!empty($user['submitted_id'])): ?>
+                                                    <div class="id-image-container">
+                                                        <img id="idPreview" 
+                                                             src="../../uploads/ids/<?= htmlspecialchars($user['submitted_id']) ?>" 
+                                                             alt="Submitted ID" 
+                                                             class="submitted-id">
+                                                    </div>
+                                                    
+                                                    <?php
+                                                    $status = isset($user['verification_status']) ? $user['verification_status'] : 'Pending';
+                                                    $statusClass = $status === 'Verified' ? 'accepted' : ($status === 'Rejected' ? 'rejected' : 'pending');
+                                                    ?>
+                                                    <div class="verification-status <?= $statusClass ?>">
+                                                        <?php
+                                                        switch($status) {
+                                                            case 'Verified':
+                                                                echo '<p><i class="fas fa-check-circle"></i> Your ID has been verified</p>';
+                                                                break;
+                                                            case 'Rejected':
+                                                                echo '<p><i class="fas fa-times-circle"></i> Your ID verification was rejected</p>';
+                                                                break;
+                                                            default:
+                                                                echo '<p><i class="fas fa-clock"></i> Your ID is pending verification</p>';
+                                                        }
+                                                        ?>
+                                                    </div>
+                                                <?php else: ?>
+                                                    <div class="no-id-message">
+                                                        <i class="fas fa-id-card"></i>
+                                                        <p>Please upload a valid ID image to verify your account</p>
+                                                        <p class="id-requirements">Accepted formats: JPG, PNG (Max size: 5MB)</p>
+                                                    </div>
+                                                    <img id="idPreview" src="#" alt="ID Preview" class="submitted-id hidden">
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <div class="id-upload-section">
+                                                <form method="POST" enctype="multipart/form-data" class="id-upload-form">
+                                                    <div class="file-input-container">
+                                                        <label for="idImage" class="file-label">Upload New ID:</label>
+                                                        <input type="file" 
+                                                               id="idImage" 
+                                                               name="submitted_id" 
+                                                               accept="image/*" 
+                                                               class="file-input">
+                                                    </div>
+                                                    <button type="submit" id="saveIdBtn" class="save-id-btn">
+                                                        <i class="fas fa-upload"></i> Save ID
+                                                    </button>
+                                                </form>
+                                            </div>
+
+                                                    <?php 
+                                                    $isAdmin = isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'admin';
+                                                    if ($isAdmin): 
+                                                    ?>
+                                                    <div class="admin-controls">
+                                                        <span id="statusText" 
+                                                              class="status-indicator <?= $user['verification_status'] === 'Verified' ? 'verified' : 'not-verified' ?>">
+                                                            <?= $user['verification_status'] ?>
+                                                        </span>
+                                                        <button id="verifyBtn" class="verify-button">
+                                                            <?= $user['verification_status'] === 'Verified' ? 'Mark as Not Verified' : 'Mark as Verified' ?>
+                                                        </button>
+                                                    </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -304,32 +314,7 @@ $invoices = [
                                         <div class="date-stack">
                                             <span class="date-day">27</span>
                                             <span class="date-month-year">Apr 2025</span>
-=======
-                                <div class="details-card">
-                                    <div class="id-verification-container">
-                                        <div class="id-left">
-                                            <?php if (!empty($user['submitted_id'])): ?>
-                                                <img id="idPreview" src="../../uploads/<?= htmlspecialchars($user['submitted_id']) ?>" alt="Submitted ID" class="submitted-id">
-                                            <?php else: ?>
-                                                <p>No ID uploaded yet.</p>
-                                                <img id="idPreview" src="#" alt="ID Preview" class="submitted-id hidden">
-                                            <?php endif; ?>
-
-                                            <label for="idImage">Upload New ID:</label>
-                                            <input type="file" id="idImage" accept="image/*">
                                         </div>
-
-                                        <?php if ($isAdmin): ?>
-                                        <div class="id-right">
-                                            <span id="statusText" class="<?= $user['is_verified'] ? 'verified' : 'not-verified' ?>">
-                                                <?= $user['is_verified'] ? 'Verified' : 'Not Verified' ?>
-                                            </span>
-                                            <button id="verifyBtn">
-                                                <?= $user['is_verified'] ? 'Mark as Not Verified' : 'Mark as Verified' ?>
-                                            </button>
->>>>>>> parent of d43415e6 (Merge pull request #61 from qesthr/0001-esthr-dash-mod)
-                                        </div>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>

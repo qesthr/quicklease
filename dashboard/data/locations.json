@@ -1,0 +1,52 @@
+{
+    "locations": [
+        {
+            "id": 1,
+            "name": "Horhe Car Rental and Carwash",
+            "address": "Km. 4 Sayre Hwy",
+            "city": "Malaybalay",
+            "status": "Active"
+        },
+        {
+            "id": 2,
+            "name": "JJL CAR RENTAL SERVICES",
+            "address": "Magsaysay Ext",
+            "city": "Malaybalay",
+            "status": "Active"
+        },
+        {
+            "id": 3,
+            "name": "DS CAR RENTAL SERVICES",
+            "address": "NATIONAL HIGH WAY, ZONE 1",
+            "city": "Malaybalay",
+            "status": "Active"
+        },
+        {
+            "id": 4,
+            "name": "Pren's Car Rental Services",
+            "address": "Km. 4 Sayre Hwy",
+            "city": "Malaybalay",
+            "status": "Active"
+        },
+        {
+            "id": 5,
+            "name": "ZV Car Rental",
+            "address": "P5",
+            "city": "Malaybalay",
+            "status": "Active"
+        },
+        {
+            "id": 6,
+            "name": "Joenil's Car Rental",
+            "address": "Sumpong",
+            "city": "Malaybalay City",
+            "service_area": "Mindanao",
+            "pickup_instructions": "Show your pending booking",
+            "dropoff_instructions": "Double check you things before leaving",
+            "branch_phone": "09123456768",
+            "branch_email": "joenil@gmail.com",
+            "operating_hours": "Mon-Fri 8 am to 10 pm",
+            "status": "Active"
+        }
+    ]
+}
