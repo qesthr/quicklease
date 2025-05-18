@@ -86,8 +86,7 @@ CREATE TABLE `car` (
   `seats` int(11) NOT NULL,
   `transmission` varchar(50) NOT NULL,
   `mileage` int(11) NOT NULL,
-  `features` text NOT NULL,
-  `category_id` int(11) DEFAULT NULL
+  `features` text NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -157,34 +156,6 @@ INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `passwo
 (1, 'joemar', 'acero', 'joemaracero', 'joenilacero20@gmail.com', '$2y$10$l72/7sQ0T7HR95nP40DYn.8IGqxH0dxdRm/c7lUNx1sygkaJ4FGlG', '', '', 'Approved', 'client', NULL, '2025-05-08 20:33:42'),
 (3, 'joenil', 'pogi', 'joenil', '2301107552@student.buksu.edu.ph', '$2y$10$APcuoUEQ.Lyk8s33Jug46e7rq549O4hFskhR2yJKoM11lvdmnmbfW', '09332472942', '1746794891_Screenshot 2025-05-05 010641.png', 'Approved', 'admin', NULL, '2025-05-05 18:08:50'),
 (4, 'rayden', 'delfin', 'raydendelfin', 'joenilpanal@gmail.com', '$2y$10$16SBVXhLgw2fIYQAHD7rX.vtt9QgvJOifjJNGwQc06RLUYC6f4Fx2', '', '', 'Pending Approval', 'client', NULL, '2025-05-09 14:09:43');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `car_categories`
---
-
-CREATE TABLE `car_categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `description` text,
-  `base_rate_multiplier` decimal(3,2) DEFAULT '1.00',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `car_categories`
---
-
-INSERT INTO `car_categories` (`name`, `description`, `base_rate_multiplier`) VALUES
-('Economy', 'Fuel-efficient compact cars perfect for city driving and small groups', 1.00),
-('Sedan', 'Comfortable mid-size cars ideal for families and business trips', 1.20),
-('SUV', 'Spacious vehicles suitable for rough terrain and large groups', 1.50),
-('Luxury', 'Premium vehicles offering superior comfort and style', 2.00),
-('Van', 'Large capacity vehicles perfect for group travel and cargo', 1.75),
-('Sports', 'High-performance vehicles for an exciting driving experience', 2.50);
 
 --
 -- Indexes for dumped tables
@@ -257,12 +228,6 @@ ALTER TABLE `users`
 ALTER TABLE `bookings`
   ADD CONSTRAINT `bookings_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
   ADD CONSTRAINT `bookings_ibfk_2` FOREIGN KEY (`car_id`) REFERENCES `car` (`id`) ON DELETE CASCADE;
-
---
--- Constraints for table `car`
---
-ALTER TABLE `car`
-  ADD CONSTRAINT `fk_car_category` FOREIGN KEY (`category_id`) REFERENCES `car_categories`(`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

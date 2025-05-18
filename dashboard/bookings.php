@@ -1,89 +1,5 @@
 <?php
-require_once '../includes/session_handler.php';
 require_once '../db.php';
-
-// Start admin session and check access
-startAdminSession();
-requireAdmin();
-
-// Initialize variables
-$search = isset($_GET['search']) ? trim($_GET['search']) : '';
-$status_filter = isset($_GET['status']) ? trim($_GET['status']) : '';
-$date_filter = isset($_GET['date']) ? trim($_GET['date']) : '';
-$date_range = isset($_GET['date_range']) ? trim($_GET['date_range']) : 'all';
-
-// Debug output
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-// Build base query
-$sql = "SELECT 
-    b.id,
-    b.users_id,
-    b.car_id, 
-    cu.firstname, 
-    c.model AS car_model, 
-    c.price,
-    b.location,
-    b.booking_date, 
-    b.return_date, 
-    b.status
-FROM bookings b
-INNER JOIN users cu ON b.users_id = cu.id
-INNER JOIN car c ON b.car_id = c.id";
-
-$where_conditions = [];
-$params = [];
-
-// Add status filter
-if (!empty($status_filter)) {
-    $where_conditions[] = "LOWER(b.status) = LOWER(:status)";
-    $params[':status'] = $status_filter;
-}
-
-// Add search filter
-if (!empty($search)) {
-    $where_conditions[] = "(cu.firstname LIKE :search OR c.model LIKE :search OR b.status LIKE :search)";
-    $params[':search'] = '%' . $search . '%';
-}
-
-// Add date filter
-if (!empty($date_range) && $date_range !== 'all') {
-    switch ($date_range) {
-        case 'today':
-            $where_conditions[] = "DATE(b.booking_date) = CURDATE()";
-            break;
-        case 'week':
-            $where_conditions[] = "WEEK(b.booking_date) = WEEK(CURDATE())";
-            break;
-        case 'month':
-            $where_conditions[] = "MONTH(b.booking_date) = MONTH(CURDATE()) AND YEAR(b.booking_date) = YEAR(CURDATE())";
-            break;
-        case 'custom':
-            if (!empty($date_filter)) {
-                $where_conditions[] = "DATE(b.booking_date) = :custom_date";
-                $params[':custom_date'] = $date_filter;
-            }
-            break;
-    }
-}
-
-// Add WHERE clause if there are conditions
-if (!empty($where_conditions)) {
-    $sql .= " WHERE " . implode(" AND ", $where_conditions);
-}
-
-$sql .= " ORDER BY b.booking_date DESC";
-
-// Execute query
-try {
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    $bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    $_SESSION['error'] = "Database error: " . $e->getMessage();
-    $bookings = [];
-}
 
 // Handle Add Booking
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'add') {
@@ -239,6 +155,65 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
     exit;
 }
 
+// Fetch bookings
+$stmt = $pdo->query("SELECT 
+        b.id,
+        b.users_id,
+        b.car_id, 
+        cu.firstname, 
+        c.model AS car_model, 
+        c.price,
+        b.location,
+        b.booking_date, 
+        b.return_date, 
+        b.status 
+    FROM bookings b
+    INNER JOIN users cu ON b.users_id = cu.id
+    INNER JOIN car c ON b.car_id = c.id
+    ORDER BY b.booking_date DESC");
+$bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+if (!empty($search)) {
+    $stmt = $pdo->prepare("SELECT 
+            b.id,
+            b.users_id,
+            b.car_id, 
+            cu.firstname, 
+            c.model AS car_model, 
+            b.location,
+            b.booking_date, 
+            b.return_date, 
+            b.status 
+        FROM bookings b
+        INNER JOIN users cu ON b.users_id = cu.id
+        INNER JOIN car c ON b.car_id = c.id
+        WHERE 
+            cu.firstname LIKE :search OR 
+            c.model LIKE :search OR 
+            b.booking_date LIKE :search OR 
+            b.return_date LIKE :search OR 
+            b.status LIKE :search
+        ORDER BY b.booking_date DESC");
+    $stmt->execute(['search' => '%' . $search . '%']);
+} else {
+    $stmt = $pdo->query("SELECT 
+            b.id,
+            b.users_id,
+            b.car_id, 
+            cu.firstname, 
+            c.model AS car_model, 
+            b.location,
+            b.booking_date, 
+            b.return_date, 
+            b.status 
+        FROM bookings b
+        INNER JOIN users cu ON b.users_id = cu.id
+        INNER JOIN car c ON b.car_id = c.id
+        ORDER BY b.booking_date DESC");
+}
+$bookings = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -279,37 +254,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
             <button class="btn btn-add" onclick="openModal('addModal')">Add Booking</button>
         </div>
         <div class="search-container">
-            <form method="GET" action="bookings.php" class="filter-form" id="filterForm">
-                <div class="filter-group">
-                    <input type="text" name="search" placeholder="Search bookings..." 
-                           value="<?= htmlspecialchars($search) ?>" 
-                           onchange="document.getElementById('filterForm').submit()">
-                    
-                    <select name="status" class="filter-select" onchange="document.getElementById('filterForm').submit()">
-                        <option value="">All Status</option>
-                        <option value="Pending" <?= $status_filter === 'Pending' ? 'selected' : '' ?>>Pending</option>
-                        <option value="Active" <?= $status_filter === 'Active' ? 'selected' : '' ?>>Active</option>
-                        <option value="Completed" <?= $status_filter === 'Completed' ? 'selected' : '' ?>>Completed</option>
-                        <option value="Cancelled" <?= $status_filter === 'Cancelled' ? 'selected' : '' ?>>Cancelled</option>
-                    </select>
-
-                    <select name="date_range" class="filter-select" onchange="handleDateRangeChange(this.value)">
-                        <option value="all" <?= $date_range === 'all' ? 'selected' : '' ?>>All Time</option>
-                        <option value="today" <?= $date_range === 'today' ? 'selected' : '' ?>>Today</option>
-                        <option value="week" <?= $date_range === 'week' ? 'selected' : '' ?>>This Week</option>
-                        <option value="month" <?= $date_range === 'month' ? 'selected' : '' ?>>This Month</option>
-                        <option value="custom" <?= $date_range === 'custom' ? 'selected' : '' ?>>Custom Date</option>
-                    </select>
-
-                    <input type="date" name="date" id="custom-date" 
-                           value="<?= htmlspecialchars($date_filter) ?>" 
-                           class="<?= $date_range !== 'custom' ? 'hidden' : '' ?>"
-                           onchange="document.getElementById('filterForm').submit()">
-
-                    <?php if (!empty($search) || !empty($status_filter) || !empty($date_filter)): ?>
-                        <a href="bookings.php" class="clear-filter"><i class="fas fa-times"></i> Clear Filters</a>
-                    <?php endif; ?>
-                </div>
+            <form method="GET" action="bookings.php">
+            <?php
+            $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+            ?>
+                <input type="text" name="search" placeholder="Search bookings..." value="<?= htmlspecialchars($search) ?>">
+                <button type="submit"><i class="fas fa-search"></i></button>
+                <?php if (!empty($search)): ?>
+                    <a href="bookings.php" class="clear-search"><i class="fas fa-times"></i> Clear</a>
+                <?php endif; ?>
             </form>
         </div>
     </div>
@@ -331,9 +284,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
             <tbody>
                 <?php if (empty($bookings)): ?>
                     <tr>
-                        <td colspan="8" class="no-results">
-                            No bookings found<?= !empty($status_filter) ? ' with status "' . htmlspecialchars($status_filter) . '"' : '' ?><?= !empty($search) ? ' matching your search' : '' ?>.
-                        </td>
+                        <td colspan="8" class="no-results">No bookings found<?= !empty($search) ? ' matching your search' : '' ?>.</td>
                     </tr>
                 <?php else: ?>
                     <?php foreach ($bookings as $booking): ?>
@@ -342,13 +293,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
                             <td><?= htmlspecialchars($booking['firstname']) ?></td>
                             <td><?= htmlspecialchars($booking['car_model']) ?></td>
                             <td><?= htmlspecialchars($booking['location']) ?></td>
-                            <td><?= date('M d, Y', strtotime($booking['booking_date'])) ?></td>
-                            <td><?= date('M d, Y', strtotime($booking['return_date'])) ?></td>
-                            <td>
-                                <span class="status-badge <?= strtolower($booking['status']) ?>">
-                                    <?= htmlspecialchars($booking['status']) ?>
-                                </span>
-                            </td>
+                            <td><?= htmlspecialchars($booking['booking_date']) ?></td>
+                            <td><?= htmlspecialchars($booking['return_date']) ?></td>
+                            <td><?= htmlspecialchars($booking['status']) ?></td>
                             <td class="actions">
                                 <button class="view-btn" onclick="openViewModal(<?= htmlspecialchars(json_encode($booking)) ?>)">View</button>
                                 <button class="edit-btn" onclick="openEditModal(<?= htmlspecialchars(json_encode($booking)) ?>)">Edit</button>
@@ -442,53 +389,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
     </div>
   </div>
 
-                        <!-- EDIT Modal -->    <div class="modal" id="editModal">        <div class="modal-content">            <span class="close" onclick="closeModal('editModal')">×</span>            <h2>Edit Booking Status</h2>            <form method="POST" id="editForm">                <input type="hidden" name="action" value="edit">                <input type="hidden" name="id" id="edit-id">                <div class="form-grid">                    <!-- Left Column -->                    <div class="form-column">                        <!-- Customer Name (read-only) -->                        <div class="form-group">                            <label for="edit-users-text">Customer Name</label>                            <input type="text" id="edit-users-text" class="readonly-field" readonly>                            <input type="hidden" name="users_id" id="edit-users">                        </div>                        <!-- Car (read-only) -->                        <div class="form-group">                            <label for="edit-car-id-text">Car Model</label>                            <input type="text" id="edit-car-id-text" class="readonly-field" readonly>                            <input type="hidden" name="car_id" id="edit-car-id">                        </div>                        <!-- Location (read-only) -->                        <div class="form-group">                            <label for="edit-location">Location</label>                            <input type="text" name="location" id="edit-location" class="readonly-field" readonly>                        </div>                    </div>                    <!-- Right Column -->                    <div class="form-column">                        <!-- Booking Date (read-only) -->                        <div class="form-group">                            <label for="edit-date">Booking Date</label>                            <input type="date" name="booking_date" id="edit-date" class="readonly-field" readonly>                        </div>                        <!-- Return Date (read-only) -->                        <div class="form-group">                            <label for="edit-return">Return Date</label>                            <input type="date" name="return_date" id="edit-return" class="readonly-field" readonly>                        </div>                        <!-- Status (editable) -->                        <div class="form-group">                            <label for="edit-status">Status</label>                            <select name="status" id="edit-status" class="status-select" required>                                <option value="Pending">Pending</option>                                <option value="Active">Active</option>                                <option value="Completed">Completed</option>                                <option value="Cancelled">Cancelled</option>                            </select>                        </div>                    </div>                </div>                <div class="form-actions">                    <button type="button" class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>                    <button type="submit" class="btn-save">Update Status</button>                </div>            </form>        </div>    </div>
+                    <!-- EDIT Modal -->
+            <div class="modal" id="editModal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal('editModal')">×</span>
+                <h2>Edit Booking Status</h2>
+                <form method="POST" id="editForm">
+                <input type="hidden" name="action" value="edit">
+                <input type="hidden" name="id" id="edit-id">
+
+                <!-- Customer Name (read-only) -->
+                <div class="form-group">
+                    <label for="edit-users-text">Customer Name:</label>
+                    <input type="text" id="edit-users-text" readonly>
+                    <input type="hidden" name="users_id" id="edit-users">
+                </div>
+
+                <!-- Car (read-only) -->
+                <div class="form-group">
+                    <label for="edit-car-id-text">Car:</label>
+                    <input type="text" id="edit-car-id-text" readonly>
+                    <input type="hidden" name="car_id" id="edit-car-id">
+                </div>
+
+                <!-- Location (read-only) -->
+                <div class="form-group">
+                    <label for="edit-location">Location:</label>
+                    <input type="text" name="location" id="edit-location" readonly>
+                </div>
+
+                <!-- Booking Date (read-only) -->
+                <div class="form-group">
+                    <label for="edit-date">Booking Date:</label>
+                    <input type="date" name="booking_date" id="edit-date" readonly>
+                </div>
+
+                <!-- Return Date (read-only) -->
+                <div class="form-group">
+                    <label for="edit-return">Return Date:</label>
+                    <input type="date" name="return_date" id="edit-return" readonly>
+                </div>
+
+                <!-- Status (editable) -->
+                <div class="form-group">
+                    <label for="edit-status">Status:</label>
+                    <select name="status" id="edit-status" required>
+                    <option value="Pending">Pending</option>
+                    <option value="Active">Active</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Cancelled">Cancelled</option>
+                    </select>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn-save">Update Status</button>
+                </div>
+                </form>
+            </div>
+            </div>
 
 
 
-    <!-- VIEW Modal -->
-    <div class="modal" id="viewModal">
-      <div class="modal-content">
-        <span class="close" onclick="closeModal('viewModal')">×</span>
-        <h2>Booking Details</h2>
-        <div class="booking-details">
-          <p><strong>ID:</strong> <span id="view-id"></span></p>
-          <p><strong>Customer:</strong> <span id="view-users"></span></p>
-          <p><strong>Car Model:</strong> <span id="view-car"></span></p>
-          <p><strong>Location:</strong> <span id="view-location"></span></p>
-          <div class="price-info">
-            <p><strong>Price per Day:</strong> <span id="view-price"></span></p>
-            <p><strong>Total Price:</strong> <span id="view-total-price"></span></p>
-          </div>
-          <p><strong>Booking Date:</strong> <span id="view-date"></span></p>
-          <p><strong>Return Date:</strong> <span id="view-return"></span></p>
-          <p><strong>Status:</strong> <span id="view-status" class="status-badge"></span></p>
-        </div>
-        <div class="modal-actions">
-          <button class="btn-close" onclick="closeModal('viewModal')">Close</button>
-        </div>
-      </div>
+  <!-- VIEW Modal -->
+  <div class="modal" id="viewModal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal('viewModal')">×</span>
+      <h2>Booking Details</h2>
+      <p><strong>ID:</strong> <span id="view-id"></span></p>
+      <p><strong>Customer:</strong> <span id="view-users"></span></p>
+      <p><strong>Car Model:</strong> <span id="view-car"></span></p>
+      <p><strong>Location:</strong> <span id="view-location"></span></p>
+      <p><strong>Price per Day:</strong> <span id="view-price"></span></p>
+      <p><strong>Total Price:</strong> <span id="view-total-price"></span></p>
+      <p><strong>Booking Date:</strong> <span id="view-date"></span></p>
+      <p><strong>Return Date:</strong> <span id="view-return"></span></p>
+      <p><strong>Status:</strong> <span id="view-status"></span></p>
+      <button onclick="closeModal('viewModal')">Close</button> <!-- Add a close button -->
     </div>
+  </div>
 
   <script>
-    // Add click event listener for modal background clicks
-    document.addEventListener('DOMContentLoaded', function() {
-        const modals = document.querySelectorAll('.modal');
-        modals.forEach(modal => {
-            modal.addEventListener('click', function(event) {
-                if (event.target === this) {
-                    closeModal(this.id);
-                }
-            });
-        });
-    });
-
     function openModal(id) {
-        document.getElementById(id).style.display = 'block';
+      document.getElementById(id).style.display = 'block';
     }
-
     function closeModal(id) {
-        document.getElementById(id).style.display = 'none';
+      document.getElementById(id).style.display = 'none';
     }
     function openEditModal(data) {
     document.getElementById('edit-id').value = data.id;
@@ -503,112 +488,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
     openModal('editModal');
 }
 
-        function openViewModal(data) {
-            // Format dates
-            const bookingDate = new Date(data.booking_date);
-            const returnDate = new Date(data.return_date);
-            const formatDate = (date) => {
-                return date.toLocaleDateString('en-PH', {
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                });
-            };
-
-            // Calculate number of days and total price
-            const diffTime = Math.abs(returnDate - bookingDate);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            const totalPrice = diffDays * (data.price || 0);
-
-            // Format currency
-            const formatCurrency = (amount) => {
-                return new Intl.NumberFormat('en-PH', {
-                    style: 'currency',
-                    currency: 'PHP'
-                }).format(amount);
-            };
-
-            // Update modal content
-            document.getElementById('view-id').innerText = data.id;
-            document.getElementById('view-users').innerText = data.firstname;
-            document.getElementById('view-car').innerText = data.car_model;
-            document.getElementById('view-location').innerText = data.location;
-            document.getElementById('view-price').innerText = formatCurrency(data.price || 0);
-            document.getElementById('view-total-price').innerText = formatCurrency(totalPrice);
-            document.getElementById('view-date').innerText = formatDate(bookingDate);
-            document.getElementById('view-return').innerText = formatDate(returnDate);
-            document.getElementById('view-status').innerText = data.status;
-            
-            openModal('viewModal');
-        }
-
-    function handleDateRangeChange(value) {
-        const customDate = document.getElementById('custom-date');
-        customDate.classList.toggle('hidden', value !== 'custom');
-        if (value !== 'custom' || (value === 'custom' && customDate.value)) {
-            document.getElementById('filterForm').submit();
-        }
+    function openViewModal(data) {
+      document.getElementById('view-id').innerText = data.id;
+      document.getElementById('view-users').innerText = data.firstname;
+      document.getElementById('view-car').innerText = data.car_model;
+      document.getElementById('view-location').innerText = data.location;
+      document.getElementById('view-price').innerText = "₱" + (data.price ? data.price.toFixed(2) : "0.00");
+      
+      // Calculate total price based on number of days
+      const bookingDate = new Date(data.booking_date);
+      const returnDate = new Date(data.return_date);
+      const diffTime = Math.abs(returnDate - bookingDate);
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      const totalPrice = diffDays * (data.price || 0);
+      
+      document.getElementById('view-total-price').innerText = "₱" + totalPrice.toFixed(2);
+      document.getElementById('view-date').innerText = data.booking_date;
+      document.getElementById('view-return').innerText = data.return_date;
+      document.getElementById('view-status').innerText = data.status;
+      openModal('viewModal');
     }
   </script>
 
 <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
-
-<style>
-    .filter-form {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
-
-    .filter-group {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-        flex-wrap: wrap;
-    }
-
-    .filter-select {
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: white;
-    }
-
-    .hidden {
-        display: none;
-    }
-
-    .clear-filter {
-        color: #dc3545;
-        text-decoration: none;
-        padding: 8px;
-        border-radius: 4px;
-        display: inline-flex;
-        align-items: center;
-        gap: 5px;
-    }
-
-    .clear-filter:hover {
-        background-color: #dc354520;
-    }
-
-    #custom-date {
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-    }
-
-    .status-badge {
-        padding: 4px 8px;
-        border-radius: 4px;
-        font-size: 0.9em;
-        font-weight: 500;
-    }
-    .status-badge.pending { background-color: #ffd700; color: #000; }
-    .status-badge.active { background-color: #28a745; color: #fff; }
-    .status-badge.completed { background-color: #17a2b8; color: #fff; }
-    .status-badge.cancelled { background-color: #dc3545; color: #fff; }
-</style>
 
 </body>
 </html>

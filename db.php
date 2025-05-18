@@ -1,7 +1,4 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 $host = 'localhost';
 $db   = 'quicklease_db';
 $user = 'root';
@@ -20,8 +17,4 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
-// Verify PDO connection
-if (!$pdo) {
-    die("PDO connection is null");
-}
 ?>

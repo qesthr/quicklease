@@ -1,8 +1,5 @@
 <?php
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
-require_once __DIR__ . '/../includes/session_handler.php';
+session_start();
 require_once __DIR__ . '/../db.php';
 
 // // Load .env variables
@@ -33,63 +30,28 @@ require_once __DIR__ . '/../db.php';
     // }
 
     // ✅ Step 2: Proceed with login validation
-    $username = $_POST['username'] ?? '';
-    $password = $_POST['password'] ?? '';
+    $username = $_POST['username'];
+    $password = $_POST['password'];
 
-    // Debug output
-    echo "Attempting login with username: " . htmlspecialchars($username) . "<br>";
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->execute([$username]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    try {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-        $stmt->execute([$username]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($user && password_verify($password, $user['password'])) {
+        // Login successful — store user info in session
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['user_type'] = $user['user_type']; // Store the user's role in the session
 
-        if ($user) {
-            echo "User found in database<br>";
-            echo "User type: " . htmlspecialchars($user['user_type']) . "<br>";
-            
-            if (password_verify($password, $user['password'])) {
-                echo "Password verified successfully<br>";
-                
-                // Start the appropriate session based on user type
-                if ($user['user_type'] === 'admin') {
-                    startAdminSession();
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['user_type'] = $user['user_type'];
-                    header('Location: /quicklease/dashboard/reports.php');
-                    exit();
-                } else if ($user['user_type'] === 'client') {
-                    startClientSession();
-                    $_SESSION['user_id'] = $user['id'];
-                    $_SESSION['username'] = $user['username'];
-                    $_SESSION['user_type'] = $user['user_type'];
-                    header('Location: /quicklease/dashboard/client_dashboard/client_profile_userdetails.php');
-                    exit();
-                } else {
-                    session_start();
-                    $_SESSION['error'] = "Invalid user type. Please contact support.";
-                    header('Location: login.php');
-                    exit();
-                }
-            } else {
-                echo "Password verification failed<br>";
-                session_start();
-                $_SESSION['error'] = "Invalid username or password.";
-                header('Location: login.php');
-                exit();
-            }
-        } else {
-            echo "User not found in database<br>";
-            session_start();
-            $_SESSION['error'] = "Invalid username or password.";
-            header('Location: login.php');
-            exit();
+        // Redirect based on role
+        if ($user['user_type'] === 'admin') {
+            header('Location: /quicklease/dashboard/reports.php'); // Admin dashboard
+        } else if ($user['user_type'] === 'client') {
+            header('Location: /quicklease/dashboard/client_dashboard/client_profile_userdetails.php'); // Client dashboard
         }
-    } catch (Exception $e) {
-        echo "Error during login: " . $e->getMessage() . "<br>";
-        session_start();
-        $_SESSION['error'] = "An error occurred during login. Please try again.";
+        exit();
+    } else {
+        $_SESSION['error'] = "Invalid username or password.";
         header('Location: login.php');
         exit();
     }

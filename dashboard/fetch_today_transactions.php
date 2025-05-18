@@ -29,15 +29,15 @@ try {
                 b.id AS booking_id,
                 CONCAT(u.firstname, ' ', u.lastname) AS customer_name,
                 c.model AS car_model,
-                DATE_FORMAT(b.booking_date, '%Y-%m-%d') as booking_date,
-                DATE_FORMAT(b.return_date, '%Y-%m-%d') as return_date,
+                b.booking_date,
+                b.return_date,
                 b.location,
                 b.status,
-                FORMAT(DATEDIFF(b.return_date, b.booking_date) * c.price, 2) AS total_cost
+                DATEDIFF(b.return_date, b.booking_date) * c.price AS total_cost
             FROM bookings b
             JOIN users u ON b.users_id = u.id
             JOIN car c ON b.car_id = c.id
-            WHERE DATE(b.booking_date) = :date OR DATE(b.return_date) = :date
+            WHERE DATE(b.booking_date) = :date
             ORDER BY b.booking_date DESC";
 
     $stmt = $pdo->prepare($sql);

@@ -1,34 +1,18 @@
 <?php
-// Set session configuration
-ini_set('session.gc_maxlifetime', 86400);
-ini_set('session.cookie_lifetime', 86400);
-ini_set('session.use_strict_mode', 1);
-ini_set('session.use_cookies', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.cookie_httponly', 1);
-
 session_start();
 
-// Only load Google dependencies if we're actually logging in (not just redirecting)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../vendor/autoload.php';
-    
-    // Load .env from parent directory
-    $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
-    $dotenv->load();
+// 1. Corrected path to autoload.php
+require_once __DIR__ . '/../vendor/autoload.php';
 
-    // Get environment variables with defaults
-    $siteKey = $_ENV['RECAPTCHA_SITE_KEY'] ?? '';
-    $googleClientId = $_ENV['GOOGLE_CLIENT_ID'] ?? '';
-    $googleClientSecret = $_ENV['GOOGLE_CLIENT_SECRET'] ?? '';
-    $googleRedirect = $_ENV['GOOGLE_REDIRECT'] ?? '';
-} else {
-    // Set empty values for variables when just displaying the page
-    $siteKey = '';
-    $googleClientId = '';
-    $googleClientSecret = '';
-    $googleRedirect = '';
-}
+// 2. Load .env from parent directory
+$dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
+$dotenv->load();
+
+// 3. Safely get environment variables with defaults
+$siteKey = $_ENV['RECAPTCHA_SITE_KEY'] ?? '';
+$googleClientId = $_ENV['GOOGLE_CLIENT_ID'] ?? '';
+$googleClientSecret = $_ENV['GOOGLE_CLIENT_SECRET'] ?? '';
+$googleRedirect = $_ENV['GOOGLE_REDIRECT'] ?? '';
 
 // Verify you're getting the values (temporary debug)
 error_log("reCAPTCHA Site Key: " . ($siteKey ? 'Set' : 'Missing'));
