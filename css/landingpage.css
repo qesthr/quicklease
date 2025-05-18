@@ -1,0 +1,597 @@
+/* base styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: #000000;
+    background-color: #ffffff;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+    background-color: transparent;
+    padding: 1rem 16rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+    width: 100%;
+    height: 24%;
+    position: absolute;
+    top: 0;
+    z-index: 1000;
+}
+
+.navbar .navbar-brand {
+    width: 180px;
+    height: auto;
+}
+
+.navbar-brand img {
+    width: 238%;
+    height: auto;
+    object-fit: cover;
+    margin-left: -91px;
+}
+
+.nav-container {
+    display: flex;
+    align-items: center;
+    background-color: #1818CA;
+    padding: 18px 65px;
+    border-radius: 50px;
+    gap: 80px;
+    margin-right: -40px;
+}
+
+.navbar-nav {
+    display: flex;
+    list-style: none;
+    gap: 20px;
+}
+
+.navbar-nav .nav-link {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: color 0.3s;
+}
+
+.navbar-nav .nav-link:hover {
+    color: #f1bc3e;
+}
+
+.btn-signup {
+    background-color: #F9B315;
+    color: white;
+    border-radius: 25px;
+    padding: 10px 25px;
+    font-weight: bold;
+    text-decoration: none;
+    border: 2px solid #ffffff;
+    transition: all 0.3s;
+    white-space: nowrap;
+}
+
+.btn-signup:hover {
+    background-color: #f1bc3e;
+}
+
+/* Hero Section */
+.hero {
+    position: relative;
+    text-align: center;
+    padding: 8rem 1rem 4rem;
+    width: 100%;
+    margin-top: 109px;
+}
+
+.hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('../images/maps.png');
+    background-size: cover;
+    background-position: center;
+    -webkit-mask-image: linear-gradient(to top, transparent 0%, #000 50%, transparent 100%);
+    mask-image: linear-gradient(to top, transparent 0%, #000 50%, transparent 100%);
+    z-index: -1;
+}
+
+.hero h1 {
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.search-form {
+    background: #fff;
+    padding: 1rem;
+    border-radius: 50px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    align-items: center;
+    margin: 0 auto;
+    max-width: 800px;
+    width: 90%;
+}
+
+.search-form input,
+.search-form select {
+    border: none;
+    padding: 0.8rem 1rem;
+    flex: 1;
+    min-width: 200px;
+    border-radius: 30px;
+    background-color: #f1f1f1;
+    outline: none;
+}
+
+.search-form .btn-book {
+    background-color: #F9B315;
+    color: #ffffff;
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    white-space: nowrap;
+}
+
+.search-form .btn-book:hover {
+    background-color: #fbcc63;
+}
+
+/* rent flow new */
+  .rent-flow {
+    padding: 4rem 2rem;
+    text-align: center;
+    background-color: #ffff;
+    position: relative;
+    overflow: hidden;
+    min-height: 60vh;
+  }
+
+  .rent-flow h1 {
+    font-size: 3rem;
+  }
+  
+  .wavy-line {
+    width: 90%;
+    height: 100px;
+    margin: 40px auto 0;
+    display: block;
+  }
+  
+  .timeline-steps {
+    position: relative;
+    width: 90%;
+    margin: -50px auto 0;
+    height: 200px;
+  }
+  
+  .step {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 180px;
+  }
+  
+  .step-marker {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: #fbcc63;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    box-shadow: 0 4px 8px rgba(52, 152, 219, 0.3);
+    z-index: 2;
+    margin-bottom: 10px;
+  }
+  
+  .step-text {
+    margin-top: 15px;
+    font-weight: 600;
+    color: #2c3e50;
+    text-align: center;
+    background: white;
+    padding: 5px 10px;
+    border-radius: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 8px;
+  }
+
+  .step p {
+    font-size: 0.85rem;
+    color: #666;
+    line-height: 1.4;
+    margin: 0;
+    background: white;
+    padding: 8px 12px;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    max-width: 160px;
+  }
+  
+  /* Animation */
+  .step-marker {
+    transition: all 0.3s ease;
+  }
+  
+  .step:hover .step-marker {
+    transform: scale(1.1);
+    background: #1818CA;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .wavy-line {
+      height: 150px;
+    }
+    
+    .timeline-steps {
+        position: relative;
+        width: 90%;
+        margin: -40px auto 0; 
+        height: 200px;
+    }
+    
+    .step {
+      width: 80px;
+    }
+    
+    .step:nth-child(1) { left: 5%; top: 50%; }   /* Higher on first peak */
+    .step:nth-child(2) { left: 35%; top: 80%; }  /* Lower in first valley */
+    .step:nth-child(3) { left: 65%; top: 100%; }  /* Higher on second peak */
+    .step:nth-child(4) { left: 95%; top: 70%; }  /* Lower in second valley */
+    
+    .step-content {
+        position: relative;
+        margin-top: 20px;
+    }
+    .step-content::before {
+        content: "";
+        position: absolute;
+        top: -20px;
+        left: 50%;
+        width: 2px;
+        height: 20px;
+        background: #fbcc63;
+        transform: translateX(-50%);
+    }
+
+    }
+  
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    .wavy-line {
+      height: 150px;
+      margin-top: 60px;
+    }
+    
+    .timeline-steps {
+      height: auto;
+      margin: 0 auto;
+      padding-top: 40px;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .step {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 80%;
+    margin: 0 auto 30px;
+    padding-top: 40px;
+    }
+
+    .step-content::before {
+        height: 40px;
+        top: -40px;
+    }
+
+    
+    .step p {
+      max-width: 100%;
+    }
+    
+    /* Hide wavy line on mobile */
+    .wavy-line {
+      display: none;
+    }
+    
+    /* Add connecting line for mobile */
+    .step:not(:last-child)::after {
+      content: "";
+      display: block;
+      width: 2px;
+      height: 20px;
+      background: #fbcc63;
+      margin: 10px auto;
+    }
+  }
+
+/* end of rent flow new */
+
+/* Vehicles Section */
+.vehicles {
+    padding: 4rem 1rem;
+    text-align: center;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.vehicle-tabs {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin: 2rem 0;
+}
+
+.vehicle-tabs button {
+    background-color: #f1f1f1;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
+.vehicle-tabs button.active,
+.vehicle-tabs button:hover {
+    background-color: #1818CA;
+    color: #fff;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(24, 24, 202, 0.2);
+}
+
+.vehicle-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+    width: 100%;
+}
+
+.vehicle-card {
+    background: #fff;
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s;
+}
+
+.vehicle-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.vehicle-card img {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+}
+
+.card-body {
+    padding: 1.5rem;
+    text-align: left;
+}
+
+.card-body h3 {
+    margin-bottom: 0.5rem;
+}
+
+.vehicle-details {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1rem;
+}
+
+.price {
+    font-weight: bold;
+    color: #1818CA;
+}
+
+.btn-rent {
+    background: #1818CA;
+    color: white;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    font-weight: bold;
+    transition: background 0.3s;
+}
+
+.btn-rent:hover {
+    background: #0f0f9c;
+}
+
+/* Show All Button */
+.show-all-btn {
+    background: none;
+    border: 2px solid #000;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+    margin-top: 2rem;
+}
+
+.show-all-btn:hover {
+    background-color: #1818CA;
+    color: #ffffff;
+    border-color: #1818CA;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .hero h1 {
+        font-size: 2rem;
+    }
+    
+    .navbar {
+        padding: 1rem;
+        flex-direction: column;
+        position: relative;
+    }
+    
+    .nav-container {
+        width: 100%;
+        margin-top: 1rem;
+        justify-content: center;
+    }
+    
+    .timeline-steps {
+        height: auto;
+        display: flex;
+        flex-direction: column;
+        margin-top: 2rem;
+    }
+    
+    .step {
+        position: relative;
+        left: auto !important;
+        top: auto !important;
+        transform: none;
+        width: 100%;
+        margin-bottom: 2rem;
+    }
+    
+    .wavy-line {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .search-form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .vehicle-cards {
+        grid-template-columns: 1fr;
+    }
+    
+    .vehicle-tabs button {
+        padding: 0.5rem 1rem;
+        font-size: 0.8rem;
+    }
+}
+
+/* car brands */
+.car-brands {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    align-items: center;
+    padding: 2rem 0;
+}
+
+.car-brands img {
+    height: 50px;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+}
+
+.car-brands img:hover {
+    opacity: 1;
+}
+
+/*  promotional banner  */
+.promo-banner {
+    background: linear-gradient(135deg, #F9B315, #1818CA);
+    color: #ffffff;
+    text-align: center;
+    padding: 4rem 5rem;
+    border-radius: 20px;
+    margin: 6rem auto;
+    max-width: 800px;
+}
+
+.promo-banner h2 {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.promo-banner .btn-book-now {
+    background-color: #ffffff;
+    color: #1818CA;
+    padding: 0.8rem 1.5rem;
+    border-radius: 50px;
+    font-weight: bold;
+    border: none;
+    margin-top: 1.5rem;
+    transition: background-color 0.3s;
+    cursor: pointer;
+}
+
+.promo-banner .btn-book-now:hover {
+    background-color: #fbcc63;
+}
+
+/* footer */
+.footer {
+    padding: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    font-size: 0.9rem;
+    background-color: transparent;
+    margin-top: -12rem;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.footer a {
+    color: #000;
+    text-decoration: none;
+    margin: 0.5rem;
+}
+
+.footer a:hover {
+    text-decoration: underline;
+}
+
+.footer .footer-brand {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 1rem;
+}
+
+
+
+

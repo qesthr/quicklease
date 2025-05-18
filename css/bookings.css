@@ -1,0 +1,436 @@
+/* === Recent Bookings Table === */
+.recent-bookings h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.recent-bookings table {
+    width: 100%;
+    border-collapse: collapse;
+    background: white;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.recent-bookings th {
+    background: #1818CA;
+    color: white;
+    padding: 12px;
+}
+
+.recent-bookings td {
+    padding: 12px;
+    border-bottom: 1px solid #ddd;
+    text-align: center;
+}
+
+/* === Booking Content === */
+.booking-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    padding: 20px;
+    margin-top: 20px;
+    margin-left: 30vh;
+    width: 173vh;
+}
+
+/* === Table Container === */
+.table-container {
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    background: #f9f9f9;
+    padding: 24px;
+}
+
+/* === Table Styling === */
+.table-container table {
+    width: 100%; /* Full width */
+    border-collapse: collapse; /* Remove gaps between table cells */
+    background: #ffffff; /* White background for the table */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensure rounded corners are visible */
+}
+
+.table-container th {
+    background: #1818CA; /* Dark blue background for the header */
+    color: #ffffff; /* White text for contrast */
+    text-align: center; /* Center align text */
+    padding: 12px; /* Add padding for spacing */
+    font-weight: bold; /* Bold text */
+}
+
+.table-container td {
+    padding: 12px; /* Add padding for spacing */
+    border-bottom: 1px solid #ddd; /* Add a subtle border between rows */
+    color: #333; /* Dark text color */
+    text-align: center; /* Center align text */
+}
+
+.table-container tr:hover {
+    background: #f1f1f1; /* Highlight row on hover */
+}
+
+/* === Action Buttons === */
+.table-container .actions button {
+    padding: 8px 12px; /* Add padding for buttons */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Smooth background transition */
+    margin: 0 5px; /* Add spacing between buttons */
+}
+
+.table-container .view-btn {
+    background: #4CAF50; /* Green background for view button */
+    color: #ffffff; /* White text */
+}
+
+.table-container .view-btn:hover {
+    background: #45a049; /* Darker green on hover */
+}
+
+.table-container .edit-btn {
+    background: #FBCC63; /* Yellow background for edit button */
+    color: #000000; /* Black text */
+}
+
+.table-container .edit-btn:hover {
+    background: #f5b913; /* Darker yellow on hover */
+}
+
+.table-container .cancel-btn {
+    background: #EE5353; /* Red background for cancel button */
+    color: #ffffff; /* White text */
+}
+
+.table-container .cancel-btn:hover {
+    background: #d32f2f; /* Darker red on hover */
+}
+
+/* === Modal Styling === */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+}
+
+.modal-content {
+    background-color: #ffffff;
+    margin: 4.6% 29%;
+    padding: 40px;
+    border-radius: 10px;
+    width: 37%;
+    height: 69%;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h2 {
+    margin-top: 0; /* Remove top margin */
+    color: #1818CA; /* Dark blue text */
+}
+
+.modal-content label {
+    padding: 10px;
+    border-radius: 5px;
+    font-size: 1rem;
+    width: 100%;
+    font-weight: 500;
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+    width: 100%; /* Take the remaining space */
+    padding: 10px; /* Add padding */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+}
+
+.modal-content form div {
+    display: flex;
+    margin-bottom: 15px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-content: center;
+    flex-wrap: wrap;
+}
+
+.modal-content button {
+    margin-top: 10px; /* Add spacing above buttons */
+    padding: 10px 15px; /* Add padding */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Smooth background transition */
+    width: 100%; /* Full width */
+    background: #FBCC63;
+}
+
+.modal-content button:hover {
+    background: #f5b913;
+}
+
+/* === Close Button === */
+.modal-content .close {
+    position: absolute;
+    font-size: 30px;
+    font-weight: bold;
+    color: #0c0c0c;
+    cursor: pointer;
+    margin-top: -1%;
+    margin-left: 36%;
+    position: fixed;
+}
+
+.modal-content .close:hover {
+    color: #1818CA; /* Dark blue on hover */
+}
+
+.booking-content .topbar {
+    width: 96%; /* Full width */
+    margin-top: 0vh;
+}
+
+/* === Add Booking Button === */
+.add-booking-button-container {
+    text-align: right; /* Align the button to the right */
+    margin-bottom: 20px; /* Add spacing below the button */
+}
+
+.btn-add {
+    background: #FBCC63; /* Yellow background */
+    color: #000; /* Black text */
+    border: none; /* Remove border */
+    border-radius: 8px; /* Rounded corners */
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 12px 27px;
+    transition: background 0.3s; /* Smooth background transition */
+}
+
+.btn-add:hover {
+    background: #f5b913; /* Darker yellow on hover */
+}
+
+.actions {
+    display: flex;
+    gap: 5px;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.actions button {
+    padding: 6px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.view-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: #0056b3;
+}
+
+.edit-btn {
+    background-color: #ffc107;
+    color: #000;
+}
+
+.edit-btn:hover {
+    background-color: #e0a800;
+}
+
+.cancel-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.cancel-btn:hover {
+    background-color: #c82333;
+}
+
+.approve-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.reject-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.reject-btn:hover {
+    background-color: #c82333;
+}
+
+/* Table styles */
+.table-container {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin: 20px;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #495057;
+}
+
+tr:hover {
+    background-color: #f8f9fa;
+}
+
+.no-results {
+    text-align: center;
+    padding: 20px;
+    color: #6c757d;
+}
+
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.5);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 20px;
+    top: 10px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    color: #aaa;
+}
+
+.close:hover {
+    color: #000;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-actions {
+    margin-top: 20px;
+    text-align: right;
+}
+
+.btn-save {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.btn-save:hover {
+    background-color: #218838;
+}
+
+/* Search container styles */
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 20px;
+}
+
+.search-container input[type="text"] {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    width: 300px;
+}
+
+.search-container button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.search-container button:hover {
+    background-color: #0056b3;
+}
+
+.clear-search {
+    color: #dc3545;
+    text-decoration: none;
+    font-size: 14px;
+}
+
+.clear-search:hover {    text-decoration: underline;}/* Alert styles */.alert {    padding: 15px;    margin: 20px;    border: 1px solid transparent;    border-radius: 4px;}.alert-success {    color: #155724;    background-color: #d4edda;    border-color: #c3e6cb;}.alert-danger {    color: #721c24;    background-color: #f8d7da;    border-color: #f5c6cb;}
+

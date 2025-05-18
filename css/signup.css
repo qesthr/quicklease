@@ -1,0 +1,116 @@
+* {
+    margin: 3px;
+    padding: 7px;
+    box-sizing: border-box;
+    
+}
+
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-size: cover; 
+    background-repeat: no-repeat;
+    background-position: center center;
+    margin: 0;
+}
+
+.main_container {
+    width: 20%;
+    height: 50%;
+    background-color: rgb(240, 240, 240);
+    border-radius: 2%;
+    border: solid 3px rgb(82, 82, 82);
+    overflow-y: auto;
+
+    display: flex;
+    justify-content: center;
+
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.main_container::-webkit-scrollbar {
+    display: none;
+}
+
+.main_card{
+    margin: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.main_card h1 {
+    font-size: 20px;
+}
+
+.main_card img {
+    width: 5rem;
+    margin: 30px;
+
+    display: flex;
+    flex-direction: column;
+
+}
+
+.card {
+    background: white;
+    padding: 40px 30px;
+    border-radius: 25px;
+    width: 43vh;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.button-container {
+    margin: 20px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #1211ca;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #dca20f;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;  
+}
+
+.signup-form input[type="text"],
+.signup-form input[type="password"],
+.signup-form input[type="email"] {
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    transition: border 0.3s;
+}
+
+.signup_label {
+    display: flex;
+    flex-direction: column;
+
+}
+
+form p a {
+    color: blue;
+    text-decoration: none;
+}
+
+

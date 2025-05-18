@@ -1,0 +1,208 @@
+/* Topbar Styling */
+.account-content .topbar {
+    width: 96%; /* Full width */
+    margin-top: 0vh;
+}
+
+.account-content .topbar h1 {
+    font-size: 28px; /* Adjust font size */
+    color: #ffffff; /* White text */
+    margin-left: 10px; /* Add spacing to the left */
+}
+
+.account-content .user-info {
+    margin-right: 33px; /* Adjust spacing for user info */
+    display: flex; /* Flex layout for alignment */
+    align-items: center; /* Center items vertically */
+    gap: 15px; /* Add spacing between elements */
+}
+
+/* Account Content */
+.account-content {
+    display: flex;
+    flex-direction: column;
+    gap: 20px; /* Add spacing between elements */
+    padding: 20px; /* Add padding around the content */
+    border-radius: 10px; /* Rounded corners */
+    margin-top: 20px; /* Add margin around the content */
+    margin-left: 30vh;
+}
+
+/* Table Container */
+.table-container {
+    overflow-x: auto; /* Enable horizontal scrolling for smaller screens */
+    border-radius: 10px; /* Rounded corners for the table container */
+    
+}
+
+/* Table Styling */
+.table-container table {
+    width: auto; /* Allow the table to expand based on content */
+    min-width: 100%; /* Ensure the table doesn't shrink below its container */
+    border-collapse: collapse; /* Remove gaps between table cells */
+    background: #ffffff; /* White background for the table */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* Ensure rounded corners are visible */
+}
+
+.table-container th {
+    background: #1818CA; /* Dark blue background for the header */
+    color: #ffffff; /* White text for contrast */
+    text-align: center; /* Align text to the left */
+    padding: 12px; /* Add padding for spacing */
+    font-weight: bold; /* Bold text */
+    width: 25vh;
+}
+
+.table-container td {
+    padding: 12px; /* Add padding for spacing */
+    border-bottom: 1px solid #ddd; /* Add a subtle border between rows */
+    color: #333; /* Dark text color */
+    text-align: center; /* Center-align text */
+    vertical-align: middle; /* Vertically align content */
+    white-space: nowrap; /* Prevent text wrapping */
+}
+
+.table-container tr:hover {
+    background: #f1f1f1; /* Highlight row on hover */
+}
+
+/* Action Buttons */
+.table-container .btn {
+    padding: 8px 12px; /* Add padding for buttons */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Smooth background transition */
+    display: inline-block; /* Ensure buttons are inline */
+    margin: 0 5px; /* Add spacing between buttons */
+}
+
+.table-container .btn.edit {
+    background: #FBCC63; /* Yellow background for edit button */
+    color: #000; /* Black text */
+}
+
+.table-container .btn.edit:hover {
+    background: #f5b913; /* Darker yellow on hover */
+}
+
+.table-container .btn.view {
+    background: #4CAF50; /* Green background for view button */
+    color: #fff; /* White text */
+}
+
+.table-container .btn.view:hover {
+    background: #45a049; /* Darker green on hover */
+}
+
+.table-container .btn.delete {
+    background: #EE5353; /* Red background for delete button */
+    color: #fff; /* White text */
+}
+
+.table-container .btn.delete:hover {
+    background: #d32f2f; /* Darker red on hover */
+}
+
+/* Modal Styling */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+}
+
+.modal-content {
+    background-color: #ffffff; /* White background */
+    margin: 5% auto; /* Center the modal */
+    padding: 20px; /* Add padding */
+    border-radius: 10px; /* Rounded corners */
+    width: 40%; /* Set width */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow */
+}
+
+.modal-content h2 {
+    margin-top: 0; /* Remove top margin */
+    color: #1818CA; /* Dark blue text */
+    font-size: 24px; /* Adjust font size */
+}
+
+.modal-content label {
+    display: block; /* Make labels block elements */
+    margin-top: 10px; /* Add spacing above labels */
+    font-weight: bold; /* Bold text */
+    color: #333; /* Dark text color */
+}
+
+.modal-content input,
+.modal-content select,
+.modal-content textarea {
+    width: 96%; /* Full width */
+    padding: 10px; /* Add padding */
+    margin-top: 5px; /* Add spacing above inputs */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+}
+
+.modal-content button {
+    margin-top: 20px; /* Add spacing above buttons */
+    padding: 10px 15px; /* Add padding */
+    border: none; /* Remove borders */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Adjust font size */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background 0.3s; /* Smooth background transition */
+    background: #FBCC63; /* Yellow background */
+    color: #000; /* Black text */
+    width: 83.2vh;
+}
+
+.modal-content button:hover {
+    background: #f5b913; /* Darker yellow on hover */
+}
+
+.modal-content .close {
+    position: absolute; /* Position relative to the modal */
+    top: 10px; /* Position from the top */
+    right: 15px; /* Position from the right */
+    font-size: 20px; /* Adjust font size */
+    font-weight: bold; /* Bold text */
+    color: #333; /* Dark text color */
+    cursor: pointer; /* Pointer cursor on hover */
+}
+
+.modal-content .close:hover {
+    color: #1818CA; /* Dark blue on hover */
+}
+
+.status-badge {
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-weight: bold;
+    display: inline-block;
+    margin-top: 10px;
+}
+
+.status-badge.approved {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.status-badge.rejected {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+
+.status-badge.pending {
+    background-color: #fff3cd;
+    color: #856404;
+}
+ 

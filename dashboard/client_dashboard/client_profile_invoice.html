@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bookings - Profile Page</title>
+  <link rel="stylesheet" href="client_profile_invoice.css" />
+  <style>
+    /* Add styles for the notification dropdown */
+    .notification-dropdown {
+      position: absolute;
+      top: 50px;
+      right: 20px;
+      background-color: white;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 300px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      display: none; /* Initially hidden */
+    }
+
+    .notification-dropdown h3 {
+      margin: 0;
+      padding: 10px;
+      background-color: #f3f3f3;
+      border-bottom: 1px solid #ccc;
+    }
+
+    .notification-dropdown ul {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      max-height: 300px;
+      overflow-y: auto;
+    }
+
+    .notification-dropdown ul li {
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .notification-dropdown ul li:last-child {
+      border-bottom: none;
+    }
+
+    .notification-dropdown ul li.unread {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-nav">
+        <a href="client_profile_userdetails.php" class="nav-item">Profile</a>
+        <a href="client_cars.php" class="nav-item">Cars</a>
+        <a href="client_booking.php" class="nav-item active">Bookings</a>
+      </div>
+      <div class="logout">
+        <a href="/loginpage/login.php">Logout</a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main class="content">
+      <!-- Header -->
+      <header class="header">
+        <div class="header-top">
+          <h1>PROFILE</h1>
+          <div class="icons">
+            <span class="bell" onclick="toggleNotifications()">🔔</span>
+            <div id="notificationDropdown" class="notification-dropdown">
+              <h3>Notifications</h3>
+              <ul id="notificationList"></ul>
+            </div>
+            <img src="profile-pic.png" alt="Profile" class="profile-icon" id="headerProfileIcon">
+          </div>
+        </div>
+        <div class="header-user-info">
+          <div class="header-left">
+            <div class="user-thumb-clickable" id="userThumb">
+              <img src="profile-pic.png" alt="User Profile Image" id="userProfileImage">
+            </div>
+          </div>
+          <div class="header-right">
+            <div class="sub-line" id="userName">John Doe</div>
+            <div class="sub-line" id="userProfession">University Professor</div>
+          </div>
+        </div>
+        <nav class="secondary-nav">
+          <a href="client_profile_userdetails.php">User Details</a>
+          <a href="client_profile_notification.html">Notifications</a>
+          <a href="client_profile_invoice.html" class="active">Invoice</a>
+        </nav>
+      </header>
+
+      <!-- Content: Booking Boxes After booked, soon to php-->
+      <section class="bookings">
+        <!-- Booking Box 1 -->
+        <div class="invoice-box">
+          <div class="invoice-row">
+            <div class="car-pic">Car Image</div>
+            <div class="invoice-details">
+              <div class="detail-line">Car Name: Toyota Camry</div>
+              <div class="detail-line">Booking Date: April/20/2025 to April/29/2025</div>
+              <div class="detail-line">Status: Confirmed</div>
+            </div>
+          </div>
+          <div class="invoice-button">
+            <button>VIEW DETAILS</button>
+          </div>
+        </div>
+        <!-- Booking Box 2 After booked, soon to php-->
+        <div class="invoice-box">
+          <div class="invoice-row">
+            <div class="car-pic">Car Image</div>
+            <div class="invoice-details">
+              <div class="detail-line">Car Name: Honda Accord</div>
+              <div class="detail-line">Booking Date: May/10/2025 to May/15/2025</div>
+              <div class="detail-line">Status: Pending</div>
+            </div>
+          </div>
+          <div class="invoice-button">
+            <button>VIEW DETAILS</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Hidden file input for profile picture update -->
+  <input type="file" accept="image/*" id="profileUpload">
+
+  <!-- Inline JavaScript -->
+  <script>
+    function toggleNotifications() {
+      console.log('Bell icon clicked.');
+      const dropdown = document.getElementById('notificationDropdown');
+      if (!dropdown) {
+        console.error('Notification dropdown not found.');
+        return;
+      }
+
+      // Toggle dropdown visibility
+      dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+
+      // Fetch notifications only when the dropdown is opened
+      if (dropdown.style.display === 'block') {
+        fetchNotifications();
+      }
+    }
+
+    function fetchNotifications() {
+      fetch('../dashboard/fetch_notification.php')
+        .then(response => response.json())
+        .then(data => {
+          console.log('Notifications fetched:', data);
+          if (data.success) {
+            const notificationList = document.getElementById('notificationList');
+            if (!notificationList) {
+              console.error('Notification list element not found.');
+              return;
+            }
+
+            notificationList.innerHTML = ''; // Clear existing notifications
+
+            // Populate notifications
+            data.data.forEach(notification => {
+              const li = document.createElement('li');
+              li.textContent = `${notification.message} (Received: ${formatDate(notification.created_at)})`;
+              if (!notification.is_read) {
+                li.classList.add('unread');
+              }
+              notificationList.appendChild(li);
+            });
+          } else {
+            console.error('Error fetching notifications:', data.error);
+          }
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function formatDate(dateString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+/* Reset and Base Styles */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', sans-serif;
+  }
+  
+  body {
+    display: flex;
+    height: 100vh;
+    background-color: #fffcee;
+  }
+  
+  .container {
+    display: flex;
+    width: 100%;
+  }
+  
+  /* Sidebar */
+  .sidebar {
+    background-color: #2200c0;
+    color: white;
+    width: 240px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2rem 1rem;
+    border-top-right-radius: 40px;
+    border-bottom-right-radius: 40px;
+  }
+  /* .sidebar h1 {
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 2rem;
+  } */
+  
+  .sidebar .sidebar-nav {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+  
+  .nav-item {
+    padding: 12px 20px;
+    background-color: transparent;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .nav-item.active {
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+  }
+  
+  .logout a {
+    display: block;
+    padding: 10px;
+    background-color: #ffcb05;
+    border-radius: 20px;
+    text-align: center;
+    color: #000;
+    font-weight: bold;
+    text-decoration: none;
+  }
+  
+  /* Main Content */
+  .content {
+    flex: 1;
+    padding: 2rem;
+    position: relative;
+  }
+  
+  /* Header */
+  .header {
+    background-color: transparent;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #ccc;
+  }
+  
+  .header-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .header-top h1 {
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .icons {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .bell {
+    font-size: 24px;
+    cursor: pointer;
+  }
+  
+  .profile-icon {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  
+  .header-user-info {
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+    gap: 1rem;
+  }
+  
+  .user-thumb-clickable img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 3px solid gold;
+    cursor: pointer;
+  }
+  
+  .sub-line {
+    font-size: 16px;
+    color: #333;
+  }
+  
+  #userName {
+    font-size: 20px;
+    font-weight: bold;
+    color: #000;
+  }
+  
+  .secondary-nav {
+    display: flex;
+    gap: 2rem;
+    margin-top: 1rem;
+    border-bottom: 2px solid #ccc;
+  }
+  
+  .secondary-nav a {
+    text-decoration: none;
+    color: #000;
+    padding-bottom: 0.5rem;
+  }
+  
+  .secondary-nav .active {
+    border-bottom: 2px solid #000;
+    font-weight: bold;
+  }
+  
+  /* Booking Section */
+  .bookings {
+    margin-top: 2rem;
+  }
+  
+  .invoice-box {
+    background-color: #fff5c9;
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .invoice-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .car-pic {
+    width: 150px;
+    height: 80px;
+    background-color: #ddd;
+    border-radius: 8px;
+    background-image: url('car-placeholder.jpg');
+    background-size: cover;
+    background-position: center;
+  }
+  
+  .invoice-details .detail-line {
+    margin-bottom: 0.5rem;
+    font-size: 14px;
+  }
+  
+  .invoice-button button {
+    padding: 8px 16px;
+    background-color: #2200c0;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  /* Profile Upload Hidden */
+  #profileUpload {
+    display: none;
+  }
+  
+  
