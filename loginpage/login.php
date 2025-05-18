@@ -79,7 +79,7 @@ if (!empty($googleClientId) && !empty($googleClientSecret)) {
 
             <!-- 8. CONDITIONAL RECAPTCHA -->
             <?php if (!empty($siteKey)): ?>
-                <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>"></div>
+            <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>"></div>
             <?php endif; ?>
             
             <button type="submit">Login</button>

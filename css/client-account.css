@@ -134,10 +134,10 @@
 
 .tab-content {
     display: none;
-    padding: 20px;
+    padding: 20px 20px;
 }
 
-.tab-content.active-tab {
+.active-tab {
     display: block;
 }
 
@@ -385,48 +385,29 @@
 /* notification*/
 /* Tab Content */
 .tab-content {
-    display: none;
-    padding: 20px;
-}
-
-.tab-content.active-tab {
     display: block;
+    padding: 20px;
 }
 
 .notifications-container {
-    margin-top: 2vh;
-    margin-left: 2vh;
-    width: 100%;
-    max-width: 1200px;
-    padding: 20px;
+    margin-top: 4vh;
+    margin-left: 4vh;
 }
 
 /* Notification Card */
 #notificationsTab .notification {
     display: flex;
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     position: relative;
-    width: 100%;
 }
 
 .notification-card {
     flex: 1;
     background-color: #ffffff;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-    padding: 30px;
-    border-left: 8px solid #1818ca;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    width: 100vh;
-}
-
-.notification-details {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: 141vh;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    border-left: 5px solid #e0e0e0;
 }
 
 .notification.new .notification-card {
@@ -434,98 +415,95 @@
 }
 
 .notification-header {
-    margin-bottom: 20px;
-    width: 100%;
+    margin-bottom: 15px;
+    width: 90vh;
+    height: 2vh;
 }
 
 .notification-greeting {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 600;
-    color: #000000;
+    color: #333;
     margin: 0;
 }
 
 .notification-body {
-    margin-bottom: 25px;
-    flex-grow: 1;
+    margin-bottom: 20px;
 }
 
 .notification-message {
-    font-size: 18px;
-    color: #000000;
-    line-height: 1.6;
+    font-size: 16px;
+    color: #555;
+    line-height: 1.5;
     margin: 0;
 }
 
 .notification-footer {
     display: flex;
-    justify-content: flex-end;
+    justify-content: space-between;
     align-items: center;
-    margin-top: auto;
 }
 
 .view-booking-btn {
-    background-color: #fbcc63;
+    background-color: #4CAF50;
     color: white;
     border: none;
-    padding: 12px 25px;
-    border-radius: 8px;
+    padding: 10px 20px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 500;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s;
 }
 
 .view-booking-btn:hover {
-    background-color: #f9b315;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #45a049;
 }
 
 /* Date Indicator */
 .date-indicator {
     display: flex;
     align-items: center;
-    margin-left: 30px;
+    margin-left: 20px;
     position: relative;
-    flex-direction: row;
-    flex-wrap: nowrap;
-    width: 17vh;
-
 }
 
 .notification-dot {
-    width: 15px;
-    height: 15px;
+    width: 12px;
+    height: 12px;
     background: #e0e0e0;
     border-radius: 50%;
-    margin-right: 15px;
+    margin-right: 10px;
 }
 
+.notification.new .notification-dot {
+    background: #4CAF50;
+    animation: pulse 1.5s infinite;
+}
 
 .date-stack {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: #1818ca;
-    padding: 12px 20px;
-    border-radius: 25px;
-    min-width: 80px;
+    background: #f5f5f5;
+    padding: 8px 12px;
+    border-radius: 20px;
+    min-width: 60px;
 }
 
 .date-day {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: bold;
-    color: #e2dfdf;
+    color: #333;
     line-height: 1;
 }
 
 .date-month-year {
-    font-size: 14px;
-    color: #f7f2f2;
+    font-size: 12px;
+    color: #666;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 
 @keyframes pulse {
@@ -534,39 +512,6 @@
     100% { transform: scale(1); }
 }
 
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .notifications-container {
-        margin: 10px;
-        padding: 10px;
-    }
-
-    .notification-card {
-        padding: 20px;
-        min-height: 180px;
-    }
-
-    .notification-greeting {
-        font-size: 20px;
-    }
-
-    .notification-message {
-        font-size: 16px;
-    }
-
-    .date-indicator {
-        margin-left: 15px;
-        min-width: 100px;
-    }
-
-    .date-stack {
-        padding: 8px 15px;
-    }
-
-    .date-day {
-        font-size: 20px;
-    }
-}
 
 /* Invoices */
 .invoices-list {
@@ -652,6 +597,7 @@
     color: #1818CA;
     text-decoration: underline;
 }
+<<<<<<< HEAD
 
 .save-id-btn {
     background-color: #fbcc63;
@@ -709,3 +655,5 @@
     font-weight: 500;
 }
 
+=======
+>>>>>>> parent of d43415e6 (Merge pull request #61 from qesthr/0001-esthr-dash-mod)

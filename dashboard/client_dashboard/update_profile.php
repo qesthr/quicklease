@@ -2,48 +2,36 @@
 session_start();
 include_once '../../db.php';
 
-header('Content-Type: application/json');
+$client_id = $_SESSION['users_id'] ?? null;
 
-$user_id = $_SESSION['user_id'] ?? null;
-
-if (!$user_id) {
-    echo json_encode(['success' => false, 'message' => 'You must be logged in.']);
+if (!$client_id) {
+    echo "You must be logged in.";
     exit();
 }
 
-// Get and sanitize input
-$firstname = trim($_POST['firstname'] ?? '');
-$lastname = trim($_POST['lastname'] ?? '');
+// Get values from POST
+$first_name = trim($_POST['first_name'] ?? '');
+$last_name = trim($_POST['last_name'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
 
+// Combine names
+$full_name = $first_name . ' ' . $last_name;
+
 // Basic validation
-if (!$firstname || !$lastname || !$email || !$phone) {
-    echo json_encode(['success' => false, 'message' => 'All fields are required.']);
+if (!$full_name || !$email || !$phone) {
+    echo "All fields are required.";
     exit();
 }
 
-// Validate email format
-if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-    echo json_encode(['success' => false, 'message' => 'Invalid email format.']);
+// Update query
+$stmt = $pdo->prepare("UPDATE customer SET customer_name = ?, customer_email = ?, customer_phone = ? WHERE id = ?");
+$success = $stmt->execute([$full_name, $email, $phone, $client_id]);
+
+if ($success) {
+    // Optionally redirect or confirm
+    header("Location: client_profile_userdetails.php?updated=1");
     exit();
-}
-
-// Validate phone number (assuming Philippine format)
-if (!preg_match('/^09\d{9}$/', $phone)) {
-    echo json_encode(['success' => false, 'message' => 'Invalid phone number. It must start with 09 and be 11 digits.']);
-    exit();
-}
-
-try {
-    $stmt = $pdo->prepare("UPDATE users SET firstname = ?, lastname = ?, email = ?, customer_phone = ? WHERE id = ?");
-    $success = $stmt->execute([$firstname, $lastname, $email, $phone, $user_id]);
-
-    if ($success) {
-        echo json_encode(['success' => true, 'message' => 'Profile updated successfully.']);
-    } else {
-        echo json_encode(['success' => false, 'message' => 'Failed to update profile.']);
-    }
-} catch (Exception $e) {
-    echo json_encode(['success' => false, 'message' => 'Error: ' . $e->getMessage()]);
+} else {
+    echo "Failed to update profile.";
 }

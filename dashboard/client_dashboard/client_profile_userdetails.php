@@ -156,48 +156,49 @@ $invoices = [
                             </div>
                         </div>
 
-                        <!-- details tab -->
                         <div id="detailsTab" class="tab-content active-tab">
-                            <div class="details-card">
-                                <h3>Personal Information</h3>
-                                <div class="info-grid">
-                                    <div class="info-item">
-                                        <label>First Name:</label>
-                                        <p><?= htmlspecialchars($user['firstname'] ?? '') ?></p>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>Last Name:</label>
-                                        <p><?= htmlspecialchars($user['lastname'] ?? '') ?></p>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>Email:</label>
-                                        <p><?= htmlspecialchars($user['email'] ?? '') ?></p>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>Phone Number:</label>
-                                        <p><?= htmlspecialchars($user['customer_phone'] ?? '') ?></p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="details-card">
-                                <h3>Account Information</h3>
-                                <div class="info-grid">
-                                    <div class="info-item">
-                                        <label>Username:</label>
-                                        <p><?= htmlspecialchars($user['username'] ?? '') ?></p>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>Account Type:</label>
-                                        <p><?= ucfirst($user['user_type'] ?? '') ?></p>
-                                    </div>
-                                    <div class="info-item">
-                                        <label>Member Since:</label>
-                                        <p><?= date('F j, Y', strtotime($user['created_at'] ?? '')) ?></p>
+                            <div id="detailsTab" class="tab-content active-tab">
+                                <div class="details-card">
+                                    <h3>Personal Information</h3>
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <label>First Name:</label>
+                                            <p><?= htmlspecialchars($user['firstname'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Last Name:</label>
+                                            <p><?= htmlspecialchars($user['lastname'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Email:</label>
+                                            <p><?= htmlspecialchars($user['email'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Phone Number:</label>
+                                            <p><?= htmlspecialchars($user['customer_phone'] ?? '') ?></p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
+                                <div class="details-card">
+                                    <h3>Account Information</h3>
+                                    <div class="info-grid">
+                                        <div class="info-item">
+                                            <label>Username:</label>
+                                            <p><?= htmlspecialchars($user['username'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Account Type:</label>
+                                            <p><?= ucfirst($user['user_type'] ?? '') ?></p>
+                                        </div>
+                                        <div class="info-item">
+                                            <label>Member Since:</label>
+                                            <p><?= date('F j, Y', strtotime($user['created_at'] ?? '')) ?></p>
+                                        </div>
+                                    </div>
+                                </div>
+
+<<<<<<< HEAD
                             <div class="details-card">
                                 <h3>ID Verification</h3>
                                 <div class="id-verification-container">
@@ -303,39 +304,89 @@ $invoices = [
                                         <div class="date-stack">
                                             <span class="date-day">27</span>
                                             <span class="date-month-year">Apr 2025</span>
+=======
+                                <div class="details-card">
+                                    <div class="id-verification-container">
+                                        <div class="id-left">
+                                            <?php if (!empty($user['submitted_id'])): ?>
+                                                <img id="idPreview" src="../../uploads/<?= htmlspecialchars($user['submitted_id']) ?>" alt="Submitted ID" class="submitted-id">
+                                            <?php else: ?>
+                                                <p>No ID uploaded yet.</p>
+                                                <img id="idPreview" src="#" alt="ID Preview" class="submitted-id hidden">
+                                            <?php endif; ?>
+
+                                            <label for="idImage">Upload New ID:</label>
+                                            <input type="file" id="idImage" accept="image/*">
                                         </div>
+
+                                        <?php if ($isAdmin): ?>
+                                        <div class="id-right">
+                                            <span id="statusText" class="<?= $user['is_verified'] ? 'verified' : 'not-verified' ?>">
+                                                <?= $user['is_verified'] ? 'Verified' : 'Not Verified' ?>
+                                            </span>
+                                            <button id="verifyBtn">
+                                                <?= $user['is_verified'] ? 'Mark as Not Verified' : 'Mark as Verified' ?>
+                                            </button>
+>>>>>>> parent of d43415e6 (Merge pull request #61 from qesthr/0001-esthr-dash-mod)
+                                        </div>
+                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <!-- invoices tab -->
-                        <div id="invoicesTab" class="tab-content hidden">
-                            <div class="invoices-list">
-                                <?php foreach ($invoices as $invoice): ?>
-                                    <div class="invoice-card">
-                                        <div class="invoice-car-img">
-                                            <img src="<?= htmlspecialchars($invoice['car_image']) ?>" alt="<?= htmlspecialchars($invoice['car_name']) ?>">
-                                        </div>
-                                        <div class="invoice-details">
-                                            <h2><?= htmlspecialchars($invoice['car_name']) ?></h2>
-                                            <div class="invoice-dates">
-                                                <?= htmlspecialchars($invoice['date_from']) ?> to <?= htmlspecialchars($invoice['date_to']) ?>
-                                            </div>
-                                            <div class="invoice-price">
-                                                <span>₱ <?= number_format($invoice['price'], 2) ?></span>
-                                            </div>
-                                            <div class="invoice-total">
-                                                <span>Total Amount</span>
-                                                <span class="total-amount">₱ <?= number_format($invoice['total'], 2) ?></span>
-                                            </div>
-                                            <a href="print_invoice.php?id=<?= $invoice['invoice_id'] ?>" class="print-invoice-link" target="_blank">PRINT INVOICE</a>
-                                        </div>
+                        
+                    <div id="notificationsTab" class="tab-content hidden">
+                        <div class="notifications-container">
+                            <div class="notification new">
+                                <div class="notification-card">
+                                    <div class="notification-header">
+                                    <p class="notification-greeting">Hi, John Doe!</p>
                                     </div>
-                                <?php endforeach; ?>
+                                    <div class="notification-body">
+                                    <p class="notification-message">
+                                        Good news! Your booking for Toyota Camry from April-28-2025 to April-29-2025 has been approved by our admin.
+                                    </p>
+                                    </div>
+                                    <div class="notification-footer">
+                                    <button class="view-booking-btn">View Booking</button>
+                                    </div>
+                                </div>
+                                <div class="date-indicator">
+                                    <div class="notification-dot"></div>
+                                    <div class="date-stack">
+                                        <span class="date-day">27</span>
+                                        <span class="date-month-year">Apr 2025</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+                    </div>
                         
+                    <div id="invoicesTab" class="tab-content hidden">
+                        <div class="invoices-list">
+                            <?php foreach ($invoices as $invoice): ?>
+                                <div class="invoice-card">
+                                    <div class="invoice-car-img">
+                                        <img src="<?= htmlspecialchars($invoice['car_image']) ?>" alt="<?= htmlspecialchars($invoice['car_name']) ?>">
+                                    </div>
+                                    <div class="invoice-details">
+                                        <h2><?= htmlspecialchars($invoice['car_name']) ?></h2>
+                                        <div class="invoice-dates">
+                                            <?= htmlspecialchars($invoice['date_from']) ?> to <?= htmlspecialchars($invoice['date_to']) ?>
+                                        </div>
+                                        <div class="invoice-price">
+                                            <span>₱ <?= number_format($invoice['price'], 2) ?></span>
+                                        </div>
+                                        <div class="invoice-total">
+                                            <span>Total Amount</span>
+                                            <span class="total-amount">₱ <?= number_format($invoice['total'], 2) ?></span>
+                                        </div>
+                                        <a href="print_invoice.php?id=<?= $invoice['invoice_id'] ?>" class="print-invoice-link" target="_blank">PRINT INVOICE</a>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
 
                     
                 </div>
@@ -380,41 +431,46 @@ $invoices = [
         <div class="modal-content">
             <span class="close" id="closeEditModal">&times;</span>
             <h2>Edit Profile</h2>
-            <form id="editProfileForm" method="POST">
+            <form id="editProfileForm">
                 <h2>Personal Information</h2>
                 <div class="form-group">
                     <label for="editFirstName">First Name</label>
                     <input type="text" id="editFirstName" name="firstname" 
-                           value="<?= htmlspecialchars($user['firstname'] ?? '') ?>"
-                           required>
+                           placeholder="<?= htmlspecialchars($user['firstname'] ?? '') ?>" 
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['firstname'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['firstname'] ?? '') ?>')">
                 </div>
                 <div class="form-group">
                     <label for="editLastName">Last Name</label>
                     <input type="text" id="editLastName" name="lastname" 
-                           value="<?= htmlspecialchars($user['lastname'] ?? '') ?>"
-                           required>
+                           placeholder="<?= htmlspecialchars($user['lastname'] ?? '') ?>"
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['lastname'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['lastname'] ?? '') ?>')">
                 </div>
                 <div class="form-group">
                     <label for="editEmail">Email</label>
                     <input type="email" id="editEmail" name="email" 
-                           value="<?= htmlspecialchars($user['email'] ?? '') ?>"
-                           required>
+                           placeholder="<?= htmlspecialchars($user['email'] ?? '') ?>"
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['email'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['email'] ?? '') ?>')">
                 </div>
                 <div class="form-group">
                     <label for="editPhone">Phone Number</label>
                     <input type="text" id="editPhone" name="phone"
-                           value="<?= htmlspecialchars($user['customer_phone'] ?? '') ?>"
-                           required>
+                           placeholder="<?= htmlspecialchars($user['customer_phone'] ?? '') ?>"
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')">
                 </div>
 
                 <h2>Account Information</h2>
                 <div class="form-group">
                     <label for="editUsername">Username</label>
                     <input type="text" id="editUsername" name="username" 
-                           value="<?= htmlspecialchars($user['username'] ?? '') ?>"
-                           readonly>
+                           placeholder="<?= htmlspecialchars($user['username'] ?? '') ?>"
+                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['username'] ?? '') ?>')"
+                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['username'] ?? '') ?>')">
                 </div>
-                <button type="submit" class="btn" id="saveChangesBtn">Save Changes</button>
+                <button type="submit" class="btn">Save Changes</button>
             </form>
         </div>
     </div>

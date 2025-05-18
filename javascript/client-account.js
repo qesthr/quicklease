@@ -52,71 +52,27 @@ document.addEventListener('DOMContentLoaded', function () {
 
     form.addEventListener('submit', function (e) {
         e.preventDefault();
-        console.log('Form submission started');
 
-        const formData = new FormData(this);
-        
-        // Debug: Log all form fields and their values
-        console.log('Form fields:');
-        for (let [key, value] of formData.entries()) {
-            console.log(`${key}: ${value}`);
-        }
-
-        // Get all input values
-        const firstname = document.getElementById('editFirstName').value.trim();
-        const lastname = document.getElementById('editLastName').value.trim();
-        const email = document.getElementById('editEmail').value.trim();
-        const phone = document.getElementById('editPhone').value.trim();
-
-        console.log('Input values:', {
-            firstname,
-            lastname,
-            email,
-            phone
-        });
-
-        // Check if any field is empty
-        if (!firstname || !lastname || !email || !phone) {
-            console.log('Validation failed:', {
-                firstname: !firstname,
-                lastname: !lastname,
-                email: !email,
-                phone: !phone
-            });
-            alert('Please fill in all required fields.');
-            return;
-        }
-
-        // Show loading state
-        const submitButton = this.querySelector('button[type="submit"]');
-        const originalText = submitButton.textContent;
-        submitButton.disabled = true;
-        submitButton.textContent = 'Saving...';
+        const formData = new FormData(form);
 
         fetch('update_profile.php', {
             method: 'POST',
             body: formData
         })
-        .then(response => {
-            console.log('Response received:', response);
-            return response.json();
-        })
+        .then(response => response.json())
         .then(data => {
-            console.log('Data received:', data);
             if (data.success) {
-                alert(data.message);
-                window.location.reload();
+                // Optionally update the UI with new values
+                // Close modal
+                modal.style.display = 'none';
+                // Optionally show a success message
+                location.reload(); // Reload to reflect changes
             } else {
-                alert(data.message || 'Failed to update profile.');
-                submitButton.disabled = false;
-                submitButton.textContent = originalText;
+                alert('Update failed: ' + data.message);
             }
         })
         .catch(error => {
-            console.error('Error:', error);
-            alert('An error occurred while updating the profile.');
-            submitButton.disabled = false;
-            submitButton.textContent = originalText;
+            alert('An error occurred: ' + error);
         });
     });
 });
@@ -148,10 +104,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     const idImageInput = document.getElementById("idImage");
     const idPreview = document.getElementById("idPreview");
-    const saveIdBtn = document.getElementById("saveIdBtn");
-    const idUploadForm = document.getElementById("idUploadForm");
 
-    if (idImageInput && idPreview && saveIdBtn && idUploadForm) {
+    if (idImageInput && idPreview) {
         idImageInput.addEventListener("change", function (event) {
             const file = event.target.files[0];
             if (file) {
@@ -162,44 +116,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 };
                 reader.readAsDataURL(file);
             }
-        });
-
-        idUploadForm.addEventListener("submit", function(e) {
-            e.preventDefault();
-            
-            const file = idImageInput.files[0];
-            if (!file) {
-                alert("Please select an ID image first.");
-                return;
-            }
-
-            const formData = new FormData(this);
-
-            // Show loading state
-            saveIdBtn.disabled = true;
-            saveIdBtn.textContent = "Saving...";
-
-            fetch("update_id.php", {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert("ID uploaded successfully!");
-                    window.location.reload();
-                } else {
-                    alert(data.message || "Failed to upload ID.");
-                }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                alert("An error occurred while uploading the ID.");
-            })
-            .finally(() => {
-                saveIdBtn.disabled = false;
-                saveIdBtn.textContent = "Save ID";
-            });
         });
     }
 });
