@@ -15,8 +15,9 @@
             <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'client_booking.php' ? 'active' : '' ?>" href="../client_dashboard/client_booking.php">Booking</a>
         </li>
         
-        <li >
-            <button class="logout-btn" onclick="window.location.href='../loginpage/login.php'">Logout</button>
-        </li>
+      
     </ul>
+    <div style="position: absolute; bottom: 20px; width: 50%; padding: 0 15px; box-sizing: border-box;">
+        <a class="logout-btn" href="../../dashboard/logout.php" style="display: block; text-align: center;">Logout</a>
+    </div>
 </div>

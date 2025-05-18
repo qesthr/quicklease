@@ -153,12 +153,35 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="main">
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/quicklease/dashboard/includes/topbar.php';;?>
 
-        <form class="search-container" action="" method="GET">
-            <input class="searchbar" type="text" name="search" placeholder="Search cars..." value="<?= htmlspecialchars($search) ?>">
-            <button type="submit" class="search-btn">
-                <i class="fas fa-search"></i>
-            </button>
-        </form>
+        <div class="header">
+            <div class="left">
+                <h1>Cars Management</h1>
+                <div class="search-container">
+                    <form action="" method="GET" class="search-form">
+                        <div class="search-wrapper">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" name="search" class="search-input" placeholder="Search cars..." value="<?= htmlspecialchars($search) ?>">
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <div class="right">
+                <button id="openModal" class="add-btn">
+                    <div class="btn-content">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Add New Car</span>
+                    </div>
+                </button>
+            </div>
+        </div>
+
+        <?php if ($success): ?>
+            <div class="alert success"><?= $success ?></div>
+        <?php endif; ?>
+        
+        <?php if ($error): ?>
+            <div class="alert error"><?= $error ?></div>
+        <?php endif; ?>
 
         <div class="content">
             <h2>Car List</h2>
@@ -301,8 +324,21 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     
                     <div class="form-group">
                         <label for="image">Image:</label>
-                        <input type="file" name="image" id="image" accept="image/*" required>
-                        <div class="image-preview" id="imagePreview"></div>
+                        <div class="file-upload-container">
+                            <div class="file-upload-area" id="dropZone">
+                                <input type="file" name="image" id="image" accept="image/*" class="file-input" required>
+                                <div class="file-upload-content">
+                                    <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                                    <div class="upload-text">
+                                        <span class="main-text">Drag & Drop your image here</span>
+                                        <span class="sub-text">or</span>
+                                        <button type="button" class="browse-btn">Browse Files</button>
+                                    </div>
+                                    <span class="file-info">Maximum file size: 2MB</span>
+                                </div>
+                            </div>
+                            <div class="image-preview" id="imagePreview"></div>
+                        </div>
                     </div>
 
                     <button type="submit" class="btn btn-submit">
@@ -450,6 +486,619 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         handleImagePreview(document.getElementById('image'), 'imagePreview');
         handleImagePreview(document.getElementById('editImage'), 'editImagePreview');
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropZone = document.getElementById('dropZone');
+            const fileInput = document.querySelector('.file-input');
+            const imagePreview = document.getElementById('imagePreview');
+
+            // Drag and drop functionality
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, preventDefaults, false);
+            });
+
+            function preventDefaults(e) {
+                e.preventDefault();
+                e.stopPropagation();
+            }
+
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropZone.addEventListener(eventName, highlight, false);
+            });
+
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropZone.addEventListener(eventName, unhighlight, false);
+            });
+
+            function highlight(e) {
+                dropZone.classList.add('dragover');
+            }
+
+            function unhighlight(e) {
+                dropZone.classList.remove('dragover');
+            }
+
+            dropZone.addEventListener('drop', handleDrop, false);
+
+            function handleDrop(e) {
+                const dt = e.dataTransfer;
+                const files = dt.files;
+                fileInput.files = files;
+                handleFiles(files);
+            }
+
+            fileInput.addEventListener('change', function() {
+                handleFiles(this.files);
+            });
+
+            function handleFiles(files) {
+                if (files.length > 0) {
+                    const file = files[0];
+                    if (file.type.startsWith('image/')) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview">`;
+                            imagePreview.classList.add('has-image');
+                        }
+                        reader.readAsDataURL(file);
+                    }
+                }
+            }
+
+            // Make the browse button functional
+            document.querySelector('.browse-btn').addEventListener('click', function() {
+                fileInput.click();
+            });
+        });
     </script>
+
+    <style>
+        /* Base styles for the layout */
+        .main {
+            padding: 10px;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+
+        /* Header and Search Styles */
+        .header {
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .header .left {
+            flex: 1;
+            min-width: 250px;
+            max-width: 100%;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #333;
+            font-size: clamp(18px, 2vw, 24px);
+            white-space: nowrap;
+        }
+
+        .search-container {
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        .search-wrapper {
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .header .right {
+            flex-shrink: 0;
+        }
+
+        /* Table Container Styles */
+        .table-container {
+            margin: 10px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            overflow: auto;
+            max-width: calc(100vw - 20px);
+        }
+
+        .car-table {
+            width: 100%;
+            min-width: max-content;
+            border-collapse: collapse;
+        }
+
+        .car-table th,
+        .car-table td {
+            padding: 8px;
+            text-align: left;
+            font-size: clamp(12px, 1.5vw, 14px);
+        }
+
+        /* Column widths */
+        .car-table th:nth-child(1), .car-table td:nth-child(1) { min-width: 50px; }  /* ID */
+        .car-table th:nth-child(2), .car-table td:nth-child(2) { min-width: 100px; } /* Image */
+        .car-table th:nth-child(3), .car-table td:nth-child(3) { min-width: 120px; } /* Model */
+        .car-table th:nth-child(4), .car-table td:nth-child(4) { min-width: 100px; } /* Plate */
+        .car-table th:nth-child(5), .car-table td:nth-child(5) { min-width: 80px; }  /* Price */
+        .car-table th:nth-child(6), .car-table td:nth-child(6) { min-width: 100px; } /* Status */
+        .car-table th:nth-child(7), .car-table td:nth-child(7) { min-width: 60px; }  /* Seats */
+        .car-table th:nth-child(8), .car-table td:nth-child(8) { min-width: 100px; } /* Transmission */
+        .car-table th:nth-child(9), .car-table td:nth-child(9) { min-width: 80px; }  /* Mileage */
+        .car-table th:nth-child(10), .car-table td:nth-child(10) { min-width: 150px; } /* Features */
+        .car-table th:nth-child(11), .car-table td:nth-child(11) { min-width: 100px; } /* Actions */
+
+        /* Image styles */
+        .car-image {
+            width: 80px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 4px;
+        }
+
+        /* Action buttons */
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 6px 12px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-size: clamp(12px, 1.5vw, 14px);
+            white-space: nowrap;
+        }
+
+        /* Improved Header Button Styles */
+        .add-btn {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .add-btn .btn-content {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .add-btn i {
+            font-size: 16px;
+        }
+
+        .add-btn:hover {
+            background: linear-gradient(45deg, #45a049, #4CAF50);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .add-btn:active {
+            transform: translateY(1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* Improved Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+            z-index: 1000;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            background: white;
+            width: min(95%, 600px);
+            margin: 20px auto;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            position: relative;
+            animation: modalSlideIn 0.3s ease;
+        }
+
+        .modal h2 {
+            color: #333;
+            margin: 0 0 20px 0;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .modal h2::before {
+            content: '';
+            width: 4px;
+            height: 24px;
+            background: #4CAF50;
+            border-radius: 2px;
+            display: inline-block;
+        }
+
+        .close {
+            position: absolute;
+            right: 20px;
+            top: 20px;
+            font-size: 24px;
+            color: #666;
+            cursor: pointer;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+
+        .close:hover {
+            background: #f5f5f5;
+            color: #333;
+            transform: rotate(90deg);
+        }
+
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+            background: white;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon .currency-symbol,
+        .input-with-icon .unit {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #666;
+            font-size: 14px;
+        }
+
+        .input-with-icon .currency-symbol {
+            left: 12px;
+        }
+
+        .input-with-icon .unit {
+            right: 12px;
+        }
+
+        .input-with-icon input {
+            padding-left: 30px;
+            padding-right: 50px;
+        }
+
+        /* File Upload Styles */
+        .file-upload-container {
+            margin-top: 10px;
+        }
+
+        .file-upload-area {
+            position: relative;
+            width: 100%;
+            min-height: 200px;
+            border: 2px dashed #4CAF50;
+            border-radius: 12px;
+            background: #f8fdf8;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .file-upload-area:hover {
+            background: #f0f9f0;
+            border-color: #45a049;
+        }
+
+        .file-upload-area.dragover {
+            background: #e8f5e9;
+            border-color: #2e7d32;
+        }
+
+        .file-input {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-content {
+            text-align: center;
+            color: #2e7d32;
+        }
+
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: #4CAF50;
+        }
+
+        .upload-text {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .main-text {
+            font-size: 16px;
+            font-weight: 500;
+        }
+
+        .sub-text {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .browse-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px 0;
+        }
+
+        .browse-btn:hover {
+            background: #45a049;
+            transform: translateY(-1px);
+        }
+
+        .file-info {
+            display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            color: #666;
+        }
+
+        .image-preview {
+            margin-top: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .image-preview.has-image {
+            display: block;
+            padding: 10px;
+            background: white;
+            border: 1px solid #e0e0e0;
+        }
+
+        .image-preview img {
+            width: 100%;
+            max-height: 200px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            background: linear-gradient(45deg, #45a049, #4CAF50);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+
+        .btn-submit:active {
+            transform: translateY(1px);
+        }
+
+        /* Modal Animations */
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Responsive Modal */
+        @media screen and (max-width: 768px) {
+            .modal-content {
+                margin: 10px;
+                padding: 20px;
+            }
+
+            .modal h2 {
+                font-size: 20px;
+            }
+
+            .form-group label {
+                font-size: 14px;
+            }
+
+            .btn-submit {
+                padding: 10px 20px;
+                font-size: 14px;
+            }
+        }
+
+        /* Responsive breakpoints */
+        @media screen and (max-width: 1366px) {
+            .header {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .search-wrapper {
+                max-width: 250px;
+            }
+
+            .table-container {
+                font-size: 13px;
+            }
+        }
+
+        @media screen and (max-width: 992px) {
+            .header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .header .left,
+            .header .right {
+                width: 100%;
+            }
+
+            .search-wrapper {
+                max-width: 100%;
+            }
+
+            .add-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        @media screen and (max-width: 768px) {
+            .main {
+                padding: 5px;
+            }
+
+            .header,
+            .table-container,
+            .alert {
+                margin: 5px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .action-buttons .btn {
+                width: 100%;
+                text-align: center;
+            }
+        }
+
+        /* Zoom handling */
+        @media screen and (max-width: 480px), screen and (zoom: 150%), screen and (zoom: 175%) {
+            .header {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 16px;
+            }
+
+            .search-input,
+            .add-btn {
+                font-size: 12px;
+                padding: 6px 10px;
+            }
+
+            .table-container {
+                font-size: 11px;
+            }
+
+            .car-image {
+                width: 60px;
+                height: 45px;
+            }
+        }
+
+        /* Print styles */
+        @media print {
+            .main {
+                padding: 0;
+            }
+
+            .header,
+            .action-buttons,
+            .modal {
+                display: none;
+            }
+
+            .table-container {
+                margin: 0;
+                box-shadow: none;
+            }
+        }
+    </style>
 </body>
 </html>

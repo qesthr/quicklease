@@ -1,6 +1,10 @@
 <?php
-require_once realpath(__DIR__ . '/../../db.php');
-session_start();
+require_once '../../includes/session_handler.php';
+require_once '../../db.php';
+
+// Start client session and check access
+startClientSession();
+requireClient();
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $car_id = $_POST['car_id'];
@@ -10,21 +14,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $preferences = $_POST['preferences'];
     $total_price = $_POST['total_price'];
 
-    // Simulate logged-in user/customer
-    $users_id = $_SESSION['user_id'] ?? 1; // replace 1 with actual fallback logic if needed
-    $customer_id = $_SESSION['customer_id'] ?? 1;
+    // Get user ID from session
+    $users_id = $_SESSION['user_id'];
 
     try {
         $pdo->beginTransaction();
 
         // Insert into bookings table
         $stmt = $pdo->prepare("INSERT INTO bookings (
-            users_id, customer_id, car_id, location, booking_date, return_date, preferences, status, created_at
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, 'Active', NOW())");
+            users_id, car_id, location, booking_date, return_date, preferences, status, created_at
+        ) VALUES (?, ?, ?, ?, ?, ?, 'Pending', NOW())");
 
         $stmt->execute([
             $users_id,
-            $customer_id,
             $car_id,
             $location,
             $booking_date,
@@ -32,17 +34,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $preferences
         ]);
 
-        // Update car status to 'booked'
-        $update = $pdo->prepare("UPDATE car SET status = 'booked' WHERE id = ?");
+        // Update car status to 'Pending'
+        $update = $pdo->prepare("UPDATE car SET status = 'Pending' WHERE id = ?");
         $update->execute([$car_id]);
 
         $pdo->commit();
-        echo 'success';
+        echo json_encode(['success' => true, 'message' => 'Booking submitted successfully']);
     } catch (PDOException $e) {
         $pdo->rollBack();
-        echo 'Database Error: ' . $e->getMessage();
+        echo json_encode(['success' => false, 'message' => 'Database Error: ' . $e->getMessage()]);
     }
 } else {
-    echo 'Invalid request';
+    echo json_encode(['success' => false, 'message' => 'Invalid request method']);
 }
 ?>

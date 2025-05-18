@@ -36,7 +36,7 @@
     grid-row: 4 / span 3;         /* Takes 3 rows */
 }
 
-/* Keep the rest of your card styles the same */
+/* Card Styles */
 .card {
     background: #FFFFFF;
     padding: 20px;
@@ -81,6 +81,143 @@
     background: #fcd56b;
 }
 
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: #fff;
+    margin: 3% auto;
+    padding: 30px;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 1200px;
+    box-shadow: 0 5px 25px rgba(0,0,0,0.2);
+    position: relative;
+}
+
+.modal-header {
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.modal-header h2 {
+    color: #1818CA;
+    margin: 0;
+    font-size: 24px;
+}
+
+.close {
+    position: absolute;
+    right: 25px;
+    top: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    color: #666;
+    transition: color 0.3s;
+}
+
+.close:hover {
+    color: #f44336;
+    cursor: pointer;
+}
+
+/* Filter Controls */
+.filter-controls {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    margin-bottom: 25px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    flex-wrap: wrap;
+}
+
+.filter-controls label {
+    font-weight: 500;
+    color: #333;
+}
+
+.filter-controls input[type="date"] {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+}
+
+.filter-controls button {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.filter-btn {
+    background: #1818CA;
+    color: white;
+}
+
+.filter-btn:hover {
+    background: #1515a0;
+}
+
+.download-btn {
+    background: #F9B315;
+    color: white;
+}
+
+.download-btn:hover {
+    background: #e6a313;
+}
+
+/* Table Styles */
+.transactions-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    font-size: 14px;
+}
+
+.transactions-table th,
+.transactions-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.transactions-table th {
+    background-color: #f8f9fa;
+    font-weight: 600;
+    color: #333;
+}
+
+.transactions-table tr:hover {
+    background-color: #f8f9fa;
+}
+
+.transactions-table td {
+    color: #666;
+}
+
+/* Status Colors */
+.status-pending { color: #f9b315; }
+.status-approved { color: #4caf50; }
+.status-completed { color: #2196f3; }
+.status-cancelled { color: #f44336; }
+
 /* Responsive Design */
 @media (max-width: 768px) {
     .dashboard-cards {
@@ -89,5 +226,19 @@
 
     .topbar h1 {
         font-size: 28px;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 15px;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .transactions-table {
+        font-size: 12px;
     }
 }

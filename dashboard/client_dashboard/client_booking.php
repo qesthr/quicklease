@@ -4,8 +4,14 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+require_once '../../includes/session_handler.php';
 require_once '../../db.php';
-session_start();
+
+// Start client session
+startClientSession();
+
+// Check if user is logged in as client
+requireClient();
 
 // Handle booking submission via AJAX
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['action'] === 'submit_booking') {
@@ -140,7 +146,7 @@ header('Access-Control-Allow-Methods: GET');
     <a href="client_cars.php" class="nav-btn">CARS</a>
     <a href="client_booking.php" class="nav-btn active">BOOKINGS</a>
     <div class="logout-btn">
-      <button>LOGOUT</button>
+      <a href="../logout.php" class="logout-link">LOGOUT</a>
     </div>
   </div>
 
@@ -268,11 +274,25 @@ header('Access-Control-Allow-Methods: GET');
             <span class="icon">📍</span>
             <select name="location" id="location" required>
               <option value="">Select location</option>
-              <option value="Horhe Car Rental and Carwash">Horhe Car Rental and Carwash, Km. 4 Sayre Hwy, Malaybalay, 8700 Bukidnon</option>
-              <option value="JJL CAR RENTAL SERVICES">JJL CAR RENTAL SERVICES AND CARWASH, Magsaysay Ext, Malaybalay, Bukidnon</option>
-              <option value="DS CAR RENTAL SERVICES">DS CAR RENTAL SERVICES, NATIONAL HIGH WAY, ZONE 1, Malaybalay, 8700 Bukidnon</option>
-              <option value="Pren's Car Rental Services">Pren's Car Rental Services, Km. 4 Sayre Hwy, Malaybalay, Bukidnon</option>
-              <option value="ZV Car Rental">ZV Car Rental, P5, Malaybalay, 8700 Bukidnon</option>
+              <?php
+              // Read locations from JSON file
+              $locations_file = __DIR__ . '/../data/locations.json';
+              try {
+                  $json_data = file_get_contents($locations_file);
+                  $data = json_decode($json_data, true);
+                  
+                  // Filter and display only active locations
+                  foreach ($data['locations'] as $location) {
+                      if ($location['status'] === 'Active') {
+                          $display_text = $location['name'] . ', ' . $location['address'] . ', ' . $location['city'];
+                          echo '<option value="' . htmlspecialchars($location['name']) . '">' . 
+                               htmlspecialchars($display_text) . '</option>';
+                      }
+                  }
+              } catch (Exception $e) {
+                  error_log("Error loading locations: " . $e->getMessage());
+              }
+              ?>
             </select>
           </div>
           <label class="return-checkbox">
@@ -326,17 +346,23 @@ header('Access-Control-Allow-Methods: GET');
         // Update query to show only available cars
         $query = "SELECT * FROM car WHERE status = 'Available'";
         if (!empty($search)) {
-          $query .= " AND (model LIKE :search OR transmission LIKE :search)";
-          $stmt = $pdo->prepare($query);
-          $stmt->execute(['search' => "%$search%"]);
+            $query .= " AND (model LIKE :search 
+                       OR transmission LIKE :search 
+                       OR features LIKE :search 
+                       OR CONCAT(model, ' ', transmission, ' ', features) LIKE :search)";
+            $stmt = $pdo->prepare($query);
+            $stmt->execute(['search' => "%$search%"]);
         } else {
-          $stmt = $pdo->query($query);
+            $stmt = $pdo->query($query);
         }
 
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         ?>
         <div class="car-card">
-          <h3><?php echo htmlspecialchars($row['model']); ?></h3>
+          <div class="car-header">
+            <h3><?php echo htmlspecialchars($row['model']); ?></h3>
+            <span class="plate-number">Plate No: <?php echo htmlspecialchars($row['plate_no']); ?></span>
+          </div>
           <img src="../../uploads/<?php echo htmlspecialchars($row['image']) ?: 'default.jpg'; ?>" alt="Car Image">
           <div class="car-features">
             <div class="feature">
@@ -350,6 +376,10 @@ header('Access-Control-Allow-Methods: GET');
             <div class="feature">
               <span class="icon">⛽</span>
               <span><?php echo $row['mileage']; ?> MPG</span>
+            </div>
+            <div class="feature">
+              <span class="icon">💰</span>
+              <span>₱<?php echo number_format($row['price'], 2); ?>/day</span>
             </div>
           </div>
           <form id="bookingForm-<?php echo $row['id']; ?>" method="POST">
@@ -397,6 +427,17 @@ header('Access-Control-Allow-Methods: GET');
           </div>
         </form>
       </div>
+    </div>
+  </div>
+
+  <!-- Add Success Modal -->
+  <div id="successModal" class="modal">
+    <div class="modal-content success-modal">
+      <div class="success-icon">✓</div>
+      <h2>Booking Successful!</h2>
+      <p>Your booking has been submitted successfully.</p>
+      <p>Please wait for approval from our team.</p>
+      <button class="ok-button" onclick="closeSuccessModal()">OK</button>
     </div>
   </div>
 
@@ -610,237 +651,49 @@ header('Access-Control-Allow-Methods: GET');
       color: #333;
     }
 
-    /* Car card styles */
-    .car-card {
-      background: white;
-      border-radius: 12px;
-      padding: 20px;
-      text-align: center;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    }
-
-    .car-card h3 {
-      margin: 0 0 15px 0;
-      color: #2c3e50;
-      font-size: 1.2rem;
-    }
-
-    .car-card .icon-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin: 10px 0;
-      color: #666;
-    }
-
-    .car-card .icon-row span {
-      background: #f8f9fa;
-      padding: 5px 10px;
-      border-radius: 15px;
-      font-size: 12px;
-      color: #333;
-    }
-
-    /* Alert styles */
-    .alert {
-      padding: 15px;
-      margin-bottom: 20px;
-      border: 1px solid transparent;
-      border-radius: 4px;
-    }
-
-    .alert-danger {
-      color: #721c24;
-      background-color: #f8d7da;
-      border-color: #f5c6cb;
-    }
-
-    /* Toast styles */
-    .toast-notification {
-      position: fixed;
-      bottom: 30px;
-      right: 30px;
-      background: #333;
-      color: white;
-      padding: 15px 25px;
-      border-radius: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-      z-index: 1001;
-      animation: slideIn 0.3s ease-out;
-    }
-
-    @keyframes slideIn {
-      from {
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      to {
-        transform: translateX(0);
-        opacity: 1;
-      }
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    .form-group label {
-      display: block;
-      margin-bottom: 5px;
-      color: #333;
-      font-weight: 500;
-    }
-
-    .form-group input {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 14px;
-    }
-
-    .button-group {
-      margin-top: 20px;
-      display: flex;
-      gap: 10px;
-    }
-
-    .save-btn {
-      background: #4CAF50;
-      color: white;
-      border: none;
-      padding: 10px 20px;
-      border-radius: 4px;
-      cursor: pointer;
-      font-size: 14px;
-    }
-
-    .save-btn:hover {
-      background: #45a049;
-    }
-
-    /* Modal Styles */
-    .booking-modal {
-      background: #fff;
-      max-width: 1000px;
-      padding: 40px;
-      border-radius: 15px;
-    }
-
-    .booking-modal h2 {
-      color: #333;
-      margin-bottom: 30px;
-      font-size: 24px;
-    }
-
-    .booking-form {
-      background: #f8f9fa;
-      padding: 30px;
-      border-radius: 12px;
-      margin-bottom: 30px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-
-    .input-group {
-      display: flex;
-      align-items: center;
-      background: white;
-      border: 1px solid #e0e0e0;
-      border-radius: 8px;
-      padding: 12px 15px;
-      margin-bottom: 15px;
-      transition: border-color 0.3s;
-    }
-
-    .input-group:focus-within {
-      border-color: #4CAF50;
-    }
-
-    .input-group select,
-    .input-group input {
-      border: none;
-      outline: none;
-      width: 100%;
-      font-size: 16px;
-      color: #2c3e50;
-      background: transparent;
-    }
-
-    .return-checkbox {
-      display: block;
-      margin-top: 10px;
-      color: #666;
-    }
-
-    .date-sections {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 30px;
-      margin-bottom: 30px;
-    }
-
-    .date-section {
-      background: #fff;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-
-    .date-section h3 {
-      color: #2c3e50;
-      margin: 0 0 15px 0;
-      font-size: 1.1rem;
-    }
-
-    .date-section input[type="date"] {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      color: #333;
-    }
-
-    .date-section select {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      color: #333;
-    }
-
-    /* Car Grid Styles */
+    /* Car Grid and Card Styles */
     .cars-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
       gap: 25px;
       margin-top: 30px;
+      padding: 20px;
+    }
+
+    .car-card {
+      background: white;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
     }
 
     .car-card:hover {
       transform: translateY(-5px);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
     }
 
     .car-card h3 {
-      margin: 0 0 15px 0;
+      margin: 0;
       color: #2c3e50;
       font-size: 1.2rem;
     }
 
     .car-card img {
       width: 100%;
-      height: 180px;
+      height: 200px;
       object-fit: cover;
-      border-radius: 8px;
-      margin-bottom: 20px;
+      border-bottom: 1px solid #eee;
     }
 
     .car-features {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      margin: 20px 0;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+      padding: 20px;
+      background: white;
     }
 
     .feature {
@@ -849,6 +702,19 @@ header('Access-Control-Allow-Methods: GET');
       gap: 8px;
       color: #666;
       font-size: 0.9rem;
+      padding: 8px;
+      background: #f8f9fa;
+      border-radius: 8px;
+    }
+
+    .feature .icon {
+      font-size: 1.2rem;
+    }
+
+    .car-card form {
+      padding: 15px 20px;
+      background: #f8f9fa;
+      margin-top: auto;
     }
 
     .confirm-button {
@@ -861,48 +727,68 @@ header('Access-Control-Allow-Methods: GET');
       cursor: pointer;
       font-size: 16px;
       font-weight: 500;
-      margin: 15px 0;
-      transition: background-color 0.3s;
+      transition: all 0.3s ease;
     }
 
     .confirm-button:hover {
       background: #45a049;
+      transform: translateY(-2px);
     }
 
     .booking-status {
       color: #666;
-      margin: 0;
+      margin: 10px 0 0 0;
       font-size: 14px;
+      text-align: center;
     }
 
-    /* Add flatpickr theme override styles */
-    .flatpickr-calendar {
+    /* Modal Content Styles */
+    .booking-modal {
+      max-width: 1200px;
+      width: 90%;
+      margin: 20px auto;
+      padding: 30px;
+      background: #fff;
+      border-radius: 20px;
+    }
+
+    .booking-form {
+      background: #f8f9fa;
+      padding: 25px;
+      border-radius: 15px;
+      margin-bottom: 30px;
+    }
+
+    .date-sections {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .date-section {
       background: white;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-      border-radius: 10px;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
 
-    .flatpickr-day.selected {
-      background: #4CAF50;
-      border-color: #4CAF50;
-    }
-
-    /* Responsive styles */
+    /* Responsive Design */
     @media screen and (max-width: 768px) {
-      .date-sections {
+      .cars-grid {
+        grid-template-columns: 1fr;
+        padding: 10px;
+      }
+
+      .car-features {
         grid-template-columns: 1fr;
       }
 
-      .modal-content {
-        padding: 20px;
-        margin: 5% auto;
+      .booking-modal {
+        padding: 15px;
       }
 
-      .booking-form {
-        padding: 20px;
-      }
-
-      .cars-grid {
+      .date-sections {
         grid-template-columns: 1fr;
       }
     }
@@ -1010,6 +896,123 @@ header('Access-Control-Allow-Methods: GET');
     .total-cost strong {
       color: #4CAF50;
     }
+
+    /* Add these styles */
+    .car-header {
+      background: #f8f9fa;
+      padding: 15px;
+      border-bottom: 1px solid #eee;
+    }
+
+    .car-header h3 {
+      margin: 0;
+      padding: 0;
+      color: #2c3e50;
+      font-size: 1.2rem;
+      background: none;
+      border: none;
+    }
+
+    .plate-number {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 4px 8px;
+      background: #e9ecef;
+      color: #495057;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: 500;
+      letter-spacing: 1px;
+    }
+
+    /* Add these styles */
+    .car-card {
+      transition: all 0.3s ease;
+    }
+
+    .car-card.highlighted {
+      animation: highlight 2s ease;
+    }
+
+    @keyframes highlight {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(76, 175, 80, 0.5);
+      }
+      20% {
+        transform: scale(1.02);
+        box-shadow: 0 0 20px rgba(76, 175, 80, 0.7);
+      }
+      100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 rgba(76, 175, 80, 0.5);
+      }
+    }
+
+    /* Add these styles */
+    .logout-link {
+      display: inline-block;
+      width: 100%;
+      padding: 10px 20px;
+      color: white;
+      text-decoration: none;
+      text-align: center;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    .logout-link:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Success Modal Styles */
+    .success-modal {
+      text-align: center;
+      max-width: 400px;
+      padding: 40px;
+    }
+
+    .success-icon {
+      font-size: 48px;
+      color: #4CAF50;
+      margin-bottom: 20px;
+      height: 80px;
+      width: 80px;
+      line-height: 80px;
+      border-radius: 50%;
+      background: #e8f5e9;
+      margin: 0 auto 20px;
+    }
+
+    .success-modal h2 {
+      color: #2c3e50;
+      margin-bottom: 15px;
+    }
+
+    .success-modal p {
+      color: #666;
+      margin-bottom: 10px;
+      font-size: 16px;
+    }
+
+    .ok-button {
+      background: #4CAF50;
+      color: white;
+      border: none;
+      padding: 12px 40px;
+      border-radius: 8px;
+      font-size: 16px;
+      margin-top: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .ok-button:hover {
+      background: #45a049;
+      transform: translateY(-2px);
+    }
   </style>
 
   <!-- Add Flatpickr for date range picker -->
@@ -1021,8 +1024,51 @@ header('Access-Control-Allow-Methods: GET');
       let selectedCarId = null;
       let selectedCarRate = null;
 
+      // Function to open booking modal
+      window.openAddBookingModal = function() {
+        document.getElementById('addBookingModal').style.display = 'block';
+      };
+
+      // Check URL parameters
+      const urlParams = new URLSearchParams(window.location.search);
+      const shouldOpenModal = urlParams.get('open_modal');
+      const selectedCarFromUrl = urlParams.get('selected_car');
+
+      // If redirected from car details, open the modal
+      if (shouldOpenModal === 'true') {
+        // First open the modal
+        openAddBookingModal();
+        
+        // If a specific car was selected
+        if (selectedCarFromUrl) {
+          // Wait for modal content to load
+          setTimeout(() => {
+            // Find the car's confirm button
+            const confirmButton = document.querySelector(`.confirm-button[data-car-id="${selectedCarFromUrl}"]`);
+            if (confirmButton) {
+              // Scroll to the car
+              confirmButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+              
+              // Add highlight effect to the car card
+              const carCard = confirmButton.closest('.car-card');
+              if (carCard) {
+                carCard.classList.add('highlighted');
+                setTimeout(() => {
+                  carCard.classList.remove('highlighted');
+                }, 2000);
+              }
+            }
+          }, 300);
+        }
+      }
+
       // Add showToast function
       function showToast(message) {
+        // Close all modals first
+        document.querySelectorAll('.modal').forEach(modal => {
+          modal.style.display = 'none';
+        });
+
         const toast = document.createElement('div');
         toast.className = 'toast-notification';
         toast.textContent = message;
@@ -1064,6 +1110,7 @@ header('Access-Control-Allow-Methods: GET');
         // Get car details
         const carCard = document.querySelector(`#bookingForm-${carId}`).closest('.car-card');
         const carModel = carCard.querySelector('h3').textContent;
+        const plateNo = carCard.querySelector('.plate-number').textContent;
 
         // Show booking modal with details
         const bookingDetails = document.getElementById('booking-details');
@@ -1071,6 +1118,9 @@ header('Access-Control-Allow-Methods: GET');
           <div class="booking-summary">
             <div class="summary-item">
               <strong>Car Model:</strong> ${carModel}
+            </div>
+            <div class="summary-item">
+              <strong>Plate Number:</strong> ${plateNo}
             </div>
             <div class="summary-item">
               <strong>Pick-up Location:</strong> ${location}
@@ -1127,15 +1177,6 @@ header('Access-Control-Allow-Methods: GET');
         const bookingDateTime = `${startDate} ${startHour}:00:00`;
         const returnDateTime = `${returnDate} ${returnHour}:00:00`;
 
-        // Debug: Log the data being sent
-        console.log('Sending booking data:', {
-          action: 'submit_booking',
-          car_id: selectedCarId,
-          location: location,
-          booking_date: bookingDateTime,
-          return_date: returnDateTime
-        });
-
         const formData = new FormData();
         formData.append('action', 'submit_booking');
         formData.append('car_id', selectedCarId);
@@ -1150,13 +1191,22 @@ header('Access-Control-Allow-Methods: GET');
         })
         .then(response => response.json())
         .then(data => {
-          console.log('Server response:', data); // Debug: Log server response
+          // Close all modals before showing the success modal
+          document.querySelectorAll('.modal').forEach(modal => {
+            if (modal.id !== 'successModal') {
+              modal.style.display = 'none';
+            }
+          });
+
           if (data.success) {
-            showToast(data.message);
-            closeModal();
-            setTimeout(() => {
+            // Show success modal
+            document.getElementById('successModal').style.display = 'block';
+            
+            // Reload page after clicking OK button
+            window.closeSuccessModal = function() {
+              document.getElementById('successModal').style.display = 'none';
               location.reload();
-            }, 2000);
+            };
           } else {
             showToast(data.message || 'Error creating booking');
           }
@@ -1298,6 +1348,34 @@ header('Access-Control-Allow-Methods: GET');
       window.closeAddBookingModal = function() {
         addBookingModal.style.display = 'none';
       };
+
+      // Add styles for toast notification
+      const style = document.createElement('style');
+      style.textContent = `
+        .toast-notification {
+          position: fixed;
+          top: 20px;
+          right: 20px;
+          background-color: #4CAF50;
+          color: white;
+          padding: 15px 25px;
+          border-radius: 8px;
+          z-index: 10000;
+          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+          animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+          from {
+            transform: translateX(100%);
+            opacity: 0;
+          }
+          to {
+            transform: translateX(0);
+            opacity: 1;
+          }
+        }
+      `;
     });
   </script>
 </body>
