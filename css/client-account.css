@@ -96,7 +96,7 @@
     gap: 10px;
     border-bottom: 1px solid #eee;
     padding-bottom: 10px;
-    
+    margin-top: 7vh;
 }
 
 .tab-link {
@@ -120,6 +120,7 @@
     gap: 10px;
     padding-bottom: 10px;
     margin-left: 6vh;
+   
 }
 
 .tab-menu-container button {
@@ -597,63 +598,272 @@
     color: #1818CA;
     text-decoration: underline;
 }
-<<<<<<< HEAD
 
-.save-id-btn {
-    background-color: #fbcc63;
-    color: #000;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: bold;
-    transition: all 0.3s ease;
-    width: 12vh;
-    margin-top: 10px;
+/* notification.css content */
+.notifications-container {
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
 }
 
-.save-id-btn:hover {
-    background-color: #f9b315;
+.notification-details {
+    display: flex;
+    align-items: flex-start;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.notification-card {
+    flex: 1;
+    background: #fff;
+    border-radius: 12px;
+    padding: 20px;
+    margin-right: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s ease;
+}
+
+.notification-card.unread {
+    border-left: 4px solid #007bff;
+}
+
+.notification-card:hover {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.save-id-btn:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
-    transform: none;
-    box-shadow: none;
+.notification-header {
+    margin-bottom: 15px;
 }
 
-.verification-status {
-    margin-top: 10px;
-    padding: 10px;
-    border-radius: 8px;
+.notification-greeting {
+    font-size: 1.1em;
+    font-weight: 600;
+    color: #333;
+    margin: 0;
+}
+
+.notification-body {
+    margin-bottom: 15px;
+}
+
+.notification-message {
+    color: #555;
+    line-height: 1.5;
+    margin: 0;
+}
+
+.notification-footer {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.view-booking-btn {
+    background: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s ease;
+}
+
+.view-booking-btn:hover {
+    background: #0056b3;
+}
+
+.date-indicator {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.notification-dot {
+    width: 12px;
+    height: 12px;
+    background: #007bff;
+    border-radius: 50%;
+    margin-bottom: 8px;
+}
+
+.date-stack {
     text-align: center;
 }
 
-.verification-status.pending {
-    background-color: #fff3cd;
+.date-day {
+    display: block;
+    font-size: 1.5em;
+    font-weight: bold;
+    color: #333;
+}
+
+.date-month-year {
+    display: block;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.no-notifications {
+    text-align: center;
+    padding: 40px 20px;
+    color: #666;
+}
+
+.no-notifications i {
+    font-size: 3em;
+    color: #ccc;
+    margin-bottom: 15px;
+}
+
+.no-notifications .sub-text {
+    font-size: 0.9em;
+    color: #999;
+    margin-top: 10px;
+}
+
+.error-message {
+    background: #fff3f3;
+    color: #dc3545;
+    padding: 15px;
+    border-radius: 8px;
+    text-align: center;
+    margin: 20px 0;
+}
+
+/* Notification Status Colors */
+.notification-card.pending {
+    border-left: 4px solid #ffc107;
+}
+
+.notification-card.approved {
+    border-left: 4px solid #28a745;
+}
+
+.notification-card.completed {
+    border-left: 4px solid #17a2b8;
+}
+
+.notification-card.cancelled {
+    border-left: 4px solid #dc3545;
+}
+
+/* Notification Dots */
+.notification-dot.pending {
+    background: #ffc107;
+}
+
+.notification-dot.approved {
+    background: #28a745;
+}
+
+.notification-dot.completed {
+    background: #17a2b8;
+}
+
+.notification-dot.cancelled {
+    background: #dc3545;
+}
+
+/* Booking Status Badge */
+.booking-status {
+    display: inline-block;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.8em;
+    font-weight: 600;
+    margin-left: 10px;
+}
+
+.booking-status.pending {
+    background: #fff3cd;
     color: #856404;
-    border: 1px solid #ffeeba;
 }
 
-.verification-status.accepted {
-    background-color: #d4edda;
+.booking-status.approved {
+    background: #d4edda;
     color: #155724;
-    border: 1px solid #c3e6cb;
 }
 
-.verification-status.rejected {
-    background-color: #f8d7da;
+.booking-status.completed {
+    background: #d1ecf1;
+    color: #0c5460;
+}
+
+.booking-status.cancelled {
+    background: #f8d7da;
     color: #721c24;
-    border: 1px solid #f5c6cb;
 }
 
-.verification-status p {
-    margin: 0;
-    font-weight: 500;
+/* Notification Header with Status */
+.notification-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
-=======
->>>>>>> parent of d43415e6 (Merge pull request #61 from qesthr/0001-esthr-dash-mod)
+/* View Booking Button Colors */
+.notification-card.pending .view-booking-btn {
+    background: #ffc107;
+    color: #000;
+}
+
+.notification-card.approved .view-booking-btn {
+    background: #28a745;
+}
+
+.notification-card.completed .view-booking-btn {
+    background: #17a2b8;
+}
+
+.notification-card.cancelled .view-booking-btn {
+    background: #dc3545;
+}
+
+.notification-card.pending .view-booking-btn:hover {
+    background: #e0a800;
+}
+
+.notification-card.approved .view-booking-btn:hover {
+    background: #218838;
+}
+
+.notification-card.completed .view-booking-btn:hover {
+    background: #138496;
+}
+
+.notification-card.cancelled .view-booking-btn:hover {
+    background: #c82333;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .notification-details {
+        flex-direction: column;
+    }
+    
+    .notification-card {
+        margin-right: 0;
+        margin-bottom: 15px;
+    }
+    
+    .date-indicator {
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+    }
+    
+    .notification-dot {
+        margin-bottom: 0;
+    }
+    
+    .date-stack {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+    
+    .date-day {
+        font-size: 1.2em;
+    }
+} 
