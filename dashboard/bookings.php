@@ -193,18 +193,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'approve') {
         $stmt = $pdo->prepare("UPDATE car SET status = 'Booked' WHERE id = ?");
         $stmt->execute([$booking['car_id']]);
 
-        // Fetch customer info
-        $stmt = $pdo->prepare("SELECT u.id, u.firstname, u.email FROM bookings b 
-                              INNER JOIN users u ON b.users_id = u.id 
-                              WHERE b.id = ?");
-        $stmt->execute([$id]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            $message = "Dear {$user['firstname']}, your booking has been approved.";
-            $stmt = $pdo->prepare("INSERT INTO notifications (users_id, message) VALUES (?, ?)");
-            $stmt->execute([$user['id'], $message]);
-        }
+        // Insert notification for booking approval
+        $notification_message = "Your booking has been approved!";
+        $notification_type = "booking_approved";
+        $stmt = $pdo->prepare("INSERT INTO notifications (users_id, booking_id, message, notification_type, is_read, created_at) VALUES (?, ?, ?, ?, 0, NOW())");
+        $stmt->execute([
+            $booking['users_id'],
+            $id,
+            $notification_message,
+            $notification_type
+        ]);
 
         $pdo->commit();
         $_SESSION['success'] = "Booking approved successfully";
@@ -224,15 +222,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
     $stmt = $pdo->prepare("UPDATE bookings SET status = 'Rejected' WHERE id = ?");
     $stmt->execute([$id]);
 
-    // Fetch customer info
-    $stmt = $pdo->prepare("SELECT cu.id, cu.users_id FROM bookings b INNER JOIN users cu ON b.users_id = cu.id WHERE b.id = ?");
+    // Fetch booking info to get user ID
+    $stmt = $pdo->prepare("SELECT users_id FROM bookings WHERE id = ?");
     $stmt->execute([$id]);
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    $booking = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
-        $message = "Dear {$user['users_id']}, your booking has been rejected.";
-        $stmt = $pdo->prepare("INSERT INTO notifications (users_id, message) VALUES (?, ?)");
-        $stmt->execute([$user['id'], $message]);
+    if ($booking) {
+        $notification_message = "Your booking has been rejected.";
+        $notification_type = "booking_rejected";
+        $stmt = $pdo->prepare("INSERT INTO notifications (users_id, booking_id, message, notification_type, is_read, created_at) VALUES (?, ?, ?, ?, 0, NOW())");
+        $stmt->execute([
+            $booking['users_id'],
+            $id,
+            $notification_message,
+            $notification_type
+        ]);
     }
 
     header("Location: bookings.php");

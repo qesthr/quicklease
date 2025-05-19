@@ -9,6 +9,8 @@ body {
   .container {
     display: flex;
     min-height: 100vh;
+    width: 100vw;         /* Ensures the container takes the full viewport width */
+    box-sizing: border-box;
   }
   
   /* Sidebar styling */
@@ -16,12 +18,15 @@ body {
     width: 250px;
     background-color: #003366; /* Dark blue */
     border-radius: 10px;
-    margin: 20px;
+    margin: 20px 0 20px 20px;  /* Only left margin, no right margin to avoid pushing content */
     padding: 20px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    flex-shrink: 0;
+    z-index: 2;
+    position: relative;
   }
   
   .sidebar-nav {
@@ -59,11 +64,15 @@ body {
   /* Main content styling */
   .content {
     flex: 1;
-    margin: 20px;
+    margin: 20px 20px 20px 0;  /* Only right margin, no left margin to avoid overlap with sidebar */
     background: #fff;
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
     padding: 30px;
+    min-width: 0;              /* Prevents flexbox overflow issues */
+    z-index: 1;
+    position: relative;
+    /* Remove any margin-left if present */
   }
   
   /* Header styles */
@@ -216,5 +225,118 @@ body {
   }
   button#submitImage:hover {
     background-color: #0055aa;
+  }
+  
+  .profile-header-main {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 24px;
+  }
+  
+  .edit-icon-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 16px;
+    font-size: 1.8rem;
+    color: #003366;
+    transition: color 0.2s;
+    vertical-align: middle;
+    outline: none;
+  }
+  .edit-icon-button:hover {
+    color: #007bff;
+  }
+  
+  /* Modal styles (add or adjust as needed) */
+  .modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0; top: 0; width: 100vw; height: 100vh;
+    background: rgba(0,0,0,0.18);
+    overflow: auto;
+  }
+  .modal-content {
+    background: #fff;
+    margin: 5% auto;
+    padding: 32px 32px 24px 32px;
+    border-radius: 18px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+    width: 100%;
+    max-width: 420px;
+    min-width: 320px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  .close {
+    color: #888;
+    position: absolute;
+    top: 18px;
+    right: 24px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .close:hover, .close:focus {
+    color: #003366;
+  }
+  .profile-image-preview {
+    margin: 0 auto 18px auto;
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #eee;
+    display: block;
+  }
+  .form-group {
+    width: 100%;
+    margin-bottom: 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .form-group label {
+    font-weight: 600;
+    margin-bottom: 6px;
+    color: #003366;
+  }
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="file"] {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    outline: none;
+    transition: border-color 0.3s;
+    background: #f8f9fa;
+  }
+  .form-group input[type="text"]:focus,
+  .form-group input[type="email"]:focus,
+  .form-group input[type="file"]:focus {
+    border-color: #003366;
+  }
+  .save-btn {
+    width: 100%;
+    padding: 12px 0;
+    background: #003366;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+    margin-top: 8px;
+  }
+  .save-btn:hover {
+    background: #0055aa;
   }
   

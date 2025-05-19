@@ -10,8 +10,8 @@ if (!$client_id) {
 }
 
 // Get values from POST
-$first_name = trim($_POST['first_name'] ?? '');
-$last_name = trim($_POST['last_name'] ?? '');
+$first_name = trim($_POST['firstname'] ?? '');
+$last_name = trim($_POST['lastname'] ?? '');
 $email = trim($_POST['email'] ?? '');
 $phone = trim($_POST['phone'] ?? '');
 
@@ -25,8 +25,8 @@ if (!$full_name || !$email || !$phone) {
 }
 
 // Update query
-$stmt = $pdo->prepare("UPDATE customer SET customer_name = ?, customer_email = ?, customer_phone = ? WHERE id = ?");
-$success = $stmt->execute([$full_name, $email, $phone, $client_id]);
+$stmt = $pdo->prepare("UPDATE users SET firstname = ?, lastname = ?, email = ?, customer_phone = ? WHERE id = ?");
+$success = $stmt->execute([$first_name, $last_name, $email, $phone, $client_id]);
 
 if ($success) {
     // Optionally redirect or confirm

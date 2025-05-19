@@ -29,13 +29,25 @@ if (!$user) {
 $success = '';
 $error = '';
 
+// Helper function for input sanitization
+function sanitize_input($input) {
+    if (is_array($input)) {
+        return array_map('sanitize_input', $input);
+    }
+    // Convert special characters to HTML entities
+    $input = htmlspecialchars(trim($input ?? ''), ENT_QUOTES, 'UTF-8');
+    // Remove any null bytes
+    $input = str_replace(chr(0), '', $input);
+    return $input;
+}
+
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Sanitize inputs
-    $firstname = filter_input(INPUT_POST, 'firstname', FILTER_SANITIZE_STRING);
-    $lastname = filter_input(INPUT_POST, 'lastname', FILTER_SANITIZE_STRING);
-    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
-    $phone = filter_input(INPUT_POST, 'phone', FILTER_SANITIZE_STRING);
+    // Sanitize inputs using the new helper function
+    $firstname = sanitize_input($_POST['firstname'] ?? '');
+    $lastname = sanitize_input($_POST['lastname'] ?? '');
+    $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
+    $phone = sanitize_input($_POST['phone'] ?? '');
 
     // Validate email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -84,9 +96,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
             // Update database with file name
             $stmt = $pdo->prepare("UPDATE users SET submitted_id = ? WHERE id = ?");
             if ($stmt->execute([$file_name, $user_id])) {
+                // Set status to Pending Approval only if not already Approved or Rejected
+                $statusCheck = $pdo->prepare("SELECT status FROM users WHERE id = ?");
+                $statusCheck->execute([$user_id]);
+                $currentStatus = $statusCheck->fetchColumn();
+                if ($currentStatus !== 'Approved' && $currentStatus !== 'Rejected') {
+                    $pdo->prepare("UPDATE users SET status = 'Pending Approval' WHERE id = ?")->execute([$user_id]);
+                }
                 $success = "ID successfully uploaded!";
-                // Refresh user data
                 $user['submitted_id'] = $file_name;
+                $user['status'] = 'Pending Approval';
+            } else {
+                $error = "Database update failed.";
+            }
+        } else {
+            $error = "File upload failed.";
+        }
+    }
+}
+
+// Handle profile picture upload
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) {
+    $target_dir = "../../uploads/profile_pictures/";
+    if (!file_exists($target_dir)) {
+        mkdir($target_dir, 0777, true);
+    }
+    
+    $file_name = time() . "_" . basename($_FILES['profile_picture']['name']);
+    $target_file = $target_dir . $file_name;
+    
+    // Validate file
+    $file_type = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+    $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
+    
+    if (!in_array($file_type, $allowed_types)) {
+        $error = "Only JPG, JPEG, PNG, and GIF files are allowed.";
+    } elseif ($_FILES['profile_picture']['size'] > 2 * 1024 * 1024) {
+        $error = "File size must not exceed 2MB.";
+    } else {
+        if (move_uploaded_file($_FILES['profile_picture']['tmp_name'], $target_file)) {
+            // Update database with file name
+            $stmt = $pdo->prepare("UPDATE users SET profile_picture = ? WHERE id = ?");
+            if ($stmt->execute([$file_name, $user_id])) {
+                $success = "Profile picture updated successfully!";
+                // Refresh user data
+                $user['profile_picture'] = $file_name;
             } else {
                 $error = "Database update failed.";
             }
@@ -97,18 +151,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['submitted_id'])) {
 }
 
 // Example invoice data (replace with DB query in production)
-$invoices = [
-    [
-        'car_name' => 'Toyota Camry',
-        'car_image' => '../../images/camry-black.png', // Place your car image here
-        'date_from' => 'April-28-2025',
-        'date_to' => 'April-29-2025',
-        'price' => 5000,
-        'total' => 5000,
-        'invoice_id' => 1
-    ],
-    // Add more invoices as needed
-];
+// $invoices = [
+//     [
+//         'car_name' => 'Toyota Camry',
+//         'car_image' => '../../images/camry-black.png', // Place your car image here
+//         'date_from' => 'April-28-2025',
+//         'date_to' => 'April-29-2025',
+//         'price' => 5000,
+//         'total' => 5000,
+//         'invoice_id' => 1
+//     ],
+//     // Add more invoices as needed
+// ];
 ?>
 
 <!DOCTYPE html>
@@ -120,6 +174,7 @@ $invoices = [
     <link rel="stylesheet" href="../../css/client.css">
     <link rel="stylesheet" href="../../css/client-account.css">
     <link rel="stylesheet" href="../../css/notifications.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="client-body">
     
@@ -141,20 +196,147 @@ $invoices = [
 
                         <h2>Personal Information</h2>
 
+                        <!-- Profile Header with Pencil Icon -->
                         <div class="profile-header">
-                            <img src="../../images/profile.jpg" alt="Profile Picture" class="profile-image">
+                            <div class="profile-image-container">
+                                <img src="<?= !empty($user['profile_picture']) ? '../../uploads/profile_pictures/' . htmlspecialchars($user['profile_picture']) : '../../images/default-profile.jpg' ?>" 
+                                     alt="Profile Picture" 
+                                     class="profile-image">
+                            </div>
                             <div class="profile-header-info">        
-                                <h3 class="name"><?= htmlspecialchars($user['firstname'] ?? '') ?></h3>
-                                <p class="username"> @<?= htmlspecialchars($user['username'] ?? '') ?></p>
+                                <h3 class="name"><?= htmlspecialchars($user['firstname'] ?? '') . ' ' . htmlspecialchars($user['lastname'] ?? '') ?></h3>
+                                <p class="username">@<?= htmlspecialchars($user['username'] ?? '') ?></p>
                             </div>
-                            <div class="edit-icon-container">
-                                <button class="edit-icon-button">
-                                    <i class="fa-regular fa-pen-to-square"></i>
-                                </button>
-                            </div>
+                            <button class="edit-icon-button" onclick="openEditProfileModal()" title="Edit Profile">
+                                <i class="fa-regular fa-pen-to-square"></i>
+                            </button>
                         </div>
 
-                    
+                        <style>
+                            .profile-image-container {
+                                position: relative;
+                                width: 120px;
+                                height: 120px;
+                                margin-right: 20px;
+                            }
+                            .profile-image {
+                                width: 120px;
+                                height: 120px;
+                                border-radius: 50%;
+                                object-fit: cover;
+                                border: 2px solid #ccc;
+                                display: block;
+                            }
+                            .profile-image-overlay {
+                                position: absolute;
+                                top: 0;
+                                left: 0;
+                                width: 100%;
+                                height: 100%;
+                                background: rgba(0, 0, 0, 0.5);
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                opacity: 0;
+                                transition: opacity 0.3s;
+                                cursor: pointer;
+                            }
+                            .profile-image-container:hover .profile-image-overlay {
+                                opacity: 1;
+                            }
+                            .upload-icon {
+                                color: white;
+                                font-size: 24px;
+                                cursor: pointer;
+                            }
+                            .upload-icon i {
+                                color: white;
+                            }
+                            .invoice-card-custom {
+                                background: #fff8e1;
+                                border-radius: 12px;
+                                padding: 24px 32px;
+                                margin: 24px auto;
+                                max-width: 600px;
+                                box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+                                display: flex;
+                                align-items: center;
+                            }
+                            .invoice-card-content {
+                                display: flex;
+                                align-items: center;
+                                width: 100%;
+                            }
+                            .invoice-car-image img {
+                                width: 180px;
+                                height: 110px;
+                                object-fit: cover;
+                                border-radius: 10px;
+                                margin-right: 32px;
+                                background: #fff;
+                                border: 1px solid #ddd;
+                            }
+                            .invoice-details {
+                                flex: 1;
+                            }
+                            .invoice-header-row {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                font-weight: bold;
+                                font-size: 1.5rem;
+                                margin-bottom: 8px;
+                            }
+                            .invoice-car-model {
+                                font-size: 1.5rem;
+                                font-weight: bold;
+                                color: #222;
+                            }
+                            .invoice-price-per-day {
+                                font-size: 1.1rem;
+                                color: #222;
+                            }
+                            .invoice-dates {
+                                color: #666;
+                                font-size: 1rem;
+                                margin-bottom: 16px;
+                            }
+                            .invoice-total-row {
+                                display: flex;
+                                justify-content: space-between;
+                                align-items: center;
+                                font-weight: bold;
+                                font-size: 1.2rem;
+                                margin-bottom: 8px;
+                            }
+                            .invoice-total-label {
+                                color: #222;
+                            }
+                            .invoice-total-amount {
+                                color: #222;
+                                font-size: 1.3rem;
+                            }
+                            .print-invoice-link {
+                                color: #1976d2;
+                                text-decoration: none;
+                                font-weight: bold;
+                                font-size: 1rem;
+                                margin-top: 8px;
+                                display: inline-block;
+                                letter-spacing: 1px;
+                            }
+                            .tab-content.hidden {
+                                display: none;
+                            }
+                            .tab-content.active-tab {
+                                display: block;
+                            }
+                        </style>
+
+                        <!-- Font Awesome (in your <head> if not already present) -->
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
                         <div class="tab-menu">
                             <div class="tab-menu-container">
                                 <button class="tab-link active" data-tab="detailsTab">User Details</button>
@@ -217,31 +399,50 @@ $invoices = [
                                         <div class="id-verification-content">
                                             <div class="id-preview-section">
                                                 <?php if (!empty($user['submitted_id'])): ?>
-                                                    <div class="id-image-container">
-                                                        <img id="idPreview" 
-                                                             src="../../uploads/ids/<?= htmlspecialchars($user['submitted_id']) ?>" 
-                                                             alt="Submitted ID" 
-                                                             class="submitted-id">
+                                                    <button type="button" onclick="openIdModal()" class="view-id-btn">View ID</button>
+                                                    <!-- Modal for viewing ID -->
+                                                    <div id="idModal" class="modal" style="display:none;">
+                                                        <div class="modal-content" style="max-width: 400px; margin: 10% auto; background: #fff; border-radius: 10px; padding: 20px; position: relative;">
+                                                            <span class="close" onclick="closeIdModal()" style="position:absolute;top:10px;right:20px;font-size:2rem;cursor:pointer;">&times;</span>
+                                                            <img src="../../uploads/<?= htmlspecialchars($user['submitted_id']) ?>" 
+                                                                 alt="Submitted ID" 
+                                                                 style="width:100%;border-radius:8px;">
+                                                        </div>
                                                     </div>
-                                                    
-                                                    <?php
-                                                    $status = isset($user['verification_status']) ? $user['verification_status'] : 'Pending';
-                                                    $statusClass = $status === 'Verified' ? 'accepted' : ($status === 'Rejected' ? 'rejected' : 'pending');
-                                                    ?>
-                                                    <div class="verification-status <?= $statusClass ?>">
-                                                        <?php
-                                                        switch($status) {
-                                                            case 'Verified':
-                                                                echo '<p><i class="fas fa-check-circle"></i> Your ID has been verified</p>';
-                                                                break;
-                                                            case 'Rejected':
-                                                                echo '<p><i class="fas fa-times-circle"></i> Your ID verification was rejected</p>';
-                                                                break;
-                                                            default:
-                                                                echo '<p><i class="fas fa-clock"></i> Your ID is pending verification</p>';
+                                                    <style>
+                                                        .modal {
+                                                            display: none;
+                                                            position: fixed;
+                                                            z-index: 9999;
+                                                            left: 0; top: 0; width: 100%; height: 100%;
+                                                            overflow: auto;
+                                                            background: rgba(0,0,0,0.5);
                                                         }
-                                                        ?>
-                                                    </div>
+                                                    </style>
+                                                    <script>
+                                                        function openIdModal() {
+                                                            document.getElementById('idModal').style.display = 'block';
+                                                        }
+                                                        function closeIdModal() {
+                                                            document.getElementById('idModal').style.display = 'none';
+                                                        }
+                                                        window.onclick = function(event) {
+                                                            var modal = document.getElementById('idModal');
+                                                            if (event.target == modal) {
+                                                                modal.style.display = 'none';
+                                                            }
+                                                        }
+                                                    </script>
+                                                    <?php
+                                                    $status = $user['status'];
+                                                    if ($status === 'Approved') {
+                                                        echo '<span class="verified"><i class="fas fa-check-circle"></i> Verified</span>';
+                                                    } elseif ($status === 'Pending Approval') {
+                                                        echo '<span class="pending"><i class="fas fa-clock"></i> Your ID is pending verification</span>';
+                                                    } elseif ($status === 'Rejected') {
+                                                        echo '<span class="rejected"><i class="fas fa-times-circle"></i> Your ID verification was rejected</span>';
+                                                    }
+                                                    ?>
                                                 <?php else: ?>
                                                     <div class="no-id-message">
                                                         <i class="fas fa-id-card"></i>
@@ -274,11 +475,11 @@ $invoices = [
                                                     ?>
                                                     <div class="admin-controls">
                                                         <span id="statusText" 
-                                                              class="status-indicator <?= $user['verification_status'] === 'Verified' ? 'verified' : 'not-verified' ?>">
-                                                            <?= $user['verification_status'] ?>
+                                                              class="status-indicator <?= $user['status'] === 'Verified' ? 'verified' : 'not-verified' ?>">
+                                                            <?= $user['status'] ?>
                                                         </span>
                                                         <button id="verifyBtn" class="verify-button">
-                                                            <?= $user['verification_status'] === 'Verified' ? 'Mark as Not Verified' : 'Mark as Verified' ?>
+                                                            <?= $user['status'] === 'Verified' ? 'Mark as Not Verified' : 'Mark as Verified' ?>
                                                         </button>
                                                     </div>
                                                     <?php endif; ?>
@@ -423,64 +624,33 @@ $invoices = [
                                         $days = $interval->days ?: 1; // Minimum 1 day
                                         $price_per_day = floatval($invoice['price'] ?? 0);
                                         $total_amount = $days * $price_per_day;
-                                        
                                         $status_class = strtolower($invoice['status']);
                                         ?>
-                                        <div class="invoice-card">
-                                            <div class="invoice-header">
-                                                <span class="invoice-number">Booking #<?= str_pad($invoice['id'], 6, '0', STR_PAD_LEFT) ?></span>
-                                                <span class="invoice-status <?= $status_class ?>"><?= htmlspecialchars($invoice['status']) ?></span>
-                                            </div>
-                                            <div class="invoice-content">
-                                                <div class="car-details">
-                                                    <div class="car-image">
-                                                        <?php if (!empty($invoice['image'])): ?>
-                                                            <img src="../../uploads/cars/<?= htmlspecialchars($invoice['image']) ?>" 
-                                                                 alt="<?= htmlspecialchars($invoice['model']) ?>">
-                                                        <?php else: ?>
-                                                            <div class="no-image">No Image Available</div>
-                                                        <?php endif; ?>
-                                                    </div>
-                                                    <div class="car-info">
-                                                        <h3><?= htmlspecialchars($invoice['model']) ?></h3>
-                                                        <p class="plate-no">Plate No: <?= htmlspecialchars($invoice['plate_no']) ?></p>
-                                                        <div class="booking-dates">
-                                                            <div class="date-group">
-                                                                <span class="date-label">Booking Date:</span>
-                                                                <span class="date-value"><?= $start_date->format('M d, Y') ?></span>
-                                                            </div>
-                                                            <div class="date-group">
-                                                                <span class="date-label">Return Date:</span>
-                                                                <span class="date-value"><?= $end_date->format('M d, Y') ?></span>
-                                                            </div>
-                                                            <?php if (!empty($invoice['location'])): ?>
-                                                            <div class="date-group">
-                                                                <span class="date-label">Location:</span>
-                                                                <span class="date-value"><?= htmlspecialchars($invoice['location']) ?></span>
-                                                            </div>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    </div>
+                                        <div class="invoice-card-custom">
+                                            <div class="invoice-card-content">
+                                                <div class="invoice-car-image">
+                                                    <?php if (!empty($invoice['image'])): ?>
+                                                        <!-- Debug: Image path is ../../uploads/cars/<?= htmlspecialchars($invoice['image']) ?> -->
+                                                        <img src="../../uploads/<?= htmlspecialchars($invoice['image']) ?>" 
+                                                             alt="<?= htmlspecialchars($invoice['model']) ?>">
+                                                    <?php else: ?>
+                                                        <div class="no-image">No Image Available</div>
+                                                    <?php endif; ?>
                                                 </div>
-                                                <div class="price-details">
-                                                    <div class="price-row">
-                                                        <span>Price per day:</span>
-                                                        <span>₱<?= number_format($price_per_day, 2) ?></span>
+                                                <div class="invoice-details">
+                                                    <div class="invoice-header-row">
+                                                        <span class="invoice-car-model"><?= htmlspecialchars($invoice['model']) ?></span>
+                                                        <span class="invoice-price-per-day">₱<?= number_format($price_per_day, 2) ?></span>
                                                     </div>
-                                                    <div class="price-row">
-                                                        <span>Number of days:</span>
-                                                        <span><?= $days ?> day<?= $days > 1 ? 's' : '' ?></span>
+                                                    <div class="invoice-dates">
+                                                        <?= $start_date->format('M d, Y') ?> to <?= $end_date->format('M d, Y') ?>
                                                     </div>
-                                                    <div class="price-row total">
-                                                        <span>Total Amount:</span>
-                                                        <span>₱<?= number_format($total_amount, 2) ?></span>
+                                                    <div class="invoice-total-row">
+                                                        <span class="invoice-total-label">Total Amount</span>
+                                                        <span class="invoice-total-amount">₱<?= number_format($total_amount, 2) ?></span>
                                                     </div>
-                                                </div>
-                                                <div class="invoice-actions">
-                                                    <a href="print_invoice.php?id=<?= $invoice['id'] ?>" 
-                                                       class="print-invoice" 
-                                                       target="_blank">
-                                                        <i class="fas fa-print"></i> Print Invoice
+                                                    <a href="print_invoice.php?id=<?= $invoice['id'] ?>" class="print-invoice-link" target="_blank">
+                                                        PRINT INVOICE
                                                     </a>
                                                 </div>
                                             </div>
@@ -544,8 +714,20 @@ $invoices = [
         <div class="modal-content">
             <span class="close" id="closeEditModal">&times;</span>
             <h2>Edit Profile</h2>
-            <form id="editProfileForm">
+            <form id="editProfileForm" enctype="multipart/form-data" method="POST">
+                <?php if (!empty($success)): ?>
+                    <div class="alert-success"> <?= htmlspecialchars($success) ?> </div>
+                <?php endif; ?>
+                <?php if (!empty($error)): ?>
+                    <div class="alert-error"> <?= htmlspecialchars($error) ?> </div>
+                <?php endif; ?>
                 <h2>Personal Information</h2>
+                <div class="form-group">
+                    <label for="editProfilePicture">Profile Picture</label>
+                    <input type="file" id="editProfilePicture" name="profile_picture" accept="image/*" onchange="previewEditProfileImage(event)">
+                    <img src="<?= !empty($user['profile_picture']) ? '../../uploads/profile_pictures/' . htmlspecialchars($user['profile_picture']) : '../../images/default-profile.jpg' ?>"
+                         alt="Profile Preview" class="profile-image-preview" id="editProfileImagePreview" style="width:100px;height:100px;border-radius:50%;object-fit:cover;">
+                </div>
                 <div class="form-group">
                     <label for="editFirstName">First Name</label>
                     <input type="text" id="editFirstName" name="firstname" 
@@ -574,7 +756,6 @@ $invoices = [
                            onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')"
                            onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')">
                 </div>
-
                 <h2>Account Information</h2>
                 <div class="form-group">
                     <label for="editUsername">Username</label>
@@ -631,6 +812,15 @@ $invoices = [
                 }
             });
         });
+
+        function previewEditProfileImage(event) {
+            const reader = new FileReader();
+            reader.onload = function(){
+                const output = document.getElementById('editProfileImagePreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
     </script>
 </body>
 </html>
