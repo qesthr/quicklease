@@ -1,34 +1,31 @@
 <?php
-// Set session configuration
-ini_set('session.gc_maxlifetime', 86400);
-ini_set('session.cookie_lifetime', 86400);
-ini_set('session.use_strict_mode', 1);
-ini_set('session.use_cookies', 1);
-ini_set('session.use_only_cookies', 1);
-ini_set('session.cookie_httponly', 1);
 
 session_start();
 
-// Only load Google dependencies if we're actually logging in (not just redirecting)
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    require_once __DIR__ . '/../vendor/autoload.php';
-    
-    // Load .env from parent directory
-    $dotenv = Dotenv\Dotenv::createImmutable(dirname(__DIR__));
-    $dotenv->load();
+error_log("Session ID: " . session_id());
+error_log("Session contents: " . print_r($_SESSION, true));
 
-    // Get environment variables with defaults
-    $siteKey = $_ENV['RECAPTCHA_SITE_KEY'] ?? '';
-    $googleClientId = $_ENV['GOOGLE_CLIENT_ID'] ?? '';
-    $googleClientSecret = $_ENV['GOOGLE_CLIENT_SECRET'] ?? '';
-    $googleRedirect = $_ENV['GOOGLE_REDIRECT'] ?? '';
-} else {
-    // Set empty values for variables when just displaying the page
-    $siteKey = '';
-    $googleClientId = '';
-    $googleClientSecret = '';
-    $googleRedirect = '';
+// 1. Corrected path to autoload.php
+require_once __DIR__ . '/../vendor/autoload.php';
+
+// 2. Load .env from absolute path with error handling
+try {
+    $dotenv = Dotenv\Dotenv::createImmutable('C:/xampp/htdocs/quicklease');
+    $dotenv->load();
+} catch (Exception $e) {
+    // Set default values if .env file is not found
+    $_ENV['RECAPTCHA_SITE_KEY'] = '';
+    $_ENV['GOOGLE_CLIENT_ID'] = '';
+    $_ENV['GOOGLE_CLIENT_SECRET'] = '';
+    $_ENV['GOOGLE_REDIRECT'] = '';
+    error_log("Warning: .env file not found. Using default values.");
 }
+
+// 3. Safely get environment variables with defaults
+$siteKey = $_ENV['RECAPTCHA_SITE_KEY'] ?? '';
+$googleClientId = $_ENV['GOOGLE_CLIENT_ID'] ?? '';
+$googleClientSecret = $_ENV['GOOGLE_CLIENT_SECRET'] ?? '';
+$googleRedirect = $_ENV['GOOGLE_REDIRECT'] ?? '';
 
 // Verify you're getting the values (temporary debug)
 error_log("reCAPTCHA Site Key: " . ($siteKey ? 'Set' : 'Missing'));
@@ -89,38 +86,24 @@ if (!empty($googleClientId) && !empty($googleClientSecret)) {
         <form class="login-forms" action="login_validate.php" method="post">
             <input type="text" name="username" placeholder="Username" required>
             <input type="password" name="password" placeholder="Password" required>
-            
-            <?php echo "<!-- siteKey: $siteKey -->"; ?>
-
 
             <!-- 8. CONDITIONAL RECAPTCHA -->
             <?php if (!empty($siteKey)): ?>
-            <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>"></div>
+                <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>"></div>
             <?php endif; ?>
             
             <button type="submit">Login</button>
         </form>
 
-        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
-
         <!-- 9. CONDITIONAL GOOGLE SIGN-IN -->
-        <?php if (!empty($googleClientId)): ?>
-        <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
-        <?php endif; ?>
+            <?php if (!empty($googleClientId)): ?>
+                <div class="g-signin2" data-onsuccess="onSignIn" data-theme="dark"></div>
+            <?php endif; ?>
+
+        <hr style="margin: 20px 0; border: 0; border-top: 1px solid #ccc;">
 
         <a href="forgot_password.php">Forgot password?</a>
         <a href="signup.php">Create an account</a>
-
-        <script src="https://www.google.com/recaptcha/api.js" async defer></script>
-        <script>
-            function onSignIn(googleUser) {
-                // Handle the Google Sign-In response here
-                var profile = googleUser.getBasicProfile();
-                console.log('ID: ' + profile.getId());
-                console.log('Name: ' + profile.getName());
-                console.log('Email: ' + profile.getEmail());
-            }
-        </script>
 
         <!-- 10. MOVED SCRIPT TO BOTTOM & CONDITIONAL -->
         <?php if (!empty($googleClientId)): ?>
@@ -154,8 +137,23 @@ if (!empty($googleClientId) && !empty($googleClientSecret)) {
                     });
                 };
             </script>
-
         <?php endif; ?>
     </div>
+
+    <script src="https://www.google.com/recaptcha/api.js?render=your_site_key"></script>
+
+    <!-- Load reCAPTCHA v3 API -->
+    <script src="https://www.google.com/recaptcha/api.js?render=6LekoywrAAAAAP9aPlhhZ3_KnXgdrcdAXPdV6IoC"></script>
+
+    <script>
+        grecaptcha.ready(function() {
+            grecaptcha.execute('6LekoywrAAAAAP9aPlhhZ3_KnXgdrcdAXPdV6IoC', {action: 'login'}).then(function(token) {
+                document.querySelector('form.login-forms').insertAdjacentHTML('beforeend',
+                    '<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
+            });
+        });
+    </script>
+
+
 </body>
 </html>

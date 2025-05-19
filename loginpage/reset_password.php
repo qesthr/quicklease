@@ -36,89 +36,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Reset Password</title>
-    <link rel="stylesheet" href="styles/style.css">
+    <link rel="stylesheet" href="../css/loginandsignup.css">
+    <link rel="stylesheet" href="../css/resetpassword.css">
     <meta charset="UTF-8">
-    <style>
-        body {
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-image: url('images/background.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
-
-        .card {
-            background-color:rgba(37, 41, 41, 0.86);
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 30px;
-            width: 350px;
-            text-align: center;
-        }
-
-        .card img { 
-            width: 90px;
-            max-width: 80px;
-            margin-bottom: 10px;
-        }
-
-        .card input[type="password"] {
-            width: 90%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .card button {
-            background-color: #007bff;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 5px;
-            width: 90%;
-            margin-top: 10px;
-        }
-
-        .alert {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-            width: 90%;
-            text-align: center;
-        }
-
-        .alert-danger {
-            background-color: #f8d7da;
-            color: rgb(38, 173, 83);
-            border: 1px solid #f5c6cb;
-        }
-
-        .alert-success {
-            background-color: #d4edda;
-            color: rgb(19, 215, 230);
-            border: 1px solid #c3e6cb;
-        }
-    </style>
+    
 </head>
 
 <body>
     <div class="container">
         <div class="card">
-            <img src="images/logo.png" alt="">
+            <div class="logo-wrapper">
+                <img src="../images/logo.png" alt="Logo">
+
+            </div>
 
             <?php
             if (isset($_SESSION['error'])) {

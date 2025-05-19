@@ -1,6 +1,7 @@
 loginpage/vendor/phpoption/
 loginpage/vendor/phpoption/
-.env
 
 /vendor/
 /composer.lock
+
+.env
