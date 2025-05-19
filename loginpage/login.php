@@ -141,10 +141,7 @@ if (!empty($googleClientId) && !empty($googleClientSecret)) {
     </div>
 
     <script src="https://www.google.com/recaptcha/api.js?render=your_site_key"></script>
-
-    <!-- Load reCAPTCHA v3 API -->
     <script src="https://www.google.com/recaptcha/api.js?render=6LekoywrAAAAAP9aPlhhZ3_KnXgdrcdAXPdV6IoC"></script>
-
     <script>
         grecaptcha.ready(function() {
             grecaptcha.execute('6LekoywrAAAAAP9aPlhhZ3_KnXgdrcdAXPdV6IoC', {action: 'login'}).then(function(token) {
