@@ -1,0 +1,325 @@
+.location-settings-body {
+    margin-left: 30vh; /* Match sidebar width */
+    padding: 20px;
+    background: #f1efe7;
+    box-sizing: border-box;
+    width: 175vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.location-settings-body .topbar {
+    width: 163.5vh;
+}
+
+.settings-content {
+    padding: 20px;
+    background: #F0F0E8;
+    width: 170vh;
+}
+
+.main-content, .location-content {
+    margin-left: 250px;
+    padding: 30px;
+    background: #F0F0E8;
+    min-height: 100vh;
+}
+
+.location-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+}
+
+.location-header h2 {
+    color: #1818CA;
+    font-size: 2rem;
+    margin: 0;
+}
+
+.btn-add {
+    background: #FBCC63;
+    color: #1818CA;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: background 0.3s, color 0.3s;
+    margin-top: 10px;
+}
+
+.btn-add:hover {
+    background: #f5b913;
+    color: #fff;
+}
+
+.location-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    margin-top: 20px;
+}
+
+.location-card {
+    background: #fff;
+    border-radius: 14px;
+    box-shadow: 0 2px 8px rgba(24,24,202,0.07);
+    padding: 24px 22px 18px 22px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+    transition: box-shadow 0.2s;
+}
+
+.location-card:hover {
+    box-shadow: 0 6px 18px rgba(24,24,202,0.13);
+}
+
+.location-card h3 {
+    color: #1818CA;
+    margin: 0 0 10px 0;
+    font-size: 1.3rem;
+}
+
+.location-info {
+    color: #444;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.location-info p {
+    margin: 4px 0;
+}
+
+.location-details {
+    background: #f8f9fa;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 0.97rem;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.location-actions {
+    display: flex;
+    gap: 10px;
+    margin-top: auto;
+}
+
+.location-actions button,
+.location-actions .btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.location-actions .edit-btn {
+    background: #FBCC63 !important;
+    color: #1818CA !important;
+    border: none;
+}
+
+.location-actions .edit-btn:hover {
+    background: #f5b913 !important;
+    color: #fff !important;
+}
+
+.location-actions .delete-btn {
+    background: #f44336 !important;
+    color: #fff !important;
+    border: none;
+}
+
+.location-actions .delete-btn:hover {
+    background: #b71c1c !important;
+    color: #fff !important;
+}
+
+.location-actions .status-badge {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border-radius: 12px;
+    padding: 4px 12px;
+    font-size: 13px;
+    margin-left: 8px;
+}
+
+.alert {
+    padding: 15px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 1rem;
+}
+
+.alert-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+}
+
+.alert-error {
+    background: #ffebee;
+    color: #c62828;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0; top: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.4);
+    overflow-y: auto;
+}
+
+.modal-content {
+    background: #fff;
+    margin: 3% auto;
+    padding: 32px 28px;
+    border-radius: 14px;
+    width: 83vh;
+    height: auto;
+    box-shadow: 0 8px 32px rgba(24,24,202,0.13);
+    position: relative;
+}
+
+.close {
+    position: absolute;
+    right: 24px;
+    top: 18px;
+    font-size: 2rem;
+    font-weight: bold;
+    color: #aaa;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+.close:hover { color: #1818CA; }
+
+.modal-content label {
+    font-weight: 500;
+    margin-bottom: 6px;
+    display: block;
+    color: #1818CA;
+}
+
+.modal-content input,
+.modal-content textarea,
+.modal-content select {
+    width: 95%;
+    padding: 10px 12px;
+    border: 1px solid #ddd;
+    border-radius: 7px;
+    font-size: 15px;
+    margin-bottom: 16px;
+    background: #f8f9fa;
+}
+
+.modal-content button {
+    background: #FBCC63;
+    color: #1818CA;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 8px;
+}
+
+.modal-content button:hover {
+    background: #f5b913;
+    color: #fff;
+}
+
+.form-actions .btn-cancel {
+    background: #f44336;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    padding: 12px 28px;
+    cursor: pointer;
+    transition: background 0.3s;
+    margin-top: 8px;
+    margin-left: 10px;
+}
+
+.form-actions .btn-cancel:hover {
+    background: #b71c1c;
+    color: #fff;
+}
+
+@media (max-width: 900px) {
+    .main-content, .location-content {
+        margin-left: 0;
+        padding: 12px;
+    }
+    .location-header {
+        flex-direction: column;
+        gap: 16px;
+        align-items: flex-start;
+    }
+    .location-grid {
+        grid-template-columns: 1fr;
+    }
+    .modal-content {
+        padding: 18px 6vw;
+    }
+}
+
+.location-management-outer-container {
+    background: #fff;
+    border-radius: 16px;
+    box-shadow: 0 4px 24px rgba(24, 24, 202, 0.07);
+    padding: 32px 32px 24px 32px;
+    margin: 18px 22px;
+    max-width: 1400vh;
+    width: 163vh;
+    min-width: 0;
+}
+
+.location-management-section {
+    width: 100%;
+}
+
+@media (max-width: 1200px) {
+    .location-management-outer-container {
+        padding: 18px 4vw;
+        max-width: 98vw;
+        margin: 18px 1vw;
+    }
+    .location-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .location-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .location-management-outer-container {
+        padding: 8px 2vw;
+        max-width: 100vw;
+        margin: 8px 0;
+    }
+    .location-header h2 {
+        font-size: 1.2rem;
+    }
+    .btn-add {
+        font-size: 14px;
+        padding: 8px 16px;
+    }
+}
