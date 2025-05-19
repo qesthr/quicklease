@@ -7,13 +7,20 @@
 
 body {
     height: 100vh;
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    background-size: cover; 
-    background-repeat: no-repeat;
-    background-position: center center;
-    margin: 0;
+    background: linear-gradient(135deg, #FBCC63, #F9B315, #3232D0);
+    background-size: 400% 400%;
+    animation: gradientBG 15s ease infinite;
+}
+
+@keyframes gradientBG {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
 }
 
 .main_container {
