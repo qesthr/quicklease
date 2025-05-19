@@ -125,8 +125,9 @@ $locations = $data['locations'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Location Management | QuickLease Admin</title>
     <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/location-settings.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
+    <!-- <style>
         .modal {
             display: none;
             position: fixed;
@@ -365,18 +366,16 @@ $locations = $data['locations'];
             background: #1515A0;
             transform: translateY(-2px);
         }
-    </style>
+    </style> -->
+
 </head>
-<body>
+<body class="location-settings-body">
     <?php include 'includes/sidebar.php'; ?>
     
     <div class="settings-content">
         <?php include 'includes/topbar.php'; ?>
 
         <div class="content-wrapper">
-            <button class="manage-locations-btn" onclick="openLocationsModal()">
-                <i class="fas fa-map-marker-alt"></i> Manage Locations
-            </button>
 
             <?php if (isset($_SESSION['success'])): ?>
                 <div class="alert alert-success">
@@ -398,17 +397,15 @@ $locations = $data['locations'];
         </div>
     </div>
 
-    <!-- Locations Management Modal -->
-    <div id="locationsModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeLocationsModal()">&times;</span>
-            <div class="modal-header">
+    <!-- Location Management Section (not a modal) -->
+    <div class="location-management-outer-container">
+        <div class="location-management-section">
+            <div class="location-header">
                 <h2>Location Management</h2>
                 <button class="btn-add" onclick="openAddModal()">
                     <i class="fas fa-plus"></i> Add New Location
                 </button>
             </div>
-
             <div class="location-grid">
                 <?php foreach ($locations as $location): ?>
                     <div class="location-card">
@@ -593,29 +590,21 @@ $locations = $data['locations'];
                 </div>
 
                 <div class="form-actions">
-                    <button type="button" onclick="closeModal('editLocationModal')" class="btn-cancel">Cancel</button>
-                    <button type="submit" class="btn-save">Update Location</button>
+                    
+                    <button type="submit" class="btn-save">Update Location</button>        
+                    <button type="button" onclick="closeModal('location_settings.php')" class="btn-cancel">Cancel</button>
+                    
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        function openLocationsModal() {
-            document.getElementById('locationsModal').style.display = 'block';
-        }
-
-        function closeLocationsModal() {
-            document.getElementById('locationsModal').style.display = 'none';
-        }
-
         function openAddModal() {
-            closeLocationsModal();
             document.getElementById('addLocationModal').style.display = 'block';
         }
 
         function openEditModal(location) {
-            closeLocationsModal();
             const modal = document.getElementById('editLocationModal');
             document.getElementById('edit_location_id').value = location.id;
             document.getElementById('edit_name').value = location.name;
@@ -633,7 +622,6 @@ $locations = $data['locations'];
 
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
-            openLocationsModal();
         }
 
         // Close modal when clicking outside
@@ -661,5 +649,12 @@ $locations = $data['locations'];
             }
         }
     </script>
+<?php if (isset($_GET['modal']) && $_GET['modal'] == 1): ?>
+<script>
+    window.onload = function() {
+        document.getElementById('locationsModal').style.display = 'block';
+    }
+</script>
+<?php endif; ?>
 </body>
 </html> 

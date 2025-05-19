@@ -47,6 +47,19 @@
             "branch_email": "joenil@gmail.com",
             "operating_hours": "Mon-Fri 8 am to 10 pm",
             "status": "Active"
+        },
+        {
+            "id": 7,
+            "name": "Queen de los Reyes",
+            "address": "Maampalong St",
+            "city": "Malaybalay City",
+            "service_area": "10km",
+            "pickup_instructions": "",
+            "dropoff_instructions": "",
+            "branch_phone": "09068714623",
+            "branch_email": "queennina.dlr@gmail.com",
+            "operating_hours": "",
+            "status": "Active"
         }
     ]
 }

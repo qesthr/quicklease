@@ -126,13 +126,25 @@
 }
 
 .modal-content {
-    background-color: #ffffff;
-    margin: 4.6% 29%;
-    padding: 40px;
-    border-radius: 10px;
-    width: 37%;
-    height: 69%;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    background-color: white;
+    margin: 2% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    height: 80vh;
+}
+
+.modal-content-edit {
+    background-color: white;
+    margin: 2% auto;
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%;
+    max-width: 500px;
+    position: relative;
+    height: 80vh;
 }
 
 .modal-content h2 {
@@ -190,9 +202,8 @@
     font-weight: bold;
     color: #0c0c0c;
     cursor: pointer;
-    margin-top: -1%;
-    margin-left: 36%;
-    position: fixed;
+    margin-top: 1%;
+    margin-right: 3%;
 }
 
 .modal-content .close:hover {
@@ -220,6 +231,7 @@
     cursor: pointer;
     padding: 12px 27px;
     transition: background 0.3s; /* Smooth background transition */
+    margin-right: 6vh;
 }
 
 .btn-add:hover {
@@ -292,7 +304,6 @@
     background: white;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin: 20px;
     overflow-x: auto;
 }
 
@@ -402,7 +413,9 @@ tr:hover {
     display: flex;
     align-items: center;
     gap: 10px;
-    margin: 20px;
+    margin-top: -6vh;
+    width: 63vh;
+    margin-left: 84vh;
 }
 
 .search-container input[type="text"] {
@@ -433,4 +446,125 @@ tr:hover {
 }
 
 .clear-search:hover {    text-decoration: underline;}/* Alert styles */.alert {    padding: 15px;    margin: 20px;    border: 1px solid transparent;    border-radius: 4px;}.alert-success {    color: #155724;    background-color: #d4edda;    border-color: #c3e6cb;}.alert-danger {    color: #721c24;    background-color: #f8d7da;    border-color: #f5c6cb;}
+
+/* Notification Bell Styles for Topbar */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #1818CA;
+    color: #fff;
+    padding: 18px 32px;
+    border-radius: 10px;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.topbar h1 {
+    font-size: 28px;
+    font-weight: bold;
+    margin: 0;
+    color: #fff;
+}
+
+.topbar .notification {
+    position: relative;
+    cursor: pointer;
+    margin-left: 24px;
+}
+
+.topbar .notification i {
+    font-size: 22px;
+    color: #fff;
+    transition: color 0.3s;
+}
+
+.topbar .notification i:hover {
+    color: #FBCC63;
+}
+
+.notification-dropdown {
+    display: none;
+    position: absolute;
+    top: 120%;
+    right: 0;
+    width: 320px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    z-index: 1000;
+    margin-top: 10px;
+}
+
+.notification-dropdown h3 {
+    padding: 15px;
+    margin: 0;
+    border-bottom: 1px solid #eee;
+    color: #1818CA;
+    font-size: 16px;
+}
+
+.notification-dropdown ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.notification-dropdown li {
+    padding: 12px 15px;
+    border-bottom: 1px solid #f5f5f5;
+    font-size: 14px;
+    color: #333;
+    transition: background-color 0.3s;
+}
+
+.notification-dropdown li:hover {
+    background-color: #f8f9fa;
+}
+
+.notification-dropdown li.unread {
+    background-color: #f0f7ff;
+    font-weight: 500;
+}
+
+.notification-dropdown li:last-child {
+    border-bottom: none;
+}
+
+.notification-dropdown::before {
+    content: '';
+    position: absolute;
+    top: -8px;
+    right: 20px;
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 8px solid #fff;
+}
+
+.modal-content-view {
+    background-color: white;
+    margin: 2% auto;
+    padding: 32px 32px 24px 32px;
+    border-radius: 12px;
+    width: 60vw;         /* Wider than the add/edit modals */
+    max-width: 900px;    /* You can adjust this as needed */
+    min-width: 340px;
+    min-height: 300px;
+    height: auto;        /* Let content dictate height, or set a fixed height if you want */
+    position: relative;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    overflow-y: auto;
+}
+
+@media (max-width: 700px) {
+    .modal-content-view {
+        width: 95vw;
+        max-width: 99vw;
+        padding: 16px 4vw;
+    }
+}
 

@@ -5,15 +5,19 @@
     background: #F0F0E8;
 }
 
+.reports-body .topbar{
+    width: 167.5vh;
+}
+
 /* === Dashboard Cards Section === */
 .dashboard-cards {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);  /* Reduced to 5 columns */
-    grid-template-rows: repeat(6, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(0, 1fr);
     gap: 8px;
     height: 80vh;
     margin-top: 20px;
-    width: 220vh;
+    width: 174vh;
 }
 
 .card1, .card2, .card3 {
@@ -28,12 +32,17 @@
 
 .card4 {
     grid-column: 2 / span 3;
-    grid-row: 1 / span 3;         /* Takes 3 rows */
+    grid-row: 1 / span 0;         /* Takes 3 rows */
 }
 
 .card5 {
     grid-column: 2 / span 3;
-    grid-row: 4 / span 3;         /* Takes 3 rows */
+    grid-row: 2 / span 4;         /* Takes 3 rows */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 0 10vh;
 }
 
 /* Card Styles */
@@ -241,4 +250,14 @@
     .transactions-table {
         font-size: 12px;
     }
+}
+
+#bookingChart{
+    box-sizing: border-box;
+    height: 35vh;
+    width: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20vh;
 }

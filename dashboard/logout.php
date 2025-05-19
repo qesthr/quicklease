@@ -21,6 +21,6 @@ if (isset($_SERVER['HTTP_COOKIE'])) {
     }
 }
 
-header("Location: ../loginpage/login.php");
+header("Location: ../quicklease/loginpage/login.php");
 exit();
 ?>
