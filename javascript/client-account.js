@@ -50,31 +50,29 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     });
 
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
+    // Remove or comment out the AJAX form submission for editProfileForm
+    // form.addEventListener('submit', function (e) {
+    //     e.preventDefault();
 
-        const formData = new FormData(form);
+    //     const formData = new FormData(form);
 
-        fetch('update_profile.php', {
-            method: 'POST',
-            body: formData
-        })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                // Optionally update the UI with new values
-                // Close modal
-                modal.style.display = 'none';
-                // Optionally show a success message
-                location.reload(); // Reload to reflect changes
-            } else {
-                alert('Update failed: ' + data.message);
-            }
-        })
-        .catch(error => {
-            alert('An error occurred: ' + error);
-        });
-    });
+    //     fetch('update_profile.php', {
+    //         method: 'POST',
+    //         body: formData
+    //     })
+    //     .then(response => response.json())
+    //     .then(data => {
+    //         if (data.success) {
+    //             modal.style.display = 'none';
+    //             location.reload();
+    //         } else {
+    //             alert('Update failed: ' + data.message);
+    //         }
+    //     })
+    //     .catch(error => {
+    //         alert('An error occurred: ' + error);
+    //     });
+    // });
 });
 
 // ID verification

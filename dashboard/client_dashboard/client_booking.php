@@ -79,6 +79,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                               VALUES (?, ?, ?, ?, ?, ?)");
         $stmt->execute([$users_id, $car_id, $location, $booking_date, $return_date, $status]);
 
+        // Insert notification for the new booking
+        $booking_id = $pdo->lastInsertId();
+        $notification_message = "Your booking for this car has been received and is pending approval.";
+        $notification_type = "booking_status_update";
+
+        $stmt = $pdo->prepare("INSERT INTO notifications (users_id, booking_id, message, notification_type, is_read, created_at) VALUES (?, ?, ?, ?, 0, NOW())");
+        $stmt->execute([
+            $users_id,
+            $booking_id,
+            $notification_message,
+            $notification_type
+        ]);
+        if ($stmt->rowCount() === 0) {
+            error_log('Notification insert failed for booking_id: ' . $booking_id);
+        }
+
         // Commit transaction
         $pdo->commit();
         

@@ -1,4 +1,7 @@
 <?php
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 include '../db.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -30,11 +33,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Handle Approve
         $users_id = $_POST['id'];
         try {
-            $stmt = $pdo->prepare("UPDATE users SET status = 'Approved', verification_status = 'Verified' WHERE id = ?");
-            $stmt->execute([$users_id]);
-            $_SESSION['success'] = "Account approved successfully.";
+            // Debug: Log the current status before update
+            error_log("Attempting to approve user ID: " . $users_id);
+            
+            // First check current status
+            $check_before = $pdo->prepare("SELECT status FROM users WHERE id = ?");
+            $check_before->execute([$users_id]);
+            $current_status = $check_before->fetchColumn();
+            error_log("Current status before update: " . $current_status);
+            
+            // Update status
+            $stmt = $pdo->prepare("UPDATE users SET status = 'Approved' WHERE id = ?");
+            $result = $stmt->execute([$users_id]);
+            error_log("Update query result: " . ($result ? "success" : "failed"));
+            
+            // Verify the update
+            $check_after = $pdo->prepare("SELECT status FROM users WHERE id = ?");
+            $check_after->execute([$users_id]);
+            $updated_status = $check_after->fetchColumn();
+            error_log("Status after update: " . $updated_status);
+            
+            if ($updated_status === 'Approved') {
+                $_SESSION['success'] = "Account verified successfully.";
+            } else {
+                throw new Exception("Status update failed. Current status: " . $updated_status);
+            }
+
+            error_log('Approve POST: ' . print_r($_POST, true));
+            error_log('Approve SQL result: ' . ($result ? 'success' : 'fail'));
         } catch (Exception $e) {
-            $_SESSION['error'] = "Error approving account: " . $e->getMessage();
+            error_log("Error in approve process: " . $e->getMessage());
+            $_SESSION['error'] = "Error verifying account: " . $e->getMessage();
         }
         header("Location: accounts.php");
         exit();
@@ -44,10 +73,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Handle Reject
         $users_id = $_POST['id'];
         try {
-            $stmt = $pdo->prepare("UPDATE users SET status = 'Rejected', verification_status = 'Not Verified' WHERE id = ?");
-            $stmt->execute([$users_id]);
-            $_SESSION['success'] = "Account rejected successfully.";
+            // Debug: Log the current status before update
+            error_log("Attempting to reject user ID: " . $users_id);
+            
+            // First check current status
+            $check_before = $pdo->prepare("SELECT status FROM users WHERE id = ?");
+            $check_before->execute([$users_id]);
+            $current_status = $check_before->fetchColumn();
+            error_log("Current status before update: " . $current_status);
+            
+            // Update status
+            $stmt = $pdo->prepare("UPDATE users SET status = 'Rejected' WHERE id = ?");
+            $result = $stmt->execute([$users_id]);
+            error_log("Update query result: " . ($result ? "success" : "failed"));
+            
+            // Verify the update
+            $check_after = $pdo->prepare("SELECT status FROM users WHERE id = ?");
+            $check_after->execute([$users_id]);
+            $updated_status = $check_after->fetchColumn();
+            error_log("Status after update: " . $updated_status);
+            
+            if ($updated_status === 'Rejected') {
+                $_SESSION['success'] = "Account rejected successfully.";
+            } else {
+                throw new Exception("Status update failed. Current status: " . $updated_status);
+            }
         } catch (Exception $e) {
+            error_log("Error in reject process: " . $e->getMessage());
             $_SESSION['error'] = "Error rejecting account: " . $e->getMessage();
         }
         header("Location: accounts.php");
@@ -116,7 +168,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <td><?= htmlspecialchars($row['firstname'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($row['email'] ?? 'N/A') ?></td>
                         <td><?= htmlspecialchars($row['customer_phone'] ?? 'N/A') ?></td>
-                        <td><?= htmlspecialchars($row['status'] ?? 'Pending Approval') ?></td>
+                        <td><?= !empty($row['status']) ? htmlspecialchars($row['status']) : 'Pending Approval' ?></td>
                         <td>
                             <button class="btn edit" onclick='openEditModal(<?= json_encode($row) ?>)'>Edit</button>
                             <button class="btn view" onclick='openViewModal(<?= json_encode($row) ?>)'>View Verification</button>
@@ -218,7 +270,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             document.getElementById("verificationUsersId").value = user.id;
             const badge = document.getElementById("statusBadge");
-            badge.textContent = user.status || 'Pending';
+            badge.textContent = user.status || 'Pending Approval';
             badge.className = `status-badge ${(user.status || 'pending').toLowerCase()}`;
             viewModal.style.display = "block";
         }

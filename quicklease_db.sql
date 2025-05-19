@@ -143,7 +143,8 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `customer_phone` varchar(15) NOT NULL,
   `submitted_id` varchar(255) NOT NULL,
-  `status` enum('Pending Approval','Approved','Rejected','') NOT NULL,
+  `profile_picture` varchar(255) DEFAULT NULL,
+  `status` enum('Pending Approval','Approved','Rejected','Verified') NOT NULL,
   `user_type` enum('admin','client') NOT NULL DEFAULT 'client',
   `reset_code` varchar(6) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -153,10 +154,10 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `customer_phone`, `submitted_id`, `status`, `user_type`, `reset_code`, `created_at`) VALUES
-(1, 'joemar', 'acero', 'joemaracero', 'joenilacero20@gmail.com', '$2y$10$l72/7sQ0T7HR95nP40DYn.8IGqxH0dxdRm/c7lUNx1sygkaJ4FGlG', '', '', 'Approved', 'client', NULL, '2025-05-08 20:33:42'),
-(3, 'joenil', 'pogi', 'joenil', '2301107552@student.buksu.edu.ph', '$2y$10$APcuoUEQ.Lyk8s33Jug46e7rq549O4hFskhR2yJKoM11lvdmnmbfW', '09332472942', '1746794891_Screenshot 2025-05-05 010641.png', 'Approved', 'admin', NULL, '2025-05-05 18:08:50'),
-(4, 'rayden', 'delfin', 'raydendelfin', 'joenilpanal@gmail.com', '$2y$10$16SBVXhLgw2fIYQAHD7rX.vtt9QgvJOifjJNGwQc06RLUYC6f4Fx2', '', '', 'Pending Approval', 'client', NULL, '2025-05-09 14:09:43');
+INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `customer_phone`, `submitted_id`, `profile_picture`, `status`, `user_type`, `reset_code`, `created_at`) VALUES
+(1, 'joemar', 'acero', 'joemaracero', 'joenilacero20@gmail.com', '$2y$10$l72/7sQ0T7HR95nP40DYn.8IGqxH0dxdRm/c7lUNx1sygkaJ4FGlG', '', '', NULL, 'Approved', 'client', NULL, '2025-05-08 20:33:42'),
+(3, 'joenil', 'pogi', 'joenil', '2301107552@student.buksu.edu.ph', '$2y$10$APcuoUEQ.Lyk8s33Jug46e7rq549O4hFskhR2yJKoM11lvdmnmbfW', '09332472942', '1746794891_Screenshot 2025-05-05 010641.png', NULL, 'Approved', 'admin', NULL, '2025-05-05 18:08:50'),
+(4, 'rayden', 'delfin', 'raydendelfin', 'joenilpanal@gmail.com', '$2y$10$16SBVXhLgw2fIYQAHD7rX.vtt9QgvJOifjJNGwQc06RLUYC6f4Fx2', '', '', NULL, 'Pending Approval', 'client', NULL, '2025-05-09 14:09:43');
 
 -- --------------------------------------------------------
 

@@ -23,6 +23,6 @@
     </ul>
 
     <div class="logout-container" style="margin-top: 32vh;">
-        <a class="logout-btn" href="../quicklease/dashboard/logout.php" style="text-decoration: none;" style="padding: 12px 10px;">Logout</a>
+        <a class="logout-btn" href="logout.php" style="text-decoration: none;" style="padding: 12px 10px;">Logout</a>
     </div>
 </div>

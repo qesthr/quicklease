@@ -8,17 +8,17 @@ header('Content-Type: application/json');
 session_start();
 
 // Debugging: Check if the session is working
-if (!isset($_SESSION['customer_id'])) {
+if (!isset($_SESSION['user_id'])) {
     echo json_encode([
         'success' => false,
-        'error' => 'Customer ID not found in session. Debug: ' . print_r($_SESSION, true)
+        'error' => 'User ID not found in session. Debug: ' . print_r($_SESSION, true)
     ]);
     exit;
 }
 
 try {
     // Get the logged-in customer's ID from the session
-    $customer_id = $_SESSION['customer_id'];
+    $customer_id = $_SESSION['user_id'];
 
     // Fetch notifications for the logged-in customer, sorted by most recent
     $stmt = $pdo->prepare("SELECT 
@@ -26,9 +26,9 @@ try {
             is_read, 
             created_at 
         FROM notifications 
-        WHERE customer_id = ? 
+        WHERE users_id = ? 
         ORDER BY created_at DESC");
-    $stmt->execute([$customer_id]);
+    $stmt->execute([$_SESSION['user_id']]);
 
     $notifications = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
