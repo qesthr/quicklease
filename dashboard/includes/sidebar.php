@@ -18,13 +18,11 @@
             <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'bookings.php' ? 'active' : '' ?>" href="bookings.php">Bookings</a>
         </li>
         <li>
-            <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : '' ?>" href="settings.php">
-                <i class="fas fa-cog"></i> Settings
-            </a>
+            <a class="nav-btn <?= basename($_SERVER['PHP_SELF']) == 'settings.php' ? 'active' : '' ?>" href="settings.php">Settings</a>
         </li>
     </ul>
 
-    <div style="position: absolute; bottom: 20px; width: 50%; padding: 0 15px; box-sizing: border-box;">
-        <a class="logout-btn" href="../logout.php" style="display: block; text-align: center;">Logout</a>
+    <div class="logout-container" style="margin-top: 32vh;">
+        <a class="logout-btn" href="../quicklease/dashboard/logout.php" style="text-decoration: none;" style="padding: 12px 10px;">Logout</a>
     </div>
 </div>

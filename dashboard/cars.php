@@ -153,28 +153,6 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <div class="main">
         <?php include $_SERVER['DOCUMENT_ROOT'] . '/quicklease/dashboard/includes/topbar.php';;?>
 
-        <div class="header">
-            <div class="left">
-                <h1>Cars Management</h1>
-                <div class="search-container">
-                    <form action="" method="GET" class="search-form">
-                        <div class="search-wrapper">
-                            <i class="fas fa-search search-icon"></i>
-                            <input type="text" name="search" class="search-input" placeholder="Search cars..." value="<?= htmlspecialchars($search) ?>">
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <div class="right">
-                <button id="openModal" class="add-btn">
-                    <div class="btn-content">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Add New Car</span>
-                    </div>
-                </button>
-            </div>
-        </div>
-
         <?php if ($success): ?>
             <div class="alert success"><?= $success ?></div>
         <?php endif; ?>
@@ -184,13 +162,15 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <?php endif; ?>
 
         <div class="content">
-            <h2>Car List</h2>
 
-            <div class="add-car-button-container">
-                <button id="openModal" class="btn btn-add">
-                    <i class="fas fa-plus"></i>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Car List</h2>
+                <button id="openModal" class="add-btn">
+                    <div class="btn-content">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Add New Car</span>
+                    </div>
                 </button>
-                
             </div>
 
             <div class="table-container">               

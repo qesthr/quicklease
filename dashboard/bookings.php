@@ -250,7 +250,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
     <link rel="stylesheet" href="../css/bookings.css">
 
 </head>
-<body>
+
+<body class="booking-body">
 
   <div class="booking-content">
     <?php include 'includes/sidebar.php'; ?>
@@ -274,7 +275,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
         </div>
     <?php endif; ?>
 
-    <div class="booking-header">
+    <div class="booking-search">
         <div class="add-booking-button-container">
             <button class="btn btn-add" onclick="openModal('addModal')">Add Booking</button>
         </div>
@@ -442,13 +443,73 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['action'] === 'reject') {
     </div>
   </div>
 
-                        <!-- EDIT Modal -->    <div class="modal" id="editModal">        <div class="modal-content">            <span class="close" onclick="closeModal('editModal')">×</span>            <h2>Edit Booking Status</h2>            <form method="POST" id="editForm">                <input type="hidden" name="action" value="edit">                <input type="hidden" name="id" id="edit-id">                <div class="form-grid">                    <!-- Left Column -->                    <div class="form-column">                        <!-- Customer Name (read-only) -->                        <div class="form-group">                            <label for="edit-users-text">Customer Name</label>                            <input type="text" id="edit-users-text" class="readonly-field" readonly>                            <input type="hidden" name="users_id" id="edit-users">                        </div>                        <!-- Car (read-only) -->                        <div class="form-group">                            <label for="edit-car-id-text">Car Model</label>                            <input type="text" id="edit-car-id-text" class="readonly-field" readonly>                            <input type="hidden" name="car_id" id="edit-car-id">                        </div>                        <!-- Location (read-only) -->                        <div class="form-group">                            <label for="edit-location">Location</label>                            <input type="text" name="location" id="edit-location" class="readonly-field" readonly>                        </div>                    </div>                    <!-- Right Column -->                    <div class="form-column">                        <!-- Booking Date (read-only) -->                        <div class="form-group">                            <label for="edit-date">Booking Date</label>                            <input type="date" name="booking_date" id="edit-date" class="readonly-field" readonly>                        </div>                        <!-- Return Date (read-only) -->                        <div class="form-group">                            <label for="edit-return">Return Date</label>                            <input type="date" name="return_date" id="edit-return" class="readonly-field" readonly>                        </div>                        <!-- Status (editable) -->                        <div class="form-group">                            <label for="edit-status">Status</label>                            <select name="status" id="edit-status" class="status-select" required>                                <option value="Pending">Pending</option>                                <option value="Active">Active</option>                                <option value="Completed">Completed</option>                                <option value="Cancelled">Cancelled</option>                            </select>                        </div>                    </div>                </div>                <div class="form-actions">                    <button type="button" class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>                    <button type="submit" class="btn-save">Update Status</button>                </div>            </form>        </div>    </div>
+                        <!-- EDIT Modal -->    
+                         <div class="modal" id="editModal">        
+                            <div class="modal-content">            
+                            <span class="close" onclick="closeModal('editModal')">×</span>
+                            <h2>Edit Booking Status</h2>
+                            <form method="POST" id="editForm">
+                            <input type="hidden" name="action" value="edit">
+                            <input type="hidden" name="id" id="edit-id">
+                            <div class="form-grid"> 
+                            <!-- Left Column -->
+                            <div class="form-column">
+                            <!-- Customer Name (read-only) -->
+                            <div class="form-group">
+                            <label for="edit-users-text">Customer Name</label>
+                            <input type="text" id="edit-users-text" class="readonly-field" readonly>
+                            <input type="hidden" name="users_id" id="edit-users">
+                        </div>                        
+                        
+                        <!-- Car (read-only) -->                        
+                        <div class="form-group">
+                            <label for="edit-car-id-text">Car Model</label>
+                            <input type="text" id="edit-car-id-text" class="readonly-field" readonly>
+                            <input type="hidden" name="car_id" id="edit-car-id">
+                        </div>                        
+                        <!-- Location (read-only) -->                        
+                         <div class="form-group">                            
+                            <label for="edit-location">Location</label>                            
+                            <input type="text" name="location" id="edit-location" class="readonly-field" readonly> 
+                        </div>                    
+                    </div>                    
+                    <!-- Right Column -->                    
+                     <div class="form-column">                        
+                        <!-- Booking Date (read-only) -->                        
+                         <div class="form-group">                            
+                            <label for="edit-date">Booking Date</label>                            
+                            <input type="date" name="booking_date" id="edit-date" class="readonly-field" readonly>                        
+                        </div>                        
+                        <!-- Return Date (read-only) -->                        
+                         <div class="form-group">                            
+                            <label for="edit-return">Return Date</label>                            
+                            <input type="date" name="return_date" id="edit-return" class="readonly-field" readonly>                        
+                        </div>                        
+                        <!-- Status (editable) -->                        
+                         <div class="form-group">                            
+                            <label for="edit-status">Status</label>                            
+                            <select name="status" id="edit-status" class="status-select" required>       
+                                <option value="Pending">Pending</option>                                
+                                <option value="Active">Active</option>                                
+                                <option value="Completed">Completed</option>                                
+                                <option value="Cancelled">Cancelled</option>                            
+                            </select>                        
+                        </div>                    
+                    </div>                
+                </div>                
+                <div class="form-actions">                    
+                    <button type="button" class="btn-cancel" onclick="closeModal('editModal')">Cancel</button>                    
+                    <button type="submit" class="btn-save">Update Status</button>                
+                </div>            
+            </form>        
+        </div>    
+    </div>
 
 
 
     <!-- VIEW Modal -->
     <div class="modal" id="viewModal">
-      <div class="modal-content">
+      <div class="modal-content-view" >
         <span class="close" onclick="closeModal('viewModal')">×</span>
         <h2>Booking Details</h2>
         <div class="booking-details">

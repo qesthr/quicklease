@@ -1,3 +1,7 @@
+.car-list-page .main {
+    width: 174vh;
+}
+
 .car-list-page .topbar {
     background-color: #1818CA; /* Override background color */
     color: #ffffff; /* Override text color */
@@ -20,7 +24,7 @@
 /* === Car List Page === */
 .car-list-page {
     margin-top: 2%;
-    padding-left: 289px; /* Match the width of the sidebar */
+    padding-left: 31vh; /* Match the width of the sidebar */
 }
 
 .car-list-page .content {
@@ -29,7 +33,6 @@
     border-radius: 15px;
     box-shadow: 0 2px 6px rgba(0,0,0,0.1);
     margin-top: 30px;
-
 }
 
 .car-list-page h2 {
@@ -39,91 +42,265 @@
     margin-left: 10px;
 }
 
-.car-list-page table {
-    width: 170vh;
-    border-collapse: collapse;
-    position: relative;
-
+/* Table Container and Table Styles */
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    margin: 0 auto;
+    max-width: 1800px; /* Increased max-width */
 }
 
-.car-list-page th,
-.car-list-page td {
+.table-header {
+    height: 60px;
+}
+
+.car-table {
+    width: 100%;
+    min-width: 1500px; /* Minimum width to prevent squishing */
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+}
+
+.car-table th,
+.car-table td {
     padding: 12px;
     text-align: center;
     border-bottom: 1px solid #ddd;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    height: 60px;
+    box-sizing: border-box;
 }
 
-.car-list-page th {
+/* Column Widths - Adjusted for better data accommodation */
+.car-table th:nth-child(1), 
+.car-table td:nth-child(1) { width: 4%; }  /* ID */
+
+.car-table th:nth-child(2), 
+.car-table td:nth-child(2) { width: 8%; } /* Image */
+
+.car-table th:nth-child(3), 
+.car-table td:nth-child(3) { width: 15%; } /* Model */
+
+.car-table th:nth-child(4), 
+.car-table td:nth-child(4) { width: 10%; } /* Plate No */
+
+.car-table th:nth-child(5), 
+.car-table td:nth-child(5) { width: 10%; } /* Price */
+
+.car-table th:nth-child(6), 
+.car-table td:nth-child(6) { width: 10%; } /* Status */
+
+.car-table th:nth-child(7), 
+.car-table td:nth-child(7) { width: 6%; }  /* Seats */
+
+.car-table th:nth-child(8), 
+.car-table td:nth-child(8) { width: 10%; } /* Transmission */
+
+.car-table th:nth-child(9), 
+.car-table td:nth-child(9) { width: 10%; } /* Mileage */
+
+.car-table th:nth-child(10), 
+.car-table td:nth-child(10) { width: 12%; } /* Features */
+
+.car-table th:nth-child(11),
+.car-table td:nth-child(11) {
+    width: 8%;
+    min-width: 100px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0;
+    height: 12.5vh;
+}
+
+/* Table Header Styles */
+.car-table th {
     background: #1818CA;
     color: white;
+    font-weight: 500;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    height: 50px;
+    padding: 12px 8px;
 }
 
-.car-list-page td img {
-    width: 100px;
-    height: auto;
-    border-radius: 10px;
+/* Table Row Styles */
+.car-table tr {
+    height: 60px;
+    line-height: 1.5;
 }
 
-/* Action buttons */
-.car-list-page .btn-add {
-    background: #FBCC63;
-    color: rgb(0, 0, 0);
-    border: none;
+/* Table Cell Content Styles */
+.car-table td {
+    vertical-align: middle;
+    padding: 8px 12px;
+}
+
+.car-table td img {
+    width: 100px; /* Increased image size */
+    height: 75px; /* Increased image size */
+    object-fit: cover;
     border-radius: 8px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    width: 64px;
-    padding: 12px;
-    position: absolute;
-    top: 23vh;
-    left: 185vh;
-    font-size: 14px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    transform: none !important;
-    margin-left: 7.5vh;
-    margin-top: 2vh;
+    display: block;
+    margin: 0 auto;
 }
 
-/* Hover effects */
-.car-list-page .btn-add:hover {
-    background: #F5C14D;
-    transform: translateY(-2px); /* Slight lift effect */
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+/* Features Cell */
+.features-cell {
+    max-width: none; /* Remove max-width restriction */
+    white-space: normal; /* Allow text wrapping */
+    overflow: visible;
+    text-overflow: clip;
+    padding: 8px 12px;
+    line-height: 1.4;
 }
 
-/* Active/click effect */
-.car-list-page .btn-add:active {
-    transform: translateY(1px);
+/* Status Badge Styles */
+.status-badge {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 500;
+    display: inline-block;
+    line-height: 1;
+    white-space: nowrap;
 }
 
-.car-list-page .btn-edit {
-    margin-top: -1px;
-    padding: 13px;
-    background: #FBCC63;
-    color: white;
+.status-badge.available {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+}
+
+.status-badge.rented {
+    background-color: #fff3e0;
+    color: #ef6c00;
+}
+
+.status-badge.maintenance {
+    background-color: #fce4ec;
+    color: #c2185b;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    height: 100%;
+    min-height: 32px;
+    padding: 0;
+}
+
+.action-buttons .btn {
+    padding: 1px 6px;
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    width: 36px;
+    min-width: 36px;
+    border-radius: 4px;
     border: none;
-    border-radius: 3px;
-    font-weight: bold;
     cursor: pointer;
-    transition: background 0.3s;
-}
-
-.car-list-page .btn-edit:hover {
-    background: #f5b913;
-}
-
-.car-list-page .btn-delete {
-    background: rgb(238, 83, 83);
+    font-size: 18px;
+    transition: all 0.3s ease;
+    background: #FBCC63; /* or your preferred color */
     color: white;
-    margin-left: 5px;
-    border-radius: 3px;
-    padding: 8px;
-    text-decoration: none;
+    box-shadow: none;
+    margin: 0;
 }
 
-.car-list-page .btn-delete:hover {
-    background: #e04343;
+.btn-edit {
+    background: #FBCC63;
+}
+
+.btn-delete {
+    background: #ee5353;
+}
+
+.btn i {
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* Responsive Table */
+@media screen and (max-width: 1600px) {
+    .table-container {
+        max-width: 100%;
+    }
+    
+    .car-table {
+        min-width: 1200px;
+    }
+    
+    .car-table td img {
+        width: 80px;
+        height: 60px;
+    }
+
+    .car-table th:nth-child(11), 
+    .car-table td:nth-child(11) { 
+       
+        width: 8%;
+        min-width: 90px;
+    }
+}
+
+@media screen and (max-width: 1200px) {
+    .car-table th,
+    .car-table td {
+        padding: 8px;
+        height: 50px;
+    }
+
+    .car-table tr {
+        height: 50px;
+    }
+
+    .btn {
+        height: 28px;
+        width: 28px;
+        min-width: 28px;
+        padding: 6px;
+    }
+
+    .btn i {
+        font-size: 12px;
+    }
+}
+
+@media screen and (max-width: 992px) {
+    .car-table th,
+    .car-table td {
+        padding: 6px;
+        height: 45px;
+    }
+
+    .car-table tr {
+        height: 45px;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        font-size: 11px;
+    }
+
+    .car-table th:nth-child(11), 
+    .car-table td:nth-child(11) { 
+        width: 8%;
+        min-width: 80px;
+        height: 13vh;
+    }
 }
 
 /* === Modal Styles === */
@@ -218,7 +395,6 @@
     position: relative;
 }
 
-
 .car-list-page .modal-content h2 {
     margin-top: 0;
     color: #1818CA;
@@ -285,12 +461,6 @@
     background-color: #F9B315;
 }
 
-.table-container {
-    border-radius: 10px; /* Apply rounded corners */
-    overflow: hidden; /* Ensure content respects the border-radius */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1); /* Optional: Add shadow for better visuals */
-}
-
 /* Search Container */
 .search-container {
     position: absolute; /* Position the search bar absolutely */
@@ -337,3 +507,4 @@
 .search-btn:hover {
     background: #F5C14D; /* Slightly darker yellow on hover */
 }
+

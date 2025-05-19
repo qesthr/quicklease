@@ -11,7 +11,7 @@ session_start();
     <link rel="stylesheet" href="../css/dashboard.css"> 
     <link rel="stylesheet" href="../css/reports.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
+    <!-- <style>
         .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.6); }
         .modal-content { 
             background-color: #fff; 
@@ -89,9 +89,9 @@ session_start();
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-    </style>
+    </style> -->
 </head>
-<body>
+<body class="reports-body">
 <?php include 'includes/sidebar.php'; ?>
 <div class="main-content">
 <?php include 'includes/topbar.php'; ?>
@@ -324,6 +324,59 @@ session_start();
 
     // Refresh chart every 5 minutes
     setInterval(loadBookingChart, 300000);
+</script>
+<script>
+    // Notification functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const bellIcon = document.querySelector('.notification i');
+        const dropdown = document.getElementById('notificationDropdown');
+
+        if (bellIcon && dropdown) {
+            bellIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+                
+                if (dropdown.style.display === 'block') {
+                    fetchNotifications();
+                }
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target) && !bellIcon.contains(e.target)) {
+                    dropdown.style.display = 'none';
+                }
+            });
+        }
+
+        function fetchNotifications() {
+            fetch('fetch_notification.php')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        const notificationList = document.getElementById('notificationList');
+                        notificationList.innerHTML = '';
+
+                        if (data.data.length === 0) {
+                            notificationList.innerHTML = '<li class="no-notifications">No new notifications</li>';
+                            return;
+                        }
+
+                        data.data.forEach(notification => {
+                            const li = document.createElement('li');
+                            li.textContent = notification.message;
+                            if (!notification.is_read) {
+                                li.classList.add('unread');
+                            }
+                            notificationList.appendChild(li);
+                        });
+                    } else {
+                        console.error('Error fetching notifications:', data.error);
+                    }
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    });
 </script>
 <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 </body>
