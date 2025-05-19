@@ -592,6 +592,18 @@ body {
     margin-top: 1rem;
 }
 
+.car-brands {
+    display: flex;
+    justify-content: center;
+    gap: 7rem;
+    align-items: center;
+    padding: 4rem 0;
+    height: 25vh;
+}
 
+.car-brands img {
+    width: 16vh;
+    height: 14vh;
+}
 
 
