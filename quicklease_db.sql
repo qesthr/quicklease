@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 19, 2025 at 01:36 PM
+-- Generation Time: May 20, 2025 at 12:02 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -94,14 +94,14 @@ CREATE TABLE `car` (
 --
 
 INSERT INTO `car` (`id`, `model`, `plate_no`, `price`, `status`, `image`, `seats`, `transmission`, `mileage`, `features`, `category_id`) VALUES
-(1, 'toyota', '123-qws', 1000.00, 'Rented', '68190da42551c_fortuner.jpg', 342, 'automatic', 10000, 'ede sheng', NULL),
-(8, 'navarra', '123-qwe', 123.00, 'Pending', '681cbceb7db36_nissannavara.jpg', 2, 'manual', 12313, '1312312', NULL),
-(9, 'wigo', '342-fhs', 4354.00, 'Rented', '681cbd11b024c_wigo.jpg', 5, 'automatic', 345345, '353453', NULL),
-(10, 'Innova', '234-asd', 3123.00, 'Maintenance', '681cbd2f6700f_innova.jpg', 12, 'manual', 3123123, 'fasdfsaasdva', NULL),
-(11, 'montero sport', '312-fdas', 32123.00, 'Maintenance', '681cbd8b649be_montero.jpg', 121, 'automatic', 123123123, 'fasdasdas', NULL),
-(12, 'fortuner', '123-asd', 4214.00, 'Pending', '681cbdaf5a3fc_fortuner.jpg', 21, 'automatic', 4142313, 'fsadfasdfasdfa', NULL),
-(13, 'minivan', '100-asd', 1250.00, 'Available', '681cc1977212f_minivan.jpg', 10, 'manual', 10000, 'gamay nga bann', NULL),
-(14, 'hiace', '809', 2500.00, 'Available', '681cc1c791189_hiace.jpg', 18, 'automatic', 10000, 'dako nga ban', NULL);
+(1, 'TOYOTA', '123-qws', 2500.00, 'Available', '68190da42551c_fortuner.jpg', 6, 'Automatic', 10000, 'With gps tracker', NULL),
+(8, 'NAVVARA', '123-qwe', 2500.00, 'Available', '681cbceb7db36_nissannavara.jpg', 6, 'Automatic', 20000, 'With gps tracker', NULL),
+(9, 'WIGO', '342-fhs', 1500.00, 'Available', '681cbd11b024c_wigo.jpg', 5, 'Automatic', 15000, 'With gps tracker', NULL),
+(10, 'INNOVA', '234-asd', 1800.00, 'Available', '681cbd2f6700f_innova.jpg', 8, 'Automatic', 18000, 'With gps tracker and baby chair', NULL),
+(11, 'MONTERO SPORTS', '312-fdas', 2500.00, 'Available', '681cbd8b649be_montero.jpg', 8, 'Manual', 25000, 'With gps tracker, Baby chair and top carrier', NULL),
+(12, 'FORTUNER', '123-asd', 2500.00, 'Available', '681cbdaf5a3fc_fortuner.jpg', 8, 'Automatic', 22000, 'With gps tracker\r\n', NULL),
+(13, 'MINIVAN', '100-asd', 1800.00, 'Available', '681cc1977212f_minivan.jpg', 8, 'Manual', 10000, 'With gps tracker and baby chair', NULL),
+(14, 'HIACE', '809-khl', 3000.00, 'Available', '681cc1c791189_hiace.jpg', 10, 'Manual', 30000, 'With gps tracker and baby chair', NULL);
 
 -- --------------------------------------------------------
 
@@ -181,8 +181,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `customer_phone`, `submitted_id`, `profile_picture`, `status`, `user_type`, `reset_code`, `created_at`) VALUES
-(3, 'joenil', 'pogi', 'joenil', '2301107552@student.buksu.edu.ph', '$2y$10$APcuoUEQ.Lyk8s33Jug46e7rq549O4hFskhR2yJKoM11lvdmnmbfW', '09332472942', '1746794891_Screenshot 2025-05-05 010641.png', '', 'Approved', 'admin', NULL, '2025-05-05 18:08:50'),
-(4, 'rayden', 'delfin', 'raydendelfin', 'joenilpanal@gmail.com', '$2y$10$16SBVXhLgw2fIYQAHD7rX.vtt9QgvJOifjJNGwQc06RLUYC6f4Fx2', '', '1747648230_Screenshot 2025-05-16 221033.png', '1747646796_Screenshot (128).png', 'Approved', 'client', NULL, '2025-05-09 14:09:43');
+(3, 'joenil', 'pogi', 'joenil', '2301107552@student.buksu.edu.ph', '$2y$10$LdLhGn60mXfu5FxP.SPlxe8NFW6VutBxFYQG7jTNZGJimerbg7j/K', '09332472942', '1746794891_Screenshot 2025-05-05 010641.png', 'admin_3_1747691925.jpg', 'Approved', 'admin', NULL, '2025-05-05 18:08:50'),
+(4, 'rayden', 'delfin', 'raydendelfin', 'joenilpanal@gmail.com', '$2y$10$16SBVXhLgw2fIYQAHD7rX.vtt9QgvJOifjJNGwQc06RLUYC6f4Fx2', '', '1747648230_Screenshot 2025-05-16 221033.png', '1747688265_rider.jpg', 'Approved', 'client', NULL, '2025-05-09 14:09:43');
 
 --
 -- Indexes for dumped tables

@@ -90,7 +90,7 @@ if ($user_id) {
 }
 
 .user-details strong {
-    color: #333;
+    color: #fff;
     font-size: 0.9rem;
 }
 </style>

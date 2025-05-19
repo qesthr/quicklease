@@ -446,6 +446,13 @@ $admin_users = $pdo->query("SELECT * FROM users WHERE user_type = 'admin' ORDER 
             margin-top: 5px;
         }
 
+        .close {
+            cursor: pointer;
+            font-size: 24px;
+            color: #aaa;
+            float: right;
+        }
+
         .admin-profile-pic:hover {
             opacity: 0.8;
             transform: scale(1.05);
