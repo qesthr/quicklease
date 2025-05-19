@@ -1,5 +1,20 @@
 <?php
 require_once('../db.php');
+require_once('../includes/session_handler.php');
+
+// Start admin session and check access
+startAdminSession();
+requireAdmin();
+
+// Get the current user's information
+$user_id = $_SESSION['user_id'] ?? null;
+$user = null;
+
+if ($user_id) {
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ? AND user_type = 'admin'");
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 $success = '';
 $error = '';
@@ -151,7 +166,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <?php include './includes/sidebar.php'; ?>
     
     <div class="main">
-        <?php include $_SERVER['DOCUMENT_ROOT'] . '/quicklease/dashboard/includes/topbar.php';;?>
+        <?php include './includes/topbar.php'; ?>
 
         <?php if ($success): ?>
             <div class="alert success"><?= $success ?></div>

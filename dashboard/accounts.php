@@ -3,6 +3,21 @@ ini_set('display_errors', 1);
 error_reporting(E_ALL);
 
 include '../db.php';
+require_once('../includes/session_handler.php');
+
+// Start admin session and check access
+startAdminSession();
+requireAdmin();
+
+// Get the current user's information
+$user_id = $_SESSION['user_id'] ?? null;
+$user = null;
+
+if ($user_id) {
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ? AND user_type = 'admin'");
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update'])) {

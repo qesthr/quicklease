@@ -1,6 +1,23 @@
 <?php
+require_once('../db.php');
+require_once('../includes/session_handler.php');
+
+// Start admin session and check access
+startAdminSession();
+requireAdmin();
+
+// Get the current user's information
+$user_id = $_SESSION['user_id'] ?? null;
+$user = null;
+
+if ($user_id) {
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ? AND user_type = 'admin'");
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+
 // Updated reports.php with mPDF support and filterable report
-session_start();
+// session_start();
 ?>
 
 <!DOCTYPE html>

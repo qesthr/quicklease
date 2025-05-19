@@ -1,3 +1,18 @@
+<?php
+
+require_once '../../db.php'; // Correct path to db.php
+
+// Assuming you store user id in session as $_SESSION['user_id']
+$user_id = $_SESSION['user_id'] ?? null;
+$user = null;
+
+if ($user_id) {
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+    $stmt->execute([$user_id]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+}
+?>
+
 <header class="topbar">
     <h1>
         <?php
