@@ -5,7 +5,7 @@ require_once '../db.php';
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 
-require 'vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 ob_start(); // Fix redirect issue (no output before header)
 

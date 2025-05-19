@@ -89,13 +89,6 @@ body {
     text-decoration: none !important;
 }
 
-.logout-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 20px;
-}
-
 .logout-btn:hover {
     background-color: #F9B315;
 }
