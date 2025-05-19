@@ -33,8 +33,7 @@
         <img class="profile-pic" src="../images/profile.jpg" alt="">
  
         <div class="user-details">
-            <p>Welcome, <strong>Queen </strong></p>
-            <!-- Optional: Display User Name -->
+            <p>Welcome, <strong><?php echo htmlspecialchars($user['firstname']); ?></strong></p>
         </div>
     </div>
 </header>

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 09, 2025 at 06:50 PM
+-- Generation Time: May 19, 2025 at 01:36 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -44,9 +44,8 @@ CREATE TABLE `bookings` (
 --
 
 INSERT INTO `bookings` (`id`, `users_id`, `car_id`, `location`, `booking_date`, `return_date`, `phone`, `status`, `created_at`) VALUES
-(1, 3, 1, 'Malaybalay City', '2024-05-10', '2024-05-15', 'GPS, Child Seat', 'Pending', '2025-05-07 09:20:08'),
-(23, 3, 8, 'dawdaw', '2025-05-09', '2025-05-10', '', 'Active', '2025-05-08 21:07:49'),
-(24, 1, 12, 'Shyne\'s Car Rental, 44PG+V8Q, Malaybalay, Bukidnon', '2025-05-10', '2025-05-12', NULL, 'Completed', '2025-05-09 16:06:33');
+(27, 4, 13, 'Queen de los Reyes', '2025-05-19', '2025-05-26', NULL, 'Active', '2025-05-19 08:52:07'),
+(28, 4, 13, 'Horhe Car Rental and Carwash', '2025-05-19', '2025-05-22', NULL, 'Active', '2025-05-19 09:05:57');
 
 --
 -- Triggers `bookings`
@@ -94,15 +93,41 @@ CREATE TABLE `car` (
 -- Dumping data for table `car`
 --
 
-INSERT INTO `car` (`id`, `model`, `plate_no`, `price`, `status`, `image`, `seats`, `transmission`, `mileage`, `features`) VALUES
-(1, 'toyota', '123-qws', 1000.00, 'Rented', '68190da42551c_fortuner.jpg', 342, 'automatic', 10000, 'ede sheng'),
-(8, 'navarra', '123-qwe', 123.00, 'Pending', '681cbceb7db36_nissannavara.jpg', 2, 'manual', 12313, '1312312'),
-(9, 'wigo', '342-fhs', 4354.00, 'Rented', '681cbd11b024c_wigo.jpg', 5, 'automatic', 345345, '353453'),
-(10, 'Innova', '234-asd', 3123.00, 'Maintenance', '681cbd2f6700f_innova.jpg', 12, 'manual', 3123123, 'fasdfsaasdva'),
-(11, 'montero sport', '312-fdas', 32123.00, 'Maintenance', '681cbd8b649be_montero.jpg', 121, 'automatic', 123123123, 'fasdasdas'),
-(12, 'fortuner', '123-asd', 4214.00, 'Pending', '681cbdaf5a3fc_fortuner.jpg', 21, 'automatic', 4142313, 'fsadfasdfasdfa'),
-(13, 'minivan', '100-asd', 1250.00, 'Available', '681cc1977212f_minivan.jpg', 10, 'manual', 10000, 'gamay nga bann'),
-(14, 'hiace', '809', 2500.00, 'Available', '681cc1c791189_hiace.jpg', 18, 'automatic', 10000, 'dako nga ban');
+INSERT INTO `car` (`id`, `model`, `plate_no`, `price`, `status`, `image`, `seats`, `transmission`, `mileage`, `features`, `category_id`) VALUES
+(1, 'toyota', '123-qws', 1000.00, 'Rented', '68190da42551c_fortuner.jpg', 342, 'automatic', 10000, 'ede sheng', NULL),
+(8, 'navarra', '123-qwe', 123.00, 'Pending', '681cbceb7db36_nissannavara.jpg', 2, 'manual', 12313, '1312312', NULL),
+(9, 'wigo', '342-fhs', 4354.00, 'Rented', '681cbd11b024c_wigo.jpg', 5, 'automatic', 345345, '353453', NULL),
+(10, 'Innova', '234-asd', 3123.00, 'Maintenance', '681cbd2f6700f_innova.jpg', 12, 'manual', 3123123, 'fasdfsaasdva', NULL),
+(11, 'montero sport', '312-fdas', 32123.00, 'Maintenance', '681cbd8b649be_montero.jpg', 121, 'automatic', 123123123, 'fasdasdas', NULL),
+(12, 'fortuner', '123-asd', 4214.00, 'Pending', '681cbdaf5a3fc_fortuner.jpg', 21, 'automatic', 4142313, 'fsadfasdfasdfa', NULL),
+(13, 'minivan', '100-asd', 1250.00, 'Available', '681cc1977212f_minivan.jpg', 10, 'manual', 10000, 'gamay nga bann', NULL),
+(14, 'hiace', '809', 2500.00, 'Available', '681cc1c791189_hiace.jpg', 18, 'automatic', 10000, 'dako nga ban', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `car_categories`
+--
+
+CREATE TABLE `car_categories` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `description` text DEFAULT NULL,
+  `base_rate_multiplier` decimal(3,2) DEFAULT 1.00,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `car_categories`
+--
+
+INSERT INTO `car_categories` (`id`, `name`, `description`, `base_rate_multiplier`, `created_at`) VALUES
+(1, 'Economy', 'Fuel-efficient compact cars perfect for city driving and small groups', 1.00, '2025-05-18 22:36:06'),
+(2, 'Sedan', 'Comfortable mid-size cars ideal for families and business trips', 1.20, '2025-05-18 22:36:06'),
+(3, 'SUV', 'Spacious vehicles suitable for rough terrain and large groups', 1.50, '2025-05-18 22:36:06'),
+(4, 'Luxury', 'Premium vehicles offering superior comfort and style', 2.00, '2025-05-18 22:36:06'),
+(5, 'Van', 'Large capacity vehicles perfect for group travel and cargo', 1.75, '2025-05-18 22:36:06'),
+(6, 'Sports', 'High-performance vehicles for an exciting driving experience', 2.50, '2025-05-18 22:36:06');
 
 -- --------------------------------------------------------
 
@@ -112,8 +137,10 @@ INSERT INTO `car` (`id`, `model`, `plate_no`, `price`, `status`, `image`, `seats
 
 CREATE TABLE `notifications` (
   `id` int(11) NOT NULL,
-  `customer_id` varchar(20) NOT NULL,
+  `users_id` int(11) NOT NULL,
+  `booking_id` int(11) DEFAULT NULL,
   `message` text NOT NULL,
+  `notification_type` varchar(50) NOT NULL,
   `is_read` tinyint(1) DEFAULT 0,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -122,11 +149,10 @@ CREATE TABLE `notifications` (
 -- Dumping data for table `notifications`
 --
 
-INSERT INTO `notifications` (`id`, `customer_id`, `message`, `is_read`, `created_at`) VALUES
-(1, '1', 'Your booking has been approved.', 0, '2025-05-07 07:19:05'),
-(2, '1', 'Your profile has been updated successfully.', 0, '2025-05-07 07:19:05'),
-(3, '1', 'Your booking has been rejected.', 1, '2025-05-07 07:19:05'),
-(4, '1', 'Your booking has been approved.', 0, '2025-05-07 10:22:09');
+INSERT INTO `notifications` (`id`, `users_id`, `booking_id`, `message`, `notification_type`, `is_read`, `created_at`) VALUES
+(1, 4, NULL, 'Status update for your minivan booking: Active', 'booking_status_update', 1, '2025-05-19 03:28:40'),
+(2, 4, 27, 'Your booking for this car has been received and is pending approval.', 'booking_pending', 1, '2025-05-19 08:52:07'),
+(3, 4, 28, 'Your booking for this car has been received and is pending approval.', 'booking_status_update', 1, '2025-05-19 09:05:57');
 
 -- --------------------------------------------------------
 
@@ -143,8 +169,8 @@ CREATE TABLE `users` (
   `password` varchar(255) NOT NULL,
   `customer_phone` varchar(15) NOT NULL,
   `submitted_id` varchar(255) NOT NULL,
-  `profile_picture` varchar(255) DEFAULT NULL,
-  `status` enum('Pending Approval','Approved','Rejected','Verified') NOT NULL,
+  `profile_picture` varchar(255) NOT NULL,
+  `status` enum('Pending Approval','Approved','Rejected','Verified''') NOT NULL,
   `user_type` enum('admin','client') NOT NULL DEFAULT 'client',
   `reset_code` varchar(6) DEFAULT NULL,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -155,37 +181,8 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `firstname`, `lastname`, `username`, `email`, `password`, `customer_phone`, `submitted_id`, `profile_picture`, `status`, `user_type`, `reset_code`, `created_at`) VALUES
-(1, 'joemar', 'acero', 'joemaracero', 'joenilacero20@gmail.com', '$2y$10$l72/7sQ0T7HR95nP40DYn.8IGqxH0dxdRm/c7lUNx1sygkaJ4FGlG', '', '', NULL, 'Approved', 'client', NULL, '2025-05-08 20:33:42'),
-(3, 'joenil', 'pogi', 'joenil', '2301107552@student.buksu.edu.ph', '$2y$10$APcuoUEQ.Lyk8s33Jug46e7rq549O4hFskhR2yJKoM11lvdmnmbfW', '09332472942', '1746794891_Screenshot 2025-05-05 010641.png', NULL, 'Approved', 'admin', NULL, '2025-05-05 18:08:50'),
-(4, 'rayden', 'delfin', 'raydendelfin', 'joenilpanal@gmail.com', '$2y$10$16SBVXhLgw2fIYQAHD7rX.vtt9QgvJOifjJNGwQc06RLUYC6f4Fx2', '', '', NULL, 'Pending Approval', 'client', NULL, '2025-05-09 14:09:43');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `car_categories`
---
-
-CREATE TABLE `car_categories` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(50) NOT NULL,
-  `description` text,
-  `base_rate_multiplier` decimal(3,2) DEFAULT '1.00',
-  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `car_categories`
---
-
-INSERT INTO `car_categories` (`name`, `description`, `base_rate_multiplier`) VALUES
-('Economy', 'Fuel-efficient compact cars perfect for city driving and small groups', 1.00),
-('Sedan', 'Comfortable mid-size cars ideal for families and business trips', 1.20),
-('SUV', 'Spacious vehicles suitable for rough terrain and large groups', 1.50),
-('Luxury', 'Premium vehicles offering superior comfort and style', 2.00),
-('Van', 'Large capacity vehicles perfect for group travel and cargo', 1.75),
-('Sports', 'High-performance vehicles for an exciting driving experience', 2.50);
+(3, 'joenil', 'pogi', 'joenil', '2301107552@student.buksu.edu.ph', '$2y$10$APcuoUEQ.Lyk8s33Jug46e7rq549O4hFskhR2yJKoM11lvdmnmbfW', '09332472942', '1746794891_Screenshot 2025-05-05 010641.png', '', 'Approved', 'admin', NULL, '2025-05-05 18:08:50'),
+(4, 'rayden', 'delfin', 'raydendelfin', 'joenilpanal@gmail.com', '$2y$10$16SBVXhLgw2fIYQAHD7rX.vtt9QgvJOifjJNGwQc06RLUYC6f4Fx2', '', '1747648230_Screenshot 2025-05-16 221033.png', '1747646796_Screenshot (128).png', 'Approved', 'client', NULL, '2025-05-09 14:09:43');
 
 --
 -- Indexes for dumped tables
@@ -204,14 +201,23 @@ ALTER TABLE `bookings`
 --
 ALTER TABLE `car`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `plate_no` (`plate_no`);
+  ADD UNIQUE KEY `plate_no` (`plate_no`),
+  ADD KEY `fk_car_category` (`category_id`);
+
+--
+-- Indexes for table `car_categories`
+--
+ALTER TABLE `car_categories`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `name` (`name`);
 
 --
 -- Indexes for table `notifications`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `customer_id` (`customer_id`);
+  ADD KEY `users_id` (`users_id`),
+  ADD KEY `booking_id` (`booking_id`);
 
 --
 -- Indexes for table `users`
@@ -228,7 +234,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `bookings`
 --
 ALTER TABLE `bookings`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `car`
@@ -237,10 +243,16 @@ ALTER TABLE `car`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Count', AUTO_INCREMENT=15;
 
 --
+-- AUTO_INCREMENT for table `car_categories`
+--
+ALTER TABLE `car_categories`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `users`
@@ -263,7 +275,14 @@ ALTER TABLE `bookings`
 -- Constraints for table `car`
 --
 ALTER TABLE `car`
-  ADD CONSTRAINT `fk_car_category` FOREIGN KEY (`category_id`) REFERENCES `car_categories`(`id`) ON DELETE SET NULL;
+  ADD CONSTRAINT `fk_car_category` FOREIGN KEY (`category_id`) REFERENCES `car_categories` (`id`) ON DELETE SET NULL;
+
+--
+-- Constraints for table `notifications`
+--
+ALTER TABLE `notifications`
+  ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`users_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
+  ADD CONSTRAINT `notifications_ibfk_2` FOREIGN KEY (`booking_id`) REFERENCES `bookings` (`id`) ON DELETE SET NULL;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

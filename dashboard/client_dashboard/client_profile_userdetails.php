@@ -173,7 +173,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) 
     <title>Client Profile</title>
     <link rel="stylesheet" href="../../css/client.css">
     <link rel="stylesheet" href="../../css/client-account.css">
-    <link rel="stylesheet" href="../../css/notifications.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body class="client-body">
