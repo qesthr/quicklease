@@ -10,6 +10,26 @@ require_once '../../db.php';
 // Start client session
 startClientSession();
 
+// Check if user is logged in and is a client
+if (!isClient()) {
+    $_SESSION['error'] = "Please log in as a client.";
+    header("Location: ../../loginpage/login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'] ?? null;
+
+// Fetch client data
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    $_SESSION['error'] = "User not found.";
+    header("Location: ../../loginpage/login.php");
+    exit();
+}
+
 // Check if user is logged in as client
 requireClient();
 

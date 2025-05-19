@@ -6,6 +6,26 @@ require_once '../../db.php';
 startClientSession();
 requireClient();
 
+// Check if user is logged in and is a client
+if (!isClient()) {
+    $_SESSION['error'] = "Please log in as a client.";
+    header("Location: ../../loginpage/login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'] ?? null;
+
+// Fetch client data
+$stmt = $pdo->prepare("SELECT * FROM users WHERE id = ?");
+$stmt->execute([$user_id]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+    $_SESSION['error'] = "User not found.";
+    header("Location: ../../loginpage/login.php");
+    exit();
+}
+
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 ?>
 
@@ -21,8 +41,7 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
     <link rel="preload" href="https://kit.fontawesome.com/b7bdbf86fb.js" as="script">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css"/>
 
-    <!--lenk to fontawesome-->
-    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
+    
 </head>
 
 <body class="client-cars-body">
@@ -33,7 +52,31 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
             <?php include __DIR__ . '/../client_dashboard/includes/topbar.php'; ?>
         </header>
 
-        <!-- Add Filter Dropdown -->
+        <!-- Improved Search Bar -->
+        <div class="search-container">
+            <form method="GET" class="search-form">
+                <div class="search-input-group">
+                    <i class="fas fa-search search-icon"></i>
+                    <input type="text" name="search" 
+                        placeholder="Search cars by model, transmission, or features..." 
+                        value="<?php echo htmlspecialchars($search ?? ''); ?>"
+                        class="enhanced-search">
+                    <?php if (!empty($search)): ?>
+                        <button type="button" class="clear-search" onclick="window.location.href=window.location.pathname">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    <?php endif; ?>
+                </div>
+                <div class="quick-filters">
+                    <button type="button" class="filter-chip" data-filter="Automatic">Automatic</button>
+                    <button type="button" class="filter-chip" data-filter="Manual">Manual</button>
+                    <button type="button" class="filter-chip" data-filter="SUV">SUV</button>
+                    <button type="button" class="filter-chip" data-filter="Sedan">Sedan</button>
+                </div>
+            </form>
+        </div>
+
+        <!--
         <div class="filter-container">
             <select id="statusFilter" class="status-filter">
                 <option value="all">All Cars</option>
@@ -41,7 +84,10 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                 <option value="Rented">Rented</option>
                 <option value="Maintenance">Maintenance</option>
             </select>
-        </div>
+        </div> -->
+
+        <!--lenk to fontawesome-->
+        <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 
         <div class="card-container">
             <div class="swiper mySwiper">
@@ -58,7 +104,10 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
 
                     // Loop through results and display each car
                     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
-                        <div class="swiper-slide car-card" data-status="<?= strtolower(htmlspecialchars($row['status'])) ?>">
+                        <div class="swiper-slide car-card" 
+                             data-status="<?= strtolower(htmlspecialchars($row['status'])) ?>"
+                             data-transmission="<?= strtolower(htmlspecialchars($row['transmission'])) ?>"
+                             data-type="<?= strtolower(htmlspecialchars($row['type'] ?? '')) ?>">
                             <!-- Card Header -->
                             <div class="car-card-header">
                                 <h3 class="car-model"><?= htmlspecialchars($row['model']) ?></h3>
@@ -159,8 +208,10 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                     
                     // Get car details from the card
                     const model = card.querySelector('.car-model').textContent;
+                    const plate = card.querySelector('.plate-number').textContent;
                     const image = card.querySelector('.car-main-image').src;
                     const status = card.querySelector('.availability-badge').textContent.trim();
+                    const statusClass = card.querySelector('.availability-badge').className.replace('availability-badge', '').trim();
                     const specs = Array.from(card.querySelectorAll('.spec-text')).map(spec => spec.textContent);
                     const features = card.querySelector('.features-text').textContent;
                     const price = card.querySelector('.price-amount').textContent;
@@ -169,8 +220,11 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                     const modalContent = `
                         <div class="car-details">
                             <div class="car-details-header">
-                                <h2>${model}</h2>
-                                <span class="status-badge ${status.toLowerCase()}">${status}</span>
+                                <div>
+                                    <h2>${model}</h2>
+                                    <span class="plate-number">${plate}</span>
+                                </div>
+                                <span class="availability-badge ${statusClass}">${status}</span>
                             </div>
                             
                             <div class="car-details-image">
@@ -270,278 +324,62 @@ $search = isset($_GET['search']) ? $_GET['search'] : '';
                 swiper.update();
             });
         });
+
+        // Quick Filters Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Quick filter buttons
+            const filterChips = document.querySelectorAll('.filter-chip');
+            const searchInput = document.querySelector('.enhanced-search');
+            const carCards = document.querySelectorAll('.car-card');
+
+            filterChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const filter = this.dataset.filter.toLowerCase();
+
+                    carCards.forEach(card => {
+                        const transmission = card.getAttribute('data-transmission');
+                        const type = card.getAttribute('data-type');
+                        // Show card if matches filter (transmission or type)
+                        if (transmission === filter || type === filter) {
+                            card.style.display = '';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                    swiper.update();
+                });
+            });
+
+            // Search functionality (already works server-side, but let's add client-side for instant feedback)
+            searchInput.addEventListener('input', function() {
+                const query = this.value.toLowerCase();
+                carCards.forEach(card => {
+                    const model = card.querySelector('.car-model').textContent.toLowerCase();
+                    const transmission = card.getAttribute('data-transmission');
+                    const features = card.querySelector('.features-text').textContent.toLowerCase();
+                    if (
+                        model.includes(query) ||
+                        transmission.includes(query) ||
+                        features.includes(query)
+                    ) {
+                        card.style.display = '';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                swiper.update();
+            });
+
+            // Clear search button
+            const clearBtn = document.querySelector('.clear-search');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', function() {
+                    searchInput.value = '';
+                    carCards.forEach(card => card.style.display = '');
+                    swiper.update();
+                });
+            }
+        });
     </script>
-    
-    <style>
-        /* Add these new styles */
-        .plate-number {
-            display: inline-block;
-            margin: 5px 0;
-            padding: 4px 8px;
-            background: #e9ecef;
-            color: #495057;
-            border-radius: 4px;
-            font-size: 0.9rem;
-            font-weight: 500;
-            letter-spacing: 1px;
-        }
-
-        .car-card-header {
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            gap: 8px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-bottom: 1px solid #eee;
-        }
-
-        .car-card-header h3.car-model {
-            margin: 0;
-            padding: 0;
-        }
-
-        /* Update existing styles */
-        .availability-badge {
-            margin-left: auto;
-            align-self: flex-end;
-            margin-top: -30px; /* Pull the badge up to align with the car model */
-        }
-
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-        }
-
-        .modal-content {
-            position: relative;
-            background: white;
-            margin: 50px auto;
-            padding: 0;
-            width: 90%;
-            max-width: 800px;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-
-        .close-modal {
-            position: absolute;
-            right: 20px;
-            top: 20px;
-            font-size: 28px;
-            font-weight: bold;
-            color: #666;
-            cursor: pointer;
-            z-index: 1;
-            transition: color 0.3s ease;
-        }
-
-        .close-modal:hover {
-            color: #333;
-        }
-
-        /* Car Details Styles */
-        .car-details {
-            padding: 0;
-        }
-
-        .car-details-header {
-            background: #f8f9fa;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #eee;
-        }
-
-        .car-details-header h2 {
-            margin: 0;
-            color: #2c3e50;
-            font-size: 1.8rem;
-        }
-
-        .car-details-image {
-            width: 100%;
-            height: 300px;
-            overflow: hidden;
-            border-bottom: 1px solid #eee;
-        }
-
-        .car-details-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .car-details-info {
-            padding: 20px;
-        }
-
-        .details-section {
-            margin-bottom: 25px;
-        }
-
-        .details-section h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
-            font-size: 1.2rem;
-        }
-
-        .specs-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-
-        .spec-detail {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 10px;
-            background: #f8f9fa;
-            border-radius: 8px;
-        }
-
-        .spec-detail i {
-            color: #4CAF50;
-            font-size: 1.2rem;
-        }
-
-        .pricing-section {
-            background: #f8f9fa;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 20px;
-        }
-
-        .price-detail {
-            display: flex;
-            align-items: baseline;
-            gap: 5px;
-        }
-
-        .price-detail .amount {
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-
-        .price-detail .period {
-            color: #666;
-        }
-
-        .book-now-btn {
-            display: block;
-            width: 100%;
-            padding: 15px;
-            background: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 500;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: all 0.3s ease;
-        }
-
-        .book-now-btn:hover {
-            background: #45a049;
-            transform: translateY(-2px);
-        }
-
-        @media (max-width: 768px) {
-            .modal-content {
-                margin: 20px;
-                width: calc(100% - 40px);
-            }
-
-            .car-details-header {
-                flex-direction: column;
-                text-align: center;
-                gap: 10px;
-            }
-
-            .car-details-image {
-                height: 200px;
-            }
-
-            .specs-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        /* Add these styles */
-        .unavailable-notice {
-            background: #fff3cd;
-            border: 1px solid #ffeeba;
-            color: #856404;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .unavailable-notice i {
-            font-size: 1.2rem;
-        }
-
-        .unavailable-notice p {
-            margin: 0;
-            font-size: 0.95rem;
-        }
-
-        /* Add these new styles */
-        .filter-container {
-            padding: 20px;
-            display: flex;
-            justify-content: flex-end;
-            max-width: 1400px;
-            margin: 0 auto;
-        }
-
-        .status-filter {
-            padding: 10px 20px;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: white;
-            font-size: 16px;
-            color: #333;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .status-filter:hover {
-            border-color: #4CAF50;
-        }
-
-        .status-filter:focus {
-            outline: none;
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 2px rgba(76, 175, 80, 0.2);
-        }
-
-        /* Add transition for smooth filtering */
-        .car-card {
-            transition: opacity 0.3s ease, transform 0.3s ease;
-        }
-
-        .car-card.hidden {
-            display: none;
-            opacity: 0;
-            transform: scale(0.95);
-        }
-    </style>
 </body>
 </html>

@@ -32,6 +32,8 @@
     transition: all 0.3s ease;
     margin-top: 20px;
     width: 166vh;
+    /* max-width: 1104px; */
+    margin-top: 4vh;
     margin-left: -37vh;
     margin-right: auto;
 }
@@ -395,56 +397,6 @@
     margin-left: 4vh;
 }
 
-/* Notification Card */
-#notificationsTab .notification {
-    display: flex;
-    margin-bottom: 20px;
-    position: relative;
-}
-
-.notification-card {
-    flex: 1;
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    border-left: 5px solid #e0e0e0;
-}
-
-.notification.new .notification-card {
-    border-left-color: #4CAF50;
-}
-
-.notification-header {
-    margin-bottom: 15px;
-    width: 90vh;
-    height: 2vh;
-}
-
-.notification-greeting {
-    font-size: 18px;
-    font-weight: 600;
-    color: #333;
-    margin: 0;
-}
-
-.notification-body {
-    margin-bottom: 20px;
-}
-
-.notification-message {
-    font-size: 16px;
-    color: #555;
-    line-height: 1.5;
-    margin: 0;
-}
-
-.notification-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
 .view-booking-btn {
     background-color: #4CAF50;
     color: white;
@@ -611,13 +563,15 @@
     align-items: flex-start;
     margin-bottom: 30px;
     position: relative;
+    width: 161vh;
+    margin-left: -38vh;
 }
 
 .notification-card {
     flex: 1;
     background: #fff;
     border-radius: 12px;
-    padding: 20px;
+    padding: 21px;
     margin-right: 20px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.2s ease;
@@ -677,6 +631,7 @@
     flex-direction: column;
     align-items: center;
     min-width: 80px;
+    margin-top: 3vh;
 }
 
 .notification-dot {
@@ -866,4 +821,93 @@
     .date-day {
         font-size: 1.2em;
     }
-} 
+}
+
+
+/*invoice.css*/
+.invoice-card-custom {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 24px 32px;
+    /* margin: 24px auto; */
+    max-width: 165vh;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    display: flex;
+    align-items: center;
+    width: 165vh;
+    margin: 2vh 54vh 10vh -39vh;
+}
+
+.invoice-card-content {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+.invoice-car-image img {
+    width: 52vh;
+    height: 37vh;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-right: 32px;
+    background: #fff;
+    /*border: 1px solid #ddd;*/
+}
+
+.invoice-details {
+    flex: 1;
+}
+
+.invoice-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
+}
+
+.invoice-car-model {
+    font-size: 4rem;
+    font-weight: bold;
+    color: #222;
+}
+
+.invoice-price-per-day {
+    font-size: 1.5rem;
+    color: #222;
+}
+
+.invoice-dates {
+    color: #666;
+    font-size: 1rem;
+    margin-bottom: 16px;
+    margin-top: -34px;
+}
+
+.invoice-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-bottom: 8px;
+}
+
+.invoice-total-label {
+    color: #222;
+}
+
+.invoice-total-amount {
+    color: #222;
+    font-size: 3rem;
+}
+
+.print-invoice-link {
+    color: #1976d2;
+    text-decoration: none;
+    font-weight: bold;
+    font-size: 1.2rem;
+    margin-top: 8px;
+    display: inline-block;
+    letter-spacing: 1px;
+}
