@@ -119,7 +119,7 @@ $invoices = [
     <title>Client Profile</title>
     <link rel="stylesheet" href="../../css/client.css">
     <link rel="stylesheet" href="../../css/client-account.css">
- 
+    <link rel="stylesheet" href="../../css/notifications.css">
 </head>
 <body class="client-body">
     
@@ -295,85 +295,213 @@ $invoices = [
                         <!-- notifications tab -->
                         <div id="notificationsTab" class="tab-content hidden">
                             <div class="notifications-container">
-                                <div class="notification-details">
-                                    <div class="notification-card">
-                                        <div class="notification-header">
-                                            <p class="notification-greeting">Hi, <?= htmlspecialchars($user['firstname'] ?? '') ?>!</p>
+                                <?php
+                                try {
+                                    // Fetch notifications for the user with booking details
+                                    $notifications_stmt = $pdo->prepare("
+                                        SELECT 
+                                            n.*,
+                                            DATE_FORMAT(n.created_at, '%d') as notification_day,
+                                            DATE_FORMAT(n.created_at, '%b %Y') as notification_month_year,
+                                            b.booking_date,
+                                            b.return_date,
+                                            b.status as booking_status,
+                                            c.model as car_model
+                                        FROM notifications n
+                                        LEFT JOIN bookings b ON n.booking_id = b.id
+                                        LEFT JOIN car c ON b.car_id = c.id
+                                        WHERE n.users_id = ?
+                                        ORDER BY n.created_at DESC
+                                    ");
+                                    $notifications_stmt->execute([$user_id]);
+                                    $notifications = $notifications_stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                                    if (empty($notifications)) {
+                                        ?>
+                                        <div class="no-notifications">
+                                            <i class="fas fa-bell-slash"></i>
+                                            <p>No notifications yet</p>
+                                            <p class="sub-text">You will see notifications here when there are updates to your bookings.</p>
                                         </div>
-                                        <div class="notification-body">
-                                            <p class="notification-message">
-                                                Good news! Your booking for Toyota Camry from April-28-2025 to April-29-2025 has been approved by our admin.
-                                            </p>
-                                        </div>
-                                        <div class="notification-footer">
-                                            <button class="view-booking-btn">View Booking</button>
-                                        </div>
-                                    </div>
-                                    <div class="date-indicator">
-                                        <div class="notification-dot"></div>
-                                        <div class="date-stack">
-                                            <span class="date-day">27</span>
-                                            <span class="date-month-year">Apr 2025</span>
-                                        </div>
-                                    </div>
-                                </div>
+                                        <?php
+                                    } else {
+                                        foreach ($notifications as $notification) {
+                                            $statusClass = '';
+                                            switch($notification['notification_type']) {
+                                                case 'booking_pending':
+                                                    $statusClass = 'pending';
+                                                    break;
+                                                case 'booking_approved':
+                                                    $statusClass = 'approved';
+                                                    break;
+                                                case 'booking_completed':
+                                                    $statusClass = 'completed';
+                                                    break;
+                                                case 'booking_cancelled':
+                                                    $statusClass = 'cancelled';
+                                                    break;
+                                            }
+                                            ?>
+                                            <div class="notification-details">
+                                                <div class="notification-card <?= $notification['is_read'] ? '' : 'unread' ?> <?= $statusClass ?>" 
+                                                     data-notification-id="<?= $notification['id'] ?>">
+                                                    <div class="notification-header">
+                                                        <p class="notification-greeting">Hi, <?= htmlspecialchars($user['firstname']) ?>!</p>
+                                                        <?php if ($notification['booking_status']): ?>
+                                                        <span class="booking-status <?= strtolower($notification['booking_status']) ?>">
+                                                            <?= $notification['booking_status'] ?>
+                                                        </span>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                    <div class="notification-body">
+                                                        <p class="notification-message">
+                                                            <?= htmlspecialchars($notification['message']) ?>
+                                                        </p>
+                                                    </div>
+                                                    <?php if ($notification['booking_id']): ?>
+                                                    <div class="notification-footer">
+                                                        <button class="view-booking-btn" data-booking-id="<?= $notification['booking_id'] ?>">
+                                                            View Booking
+                                                        </button>
+                                                    </div>
+                                                    <?php endif; ?>
+                                                </div>
+                                                <div class="date-indicator">
+                                                    <div class="notification-dot <?= $statusClass ?>"></div>
+                                                    <div class="date-stack">
+                                                        <span class="date-day"><?= $notification['notification_day'] ?></span>
+                                                        <span class="date-month-year"><?= $notification['notification_month_year'] ?></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <?php
+                                        }
+                                    }
+                                } catch (PDOException $e) {
+                                    error_log("Notification error: " . $e->getMessage());
+                                    echo '<div class="error-message">Error loading notifications.</div>';
+                                }
+                                ?>
                             </div>
                         </div>
-                        
-                    <div id="notificationsTab" class="tab-content hidden">
-                        <div class="notifications-container">
-                            <div class="notification new">
-                                <div class="notification-card">
-                                    <div class="notification-header">
-                                    <p class="notification-greeting">Hi, John Doe!</p>
-                                    </div>
-                                    <div class="notification-body">
-                                    <p class="notification-message">
-                                        Good news! Your booking for Toyota Camry from April-28-2025 to April-29-2025 has been approved by our admin.
-                                    </p>
-                                    </div>
-                                    <div class="notification-footer">
-                                    <button class="view-booking-btn">View Booking</button>
-                                    </div>
-                                </div>
-                                <div class="date-indicator">
-                                    <div class="notification-dot"></div>
-                                    <div class="date-stack">
-                                        <span class="date-day">27</span>
-                                        <span class="date-month-year">Apr 2025</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                         
                     <div id="invoicesTab" class="tab-content hidden">
                         <div class="invoices-list">
-                            <?php foreach ($invoices as $invoice): ?>
-                                <div class="invoice-card">
-                                    <div class="invoice-car-img">
-                                        <img src="<?= htmlspecialchars($invoice['car_image']) ?>" alt="<?= htmlspecialchars($invoice['car_name']) ?>">
+                            <?php
+                            try {
+                                // Get all bookings for the user with car details
+                                $invoices_stmt = $pdo->prepare("
+                                    SELECT 
+                                        b.*,
+                                        c.model,
+                                        c.image,
+                                        c.price,
+                                        c.plate_no
+                                    FROM bookings b
+                                    LEFT JOIN car c ON b.car_id = c.id
+                                    WHERE b.users_id = ?
+                                    ORDER BY b.booking_date DESC
+                                ");
+                                
+                                $invoices_stmt->execute([$user_id]);
+                                $invoices = $invoices_stmt->fetchAll(PDO::FETCH_ASSOC);
+                                
+                                if (empty($invoices)) {
+                                    ?>
+                                    <div class="no-invoices">
+                                        <i class="fas fa-file-invoice"></i>
+                                        <p>No bookings found</p>
+                                        <p class="sub-text">Your booking invoices will appear here once you make a reservation.</p>
                                     </div>
-                                    <div class="invoice-details">
-                                        <h2><?= htmlspecialchars($invoice['car_name']) ?></h2>
-                                        <div class="invoice-dates">
-                                            <?= htmlspecialchars($invoice['date_from']) ?> to <?= htmlspecialchars($invoice['date_to']) ?>
+                                    <?php
+                                } else {
+                                    foreach ($invoices as $invoice) {
+                                        // Calculate rental duration and cost
+                                        $start_date = new DateTime($invoice['booking_date']);
+                                        $end_date = new DateTime($invoice['return_date']);
+                                        $interval = $start_date->diff($end_date);
+                                        $days = $interval->days ?: 1; // Minimum 1 day
+                                        $price_per_day = floatval($invoice['price'] ?? 0);
+                                        $total_amount = $days * $price_per_day;
+                                        
+                                        $status_class = strtolower($invoice['status']);
+                                        ?>
+                                        <div class="invoice-card">
+                                            <div class="invoice-header">
+                                                <span class="invoice-number">Booking #<?= str_pad($invoice['id'], 6, '0', STR_PAD_LEFT) ?></span>
+                                                <span class="invoice-status <?= $status_class ?>"><?= htmlspecialchars($invoice['status']) ?></span>
+                                            </div>
+                                            <div class="invoice-content">
+                                                <div class="car-details">
+                                                    <div class="car-image">
+                                                        <?php if (!empty($invoice['image'])): ?>
+                                                            <img src="../../uploads/cars/<?= htmlspecialchars($invoice['image']) ?>" 
+                                                                 alt="<?= htmlspecialchars($invoice['model']) ?>">
+                                                        <?php else: ?>
+                                                            <div class="no-image">No Image Available</div>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                    <div class="car-info">
+                                                        <h3><?= htmlspecialchars($invoice['model']) ?></h3>
+                                                        <p class="plate-no">Plate No: <?= htmlspecialchars($invoice['plate_no']) ?></p>
+                                                        <div class="booking-dates">
+                                                            <div class="date-group">
+                                                                <span class="date-label">Booking Date:</span>
+                                                                <span class="date-value"><?= $start_date->format('M d, Y') ?></span>
+                                                            </div>
+                                                            <div class="date-group">
+                                                                <span class="date-label">Return Date:</span>
+                                                                <span class="date-value"><?= $end_date->format('M d, Y') ?></span>
+                                                            </div>
+                                                            <?php if (!empty($invoice['location'])): ?>
+                                                            <div class="date-group">
+                                                                <span class="date-label">Location:</span>
+                                                                <span class="date-value"><?= htmlspecialchars($invoice['location']) ?></span>
+                                                            </div>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="price-details">
+                                                    <div class="price-row">
+                                                        <span>Price per day:</span>
+                                                        <span>₱<?= number_format($price_per_day, 2) ?></span>
+                                                    </div>
+                                                    <div class="price-row">
+                                                        <span>Number of days:</span>
+                                                        <span><?= $days ?> day<?= $days > 1 ? 's' : '' ?></span>
+                                                    </div>
+                                                    <div class="price-row total">
+                                                        <span>Total Amount:</span>
+                                                        <span>₱<?= number_format($total_amount, 2) ?></span>
+                                                    </div>
+                                                </div>
+                                                <div class="invoice-actions">
+                                                    <a href="print_invoice.php?id=<?= $invoice['id'] ?>" 
+                                                       class="print-invoice" 
+                                                       target="_blank">
+                                                        <i class="fas fa-print"></i> Print Invoice
+                                                    </a>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="invoice-price">
-                                            <span>₱ <?= number_format($invoice['price'], 2) ?></span>
-                                        </div>
-                                        <div class="invoice-total">
-                                            <span>Total Amount</span>
-                                            <span class="total-amount">₱ <?= number_format($invoice['total'], 2) ?></span>
-                                        </div>
-                                        <a href="print_invoice.php?id=<?= $invoice['invoice_id'] ?>" class="print-invoice-link" target="_blank">PRINT INVOICE</a>
-                                    </div>
+                                        <?php
+                                    }
+                                }
+                            } catch (PDOException $e) {
+                                error_log("Invoice Error: " . $e->getMessage());
+                                ?>
+                                <div class="error-message">
+                                    <i class="fas fa-exclamation-circle"></i>
+                                    <p>We encountered an error while loading your invoices.</p>
+                                    <p class="sub-text">Please try refreshing the page or contact support if the problem persists.</p>
                                 </div>
-                            <?php endforeach; ?>
+                                <?php
+                            }
+                            ?>
                         </div>
                     </div>
 
-                    
                 </div>
             </section>
         </main>
@@ -408,9 +536,9 @@ $invoices = [
     
     <!-- JavaScript -->
     <script src="../../javascript/client-account.js"></script>
+    <script src="../../javascript/notifications.js"></script>
 
     <!-- Font Awesome -->
-    <script src="https://kit.fontawesome.com/b7bdbf86fb.js" crossorigin="anonymous"></script>
 
     <div id="editProfileModal" class="modal" style="display: none;">
         <div class="modal-content">
@@ -459,5 +587,51 @@ $invoices = [
             </form>
         </div>
     </div>
+
+    <!-- Add this JavaScript before the closing body tag -->
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabLinks = document.querySelectorAll('.tab-link');
+            const tabContents = document.querySelectorAll('.tab-content');
+
+            tabLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    tabLinks.forEach(l => l.classList.remove('active'));
+                    tabContents.forEach(c => c.classList.add('hidden'));
+
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.remove('hidden');
+                });
+            });
+
+            // Edit profile functionality
+            const editBtn = document.querySelector('.edit-icon-button');
+            const modal = document.getElementById('editProfileModal');
+            const closeBtn = document.getElementById('closeEditModal');
+
+            if (editBtn) {
+                editBtn.addEventListener('click', function() {
+                    modal.style.display = "block";
+                });
+            }
+
+            if (closeBtn) {
+                closeBtn.addEventListener('click', function() {
+                    modal.style.display = "none";
+                });
+            }
+
+            window.addEventListener('click', function(event) {
+                if (event.target == modal) {
+                    modal.style.display = "none";
+                }
+            });
+        });
+    </script>
 </body>
 </html>
+
