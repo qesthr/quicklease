@@ -80,12 +80,20 @@ body {
 .logout-btn {
     width: 149%;
     padding: 10px;
-    background-color: #FBCC63;
+    background-color: #F9B315;
     border-radius: 10px;
     border: none;
     cursor: pointer;
     font-weight: bold;
     margin-top: 342px;
+    text-decoration: none !important;
+}
+
+.logout-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
 }
 
 .logout-btn:hover {

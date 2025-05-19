@@ -1,39 +1,43 @@
 <header class="topbar">
-    <h1>Profile</h1>
-
-    <!-- Improved Search Bar -->
-    <div class="search-container">
-        <form method="GET" class="search-form">
-            <div class="search-input-group">
-                <i class="fas fa-search search-icon"></i>
-                <input type="text" name="search" 
-                       placeholder="Search cars by model, transmission, or features..." 
-                       value="<?php echo htmlspecialchars($search ?? ''); ?>"
-                       class="enhanced-search">
-                <?php if (!empty($search)): ?>
-                    <button type="button" class="clear-search" onclick="window.location.href=window.location.pathname">
-                        <i class="fas fa-times"></i>
-                    </button>
-                <?php endif; ?>
-            </div>
-            <div class="quick-filters">
-                <button type="button" class="filter-chip" data-filter="Automatic">Automatic</button>
-                <button type="button" class="filter-chip" data-filter="Manual">Manual</button>
-                <button type="button" class="filter-chip" data-filter="SUV">SUV</button>
-                <button type="button" class="filter-chip" data-filter="Sedan">Sedan</button>
-            </div>
-        </form>
-    </div>
+    <h1>
+        <?php
+        $current_page = basename($_SERVER['PHP_SELF']);
+        $page_titles = [
+            'client_profile_userdetails.php' => 'Profile',
+            'client_cars.php' => 'Car Catalogue',
+            'client_booking.php' => 'Bookings',
+        ];
+        echo $page_titles[$current_page] ?? 'Dashboard';
+        ?>
+    </h1>
 
     <div class="user-info">
         <div class="notification">
             <i class="fa-regular fa-bell"></i>
         </div>
 
-        <img class="profile-pic" src="../images/profile.jpg" alt="">
+        <img class="profile-pic"
+             src="<?php
+                if (isset($user) && is_array($user) && !empty($user['profile_picture'])) {
+                    echo '../../uploads/profile_pictures/' . htmlspecialchars($user['profile_picture']);
+                } else {
+                    echo '../images/profile.jpg';
+                }
+             ?>"
+             alt="Profile Picture">
  
         <div class="user-details">
-            <p>Welcome, <strong><?php echo htmlspecialchars($user['firstname']); ?></strong></p>
+            <p>Welcome, 
+                <strong>
+                    <?php 
+                    if (isset($user) && is_array($user) && isset($user['firstname'])) {
+                        echo htmlspecialchars($user['firstname']);
+                    } else {
+                        echo "Client";
+                    }
+                    ?>
+                </strong>
+            </p>
         </div>
     </div>
 </header>

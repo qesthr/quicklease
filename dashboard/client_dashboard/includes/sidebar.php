@@ -17,7 +17,7 @@
         
       
     </ul>
-    <div style="position: absolute; bottom: 20px; width: 50%; padding: 0 15px; box-sizing: border-box;">
-        <a class="logout-btn" href="logout.php" style="display: block; text-align: center;">Logout</a>
+    <div class="logout-container" style="margin-top: 8vh; width: 15vh; text-align: center;">
+        <a class="logout-btn" href="logout.php" style="text-decoration: none;">Logout</a>
     </div>
 </div>
