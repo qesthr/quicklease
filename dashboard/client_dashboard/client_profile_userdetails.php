@@ -48,6 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $lastname = sanitize_input($_POST['lastname'] ?? '');
     $email = filter_var($_POST['email'] ?? '', FILTER_SANITIZE_EMAIL);
     $phone = sanitize_input($_POST['phone'] ?? '');
+    $username = sanitize_input($_POST['username'] ?? '');
 
     // Validate email
     if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -59,10 +60,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 firstname = ?, 
                 lastname = ?, 
                 email = ?, 
-                customer_phone = ? 
+                customer_phone = ?, 
+                username = ?
                 WHERE id = ?");
             
-            $stmt->execute([$firstname, $lastname, $email, $phone, $user_id]);
+            $stmt->execute([$firstname, $lastname, $email, $phone, $username, $user_id]);
             
             $success = "Profile updated successfully!";
             
@@ -657,38 +659,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) 
                 <div class="form-group">
                     <label for="editFirstName">First Name</label>
                     <input type="text" id="editFirstName" name="firstname" 
-                           placeholder="<?= htmlspecialchars($user['firstname'] ?? '') ?>" 
-                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['firstname'] ?? '') ?>')"
-                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['firstname'] ?? '') ?>')">
+                           value="<?= htmlspecialchars($user['firstname'] ?? '') ?>" 
+                           placeholder="First Name" required>
                 </div>
                 <div class="form-group">
                     <label for="editLastName">Last Name</label>
                     <input type="text" id="editLastName" name="lastname" 
-                           placeholder="<?= htmlspecialchars($user['lastname'] ?? '') ?>"
-                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['lastname'] ?? '') ?>')"
-                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['lastname'] ?? '') ?>')">
+                           value="<?= htmlspecialchars($user['lastname'] ?? '') ?>"
+                           placeholder="Last Name" required>
                 </div>
                 <div class="form-group">
                     <label for="editEmail">Email</label>
                     <input type="email" id="editEmail" name="email" 
-                           placeholder="<?= htmlspecialchars($user['email'] ?? '') ?>"
-                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['email'] ?? '') ?>')"
-                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['email'] ?? '') ?>')">
+                           value="<?= htmlspecialchars($user['email'] ?? '') ?>"
+                           placeholder="Email" required>
                 </div>
                 <div class="form-group">
                     <label for="editPhone">Phone Number</label>
                     <input type="text" id="editPhone" name="phone"
-                           placeholder="<?= htmlspecialchars($user['customer_phone'] ?? '') ?>"
-                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')"
-                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['customer_phone'] ?? '') ?>')">
+                           value="<?= htmlspecialchars($user['customer_phone'] ?? '') ?>"
+                           placeholder="Phone Number" required>
                 </div>
                 <h2>Account Information</h2>
                 <div class="form-group">
                     <label for="editUsername">Username</label>
                     <input type="text" id="editUsername" name="username" 
-                           placeholder="<?= htmlspecialchars($user['username'] ?? '') ?>"
-                           onfocus="this.value = this.getAttribute('<?= htmlspecialchars($user['username'] ?? '') ?>')"
-                           onblur="if(!this.value) this.value = this.getAttribute('<?= htmlspecialchars($user['username'] ?? '') ?>')">
+                           value="<?= htmlspecialchars($user['username'] ?? '') ?>"
+                           placeholder="Username" required>
                 </div>
                 <button type="submit" class="btn">Save Changes</button>
             </form>
@@ -697,57 +694,61 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['profile_picture'])) 
 
     <!-- Add this JavaScript before the closing body tag -->
     <script>
-        // Tab switching functionality
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
+            // Tab switching functionality
             const tabLinks = document.querySelectorAll('.tab-link');
             const tabContents = document.querySelectorAll('.tab-content');
 
             tabLinks.forEach(link => {
-                link.addEventListener('click', function() {
-                    // Remove active class from all tabs
-                    tabLinks.forEach(l => l.classList.remove('active'));
-                    tabContents.forEach(c => c.classList.add('hidden'));
+                link.addEventListener('click', function () {
+                    // Remove active class from all tabs and hide all tab contents
+                    tabLinks.forEach(link => link.classList.remove('active'));
+                    tabContents.forEach(content => content.classList.add('hidden'));
 
                     // Add active class to clicked tab
                     this.classList.add('active');
+
+                    // Show the corresponding tab content
                     const tabId = this.getAttribute('data-tab');
                     document.getElementById(tabId).classList.remove('hidden');
                 });
             });
 
-            // Edit profile functionality
+            // Edit profile modal functionality
             const editBtn = document.querySelector('.edit-icon-button');
             const modal = document.getElementById('editProfileModal');
             const closeBtn = document.getElementById('closeEditModal');
 
             if (editBtn) {
-                editBtn.addEventListener('click', function() {
+                editBtn.addEventListener('click', function () {
                     modal.style.display = "block";
                 });
             }
 
             if (closeBtn) {
-                closeBtn.addEventListener('click', function() {
+                closeBtn.addEventListener('click', function () {
                     modal.style.display = "none";
                 });
             }
 
-            window.addEventListener('click', function(event) {
+            window.addEventListener('click', function (event) {
                 if (event.target == modal) {
                     modal.style.display = "none";
                 }
             });
         });
 
+        // Image preview for profile photo
         function previewEditProfileImage(event) {
             const reader = new FileReader();
-            reader.onload = function(){
+            reader.onload = function () {
                 const output = document.getElementById('editProfileImagePreview');
                 output.src = reader.result;
             };
             reader.readAsDataURL(event.target.files[0]);
         }
     </script>
+
+
 </body>
 </html>
-
