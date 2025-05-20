@@ -433,6 +433,7 @@
     border: 1px solid #ccc;
     border-radius: 8px;
     font-size: 14px;
+    width: 63vh;
 }
 
 .car-list-page form .action-buttons {
