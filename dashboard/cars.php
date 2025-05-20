@@ -821,7 +821,7 @@ $cars = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         .file-upload-area {
             position: relative;
-            width: 100%;
+            width: 92%;
             min-height: 200px;
             border: 2px dashed #4CAF50;
             border-radius: 12px;
