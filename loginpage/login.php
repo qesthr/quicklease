@@ -10,7 +10,7 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 // 2. Load .env from absolute path with error handling
 try {
-    $dotenv = Dotenv\Dotenv::createImmutable('C:/xampp/htdocs/quicklease');
+    $dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../'  );
     $dotenv->load();
 } catch (Exception $e) {
     // Set default values if .env file is not found
@@ -58,7 +58,7 @@ if (!empty($googleClientId) && !empty($googleClientSecret)) {
     
     <!-- 6. CONDITIONAL SCRIPT LOADING -->
     <?php if (!empty($siteKey)): ?>
-    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    <script src="https://www.google.com/recaptcha/api.js"></script>
     <?php endif; ?>
     
     <?php if (!empty($googleClientId)): ?>
@@ -89,10 +89,11 @@ if (!empty($googleClientId) && !empty($googleClientSecret)) {
 
             <!-- 8. CONDITIONAL RECAPTCHA -->
             <?php if (!empty($siteKey)): ?>
-                <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>"></div>
+                <div class="g-recaptcha" data-sitekey="<?= htmlspecialchars($siteKey) ?>" data-callback="recaptchaCallback" data-expired-callback="recaptchaExpiredCallback"></div>
             <?php endif; ?>
             
-            <button type="submit">Login</button>
+            <!-- Disable login button until reCAPTCHA is checked -->
+            <button type="submit" id="login-btn" disabled>Login</button>
         </form>
 
         <!-- 9. CONDITIONAL GOOGLE SIGN-IN -->
@@ -121,7 +122,7 @@ if (!empty($googleClientId) && !empty($googleClientSecret)) {
                     .then(response => response.json())
                     .then(data => {
                         if (data.success) {
-                            window.location.href = 'dashboard.php';
+                            window.location.href = 'dashboard/client_dashboard/client_profile_userdetails.php';
                         } else {
                             alert('Authentication failed: ' + data.message);
                         }
@@ -138,19 +139,17 @@ if (!empty($googleClientId) && !empty($googleClientSecret)) {
                 };
             </script>
         <?php endif; ?>
+
+        <!-- Insert JavaScript callback to enable the login button -->
+        <script>
+          function recaptchaCallback() {
+            document.getElementById('login-btn').disabled = false;
+          }
+          function recaptchaExpiredCallback() {
+            document.getElementById('login-btn').disabled = true;
+          }
+        </script>
     </div>
-
-    <script src="https://www.google.com/recaptcha/api.js?render=your_site_key"></script>
-    <script src="https://www.google.com/recaptcha/api.js?render=6LekoywrAAAAAP9aPlhhZ3_KnXgdrcdAXPdV6IoC"></script>
-    <script>
-        grecaptcha.ready(function() {
-            grecaptcha.execute('6LekoywrAAAAAP9aPlhhZ3_KnXgdrcdAXPdV6IoC', {action: 'login'}).then(function(token) {
-                document.querySelector('form.login-forms').insertAdjacentHTML('beforeend',
-                    '<input type="hidden" name="g-recaptcha-response" value="' + token + '">');
-            });
-        });
-    </script>
-
 
 </body>
 </html>
